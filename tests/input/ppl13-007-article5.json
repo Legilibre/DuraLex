@@ -1,0 +1,45 @@
+{
+ "articles": [
+  {
+   "alineas": {
+    "001": "I. - L'article L. 225-123 du code de commerce est complété par trois alinéas ainsi rédigés :",
+    "002": "\"II. - Dans les sociétés dont les titres sont admis aux négociations sur un marché réglementé, sauf clause contraire des statuts, un droit de vote double de celui conféré aux autres actions, eu égard à la quotité de capital social qu'elles représentent, est attribué à toutes les actions entièrement libérées pour lesquelles il est justifié d'une inscription nominative, depuis deux ans au moins, au nom du même actionnaire.",
+    "003": "\"En cas d'augmentation du capital par augmentation de réserves, bénéfices ou prime d'émission, le droit de vote double peut être conféré, dès leur émission, aux actions nominatives attribuées gratuitement à un actionnaire à raison d'actions anciennes pour lesquelles il bénéficie de ce droit.",
+    "004": "\"Sauf clause contraire des statuts, le droit de vote prévu aux quatrième et avant-dernier alinéas du présent article est réservé aux actionnaires de nationalité française et à ceux ressortissants de l'Union européenne ou d'un État partie à l'accord sur l'Espace économique européen.\"",
+    "005": "II. - Pour l'application des quatrième à dernier alinéas de l'article L. 225-123 du code de commerce, la comptabilisation de la durée de l'inscription nominative débute à compter de l'entrée en vigueur de la présente loi."
+   },
+   "order": 5,
+   "section": "T3",
+   "statut": "none",
+   "titre": "5",
+   "type": "article"
+  }
+ ],
+ "definitif": false,
+ "depot": true,
+ "expose": "",
+ "id": "00_A14-1037",
+ "sections": [
+  {
+   "id": "T1",
+   "titre": "Obligation de rechercher un repreneur en cas de projet de fermeture d'un établissement",
+   "type": "section",
+   "type_section": "titre"
+  },
+  {
+   "id": "T2",
+   "titre": "Mesure en faveur de la reprise de l'activité par les salariés",
+   "type": "section",
+   "type_section": "titre"
+  },
+  {
+   "id": "T3",
+   "titre": "Mesures en faveur de l'actionnariat de long terme",
+   "type": "section",
+   "type_section": "titre"
+  }
+ ],
+ "source": "http://www.assemblee-nationale.fr/14/propositions/pion1037.asp",
+ "titre": "N° 1037 - Proposition de loi de M. Bruno Le Roux visant à redonner des perspectives à l'économie réelle et à l'emploi industriel",
+ "type": "texte"
+}

@@ -1,0 +1,1358 @@
+{
+  "children": [
+    {
+      "children": [
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "type": "quote", 
+                  "words": "L'État est le garant de l'égalité devant le service public de l'enseignement supérieur sur l'ensemble du territoire."
+                }
+              ], 
+              "type": "alinea"
+            }, 
+            {
+              "children": [
+                {
+                  "id": "L. 111-5", 
+                  "type": "article-reference"
+                }
+              ], 
+              "codeName": "code de l'éducation", 
+              "type": "code-reference"
+            }
+          ], 
+          "editType": "add", 
+          "type": "edit"
+        }
+      ], 
+      "isNew": false, 
+      "order": 1, 
+      "type": "article"
+    }, 
+    {
+      "children": [
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "type": "quote", 
+                      "words": "La langue de l'enseignement, des examens et concours, ainsi que des thèses et mémoires dans les établissements publics et privés d'enseignement est le français. Des exceptions peuvent être justifiées :"
+                    }
+                  ], 
+                  "type": "alinea"
+                }, 
+                {
+                  "children": [
+                    {
+                      "type": "quote", 
+                      "words": "1° Par les nécessités de l'enseignement des langues et cultures régionales ou étrangères ;"
+                    }
+                  ], 
+                  "type": "alinea"
+                }, 
+                {
+                  "children": [
+                    {
+                      "type": "quote", 
+                      "words": "2° Lorsque les enseignants sont des professeurs associés ou invités étrangers ;"
+                    }
+                  ], 
+                  "type": "alinea"
+                }, 
+                {
+                  "children": [
+                    {
+                      "type": "quote", 
+                      "words": "3° Par des nécessités pédagogiques, lorsque les enseignements sont dispensés dans le cadre d'un accord avec une institution étrangère ou internationale tel que prévu à l'article L. 123-7 ou dans le cadre d'un programme européen ;"
+                    }
+                  ], 
+                  "type": "alinea"
+                }, 
+                {
+                  "children": [
+                    {
+                      "type": "quote", 
+                      "words": "4° Par le développement de cursus et diplômes transfrontaliers multilingues."
+                    }
+                  ], 
+                  "type": "alinea"
+                }, 
+                {
+                  "children": [
+                    {
+                      "type": "quote", 
+                      "words": "Dans ces hypothèses, les formations d'enseignement supérieur ne peuvent être que partiellement proposées en langue étrangère et à la condition que l'accréditation concernant ces formations fixe la proportion des enseignements à dispenser en français. Le ministre chargé de l'usage de la langue française en France est immédiatement informé des exceptions accordées, de leur délai et de la raison de ces dérogations."
+                    }
+                  ], 
+                  "type": "alinea"
+                }, 
+                {
+                  "children": [
+                    {
+                      "type": "quote", 
+                      "words": "Les étudiants étrangers bénéficiant de formations en langue étrangère suivent un enseignement de langue française lorsqu'ils ne justifient pas d'une connaissance suffisante de cette dernière. Leur niveau de maîtrise suffisante de la langue française est évalué pour l'obtention du diplôme."
+                    }
+                  ], 
+                  "type": "alinea"
+                }, 
+                {
+                  "children": [
+                    {
+                      "type": "quote", 
+                      "words": "Les enseignements proposés permettent aux étudiants francophones d'acquérir la maîtrise de la langue d'enseignement dans laquelle ces cours sont dispensés."
+                    }
+                  ], 
+                  "type": "alinea"
+                }, 
+                {
+                  "children": [
+                    {
+                      "children": [
+                        {
+                          "children": [
+                            {
+                              "order": 1, 
+                              "type": "alinea-reference"
+                            }
+                          ], 
+                          "order": 2, 
+                          "type": "header1-reference"
+                        }
+                      ], 
+                      "id": "L. 121-3", 
+                      "type": "article-reference"
+                    }
+                  ], 
+                  "codeName": "code de l'éducation", 
+                  "type": "code-reference"
+                }
+              ], 
+              "editType": "replace", 
+              "type": "edit"
+            }
+          ], 
+          "order": 1, 
+          "type": "header1"
+        }, 
+        {
+          "children": [
+            {
+              "content": "Au second alinéa du II du même article L. 121-3, les mots : \"cette obligation\" sont remplacés par les mots : \"l'obligation prévue au premier alinéa\".", 
+              "type": "article-content"
+            }
+          ], 
+          "order": 2, 
+          "type": "header1"
+        }
+      ], 
+      "isNew": false, 
+      "order": 2, 
+      "type": "article"
+    }, 
+    {
+      "children": [
+        {
+          "content": "Dans un délai de trois ans à compter de la promulgation de la présente loi, le Gouvernement remet aux commissions permanentes compétentes de l'Assemblée nationale et du Sénat un rapport évaluant l'impact, dans les établissements publics et privés d'enseignement supérieur, de l'article 2 de la présente loi sur l'emploi du français, l'évolution de l'offre de formations en langue étrangère, la mise en place d'enseignements de la langue française à destination des étudiants étrangers et l'évolution de l'offre d'enseignements en langue française dans des établissements étrangers.", 
+          "type": "article-content"
+        }
+      ], 
+      "isNew": false, 
+      "order": 3, 
+      "type": "article"
+    }, 
+    {
+      "children": [
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "type": "quote", 
+                      "words": "Le ministre chargé de l'enseignement supérieur en assure la coordination. Il assure, conjointement avec les autres ministres concernés, la tutelle des établissements d'enseignement supérieur relevant d'un autre département ministériel et participe à la définition de leur projet pédagogique. À cette fin, il peut être représenté à leur conseil d'administration. Il est associé aux accréditations et habilitations de ces établissements. Des modalités complémentaires peuvent être prévues dans les statuts des établissements."
+                    }
+                  ], 
+                  "type": "sentence"
+                }
+              ], 
+              "type": "alinea"
+            }, 
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "type": "quote", 
+                      "words": "Une stratégie nationale de l'enseignement supérieur, comportant une programmation pluriannuelle des moyens, est élaborée et révisée tous les cinq ans sous la responsabilité du ministre chargé de l'enseignement supérieur. Les priorités en sont arrêtées après une concertation avec les partenaires culturels, sociaux et économiques, la communauté scientifique et d'enseignement supérieur, les ministères concernés et les collectivités territoriales. Avant d'être arrêtées définitivement, elles sont transmises aux commissions permanentes compétentes de l'Assemblée nationale et du Sénat."
+                    }
+                  ], 
+                  "type": "sentence"
+                }
+              ], 
+              "type": "alinea"
+            }, 
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "type": "quote", 
+                      "words": "La stratégie nationale de l'enseignement supérieur repose sur le principe selon lequel les établissements publics à caractère scientifique, culturel et professionnel définis au titre Ier du livre VII de la troisième partie sont au centre du système d'enseignement supérieur."
+                    }
+                  ], 
+                  "type": "sentence"
+                }
+              ], 
+              "type": "alinea"
+            }, 
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "type": "quote", 
+                      "words": "Le ministre chargé de l'enseignement supérieur veille à la mise en oeuvre de la stratégie nationale de l'enseignement supérieur."
+                    }
+                  ], 
+                  "type": "sentence"
+                }
+              ], 
+              "type": "alinea"
+            }, 
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "type": "quote", 
+                      "words": "Les principes de répartition des moyens entre les acteurs de l'enseignement supérieur sont définis par la stratégie nationale."
+                    }
+                  ], 
+                  "type": "sentence"
+                }
+              ], 
+              "type": "alinea"
+            }, 
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "type": "quote", 
+                      "words": "Cette stratégie et les conditions de sa mise en oeuvre font l'objet d'un rapport biennal présenté au Parlement. Ce rapport présente une vision consolidée de l'ensemble des financements publics et privés, au niveau national et par site, activité, filière et niveau d'études, ainsi qu'une évaluation des besoins de financement. Les éléments quantitatifs de ce rapport sont composés de données sexuées. Ce rapport analyse notamment, au regard de cette stratégie, la situation des établissements d'enseignement supérieur ayant bénéficié des responsabilités et compétences élargies prévues aux articles L. 712-9, L. 712-10 et L. 954-1 à L. 954-3. Il évalue l'impact du transfert de la gestion de la masse salariale sur la situation financière des établissements concernés. Il analyse les résultats des politiques mises en oeuvre en faveur de la qualité de la vie étudiante, de la réussite et de l'insertion professionnelle des étudiants. Ce rapport peut également formuler des recommandations en vue de la révision périodique de cette stratégie."
+                    }
+                  ], 
+                  "type": "sentence"
+                }
+              ], 
+              "type": "alinea"
+            }, 
+            {
+              "children": [
+                {
+                  "id": "L. 123-1", 
+                  "type": "article-reference"
+                }
+              ], 
+              "codeName": "code de l'éducation", 
+              "type": "code-reference"
+            }
+          ], 
+          "editType": "add", 
+          "type": "edit"
+        }
+      ], 
+      "isNew": false, 
+      "order": 4, 
+      "type": "article"
+    }, 
+    {
+      "children": [
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "type": "quote", 
+                      "words": "seul ministre chargé de l'enseignement supérieur ou du ministre chargé de l'enseignement supérieur conjointement avec le ministre chargé de l'agriculture"
+                    }
+                  ], 
+                  "type": "words"
+                }, 
+                {
+                  "children": [
+                    {
+                      "children": [
+                        {
+                          "children": [
+                            {
+                              "type": "quote", 
+                              "words": "ministre chargé de l'enseignement supérieur"
+                            }
+                          ], 
+                          "type": "words-reference"
+                        }
+                      ], 
+                      "id": "L. 741-1", 
+                      "type": "article-reference"
+                    }
+                  ], 
+                  "codeName": "code de l'éducation", 
+                  "type": "code-reference"
+                }
+              ], 
+              "editType": "replace", 
+              "type": "edit"
+            }
+          ], 
+          "order": 1, 
+          "type": "header2"
+        }, 
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "type": "quote", 
+                      "words": "seul ministre chargé de l'enseignement supérieur ou du ministre chargé de l'enseignement supérieur conjointement avec le ministre chargé de l'agriculture"
+                    }
+                  ], 
+                  "type": "words"
+                }, 
+                {
+                  "children": [
+                    {
+                      "children": [
+                        {
+                          "children": [
+                            {
+                              "children": [
+                                {
+                                  "type": "quote", 
+                                  "words": "ministre chargé de l'enseignement supérieur ou du ministre de l'agriculture"
+                                }
+                              ], 
+                              "type": "words-reference"
+                            }
+                          ], 
+                          "order": 2, 
+                          "type": "alinea-reference"
+                        }
+                      ], 
+                      "id": "L. 762-2", 
+                      "type": "article-reference"
+                    }
+                  ], 
+                  "codeName": "code de l'éducation", 
+                  "type": "code-reference"
+                }
+              ], 
+              "editType": "replace", 
+              "type": "edit"
+            }
+          ], 
+          "order": 2, 
+          "type": "header2"
+        }
+      ], 
+      "isNew": false, 
+      "order": 5, 
+      "type": "article"
+    }, 
+    {
+      "children": [
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "type": "quote", 
+                      "words": "1° A À la réussite de toutes les étudiantes et de tous les étudiants ;"
+                    }
+                  ], 
+                  "order": 1, 
+                  "subOrder": "A", 
+                  "type": "header2"
+                }, 
+                {
+                  "children": [
+                    {
+                      "children": [
+                        {
+                          "order": 1, 
+                          "position": "before", 
+                          "type": "header2-reference"
+                        }
+                      ], 
+                      "id": "L. 123-2", 
+                      "type": "article-reference"
+                    }
+                  ], 
+                  "codeName": "code de l'éducation", 
+                  "type": "code-reference"
+                }
+              ], 
+              "editType": "add", 
+              "type": "edit"
+            }
+          ], 
+          "order": 1, 
+          "type": "header2"
+        }, 
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "type": "quote", 
+                      "words": "à la diffusion des connaissances dans leur diversité"
+                    }
+                  ], 
+                  "type": "words"
+                }, 
+                {
+                  "children": [
+                    {
+                      "children": [
+                        {
+                          "children": [
+                            {
+                              "children": [
+                                {
+                                  "type": "quote", 
+                                  "words": "dispensées,"
+                                }
+                              ], 
+                              "position": "after", 
+                              "type": "words-reference"
+                            }
+                          ], 
+                          "order": 1, 
+                          "type": "header2-reference"
+                        }
+                      ], 
+                      "id": "L. 123-2", 
+                      "type": "article-reference"
+                    }
+                  ], 
+                  "codeName": "code de l'éducation", 
+                  "type": "code-reference"
+                }
+              ], 
+              "editType": "add", 
+              "type": "edit"
+            }
+          ], 
+          "order": 2, 
+          "type": "header2"
+        }, 
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "type": "quote", 
+                      "words": "2° À la croissance et à la compétitivité de l'économie et à la réalisation d'une politique de l'emploi prenant en compte les besoins économiques, sociaux, environnementaux et culturels et leur évolution prévisible ;"
+                    }
+                  ], 
+                  "type": "words"
+                }, 
+                {
+                  "children": [
+                    {
+                      "children": [
+                        {
+                          "order": 2, 
+                          "type": "header2-reference"
+                        }
+                      ], 
+                      "id": "L. 123-2", 
+                      "type": "article-reference"
+                    }
+                  ], 
+                  "codeName": "code de l'éducation", 
+                  "type": "code-reference"
+                }
+              ], 
+              "editType": "edit", 
+              "type": "edit"
+            }
+          ], 
+          "order": 3, 
+          "type": "header2"
+        }, 
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "children": [
+                        {
+                          "type": "quote", 
+                          "words": "À la lutte contre les discriminations,"
+                        }
+                      ], 
+                      "type": "words"
+                    }, 
+                    {
+                      "children": [
+                        {
+                          "children": [
+                            {
+                              "order": 3, 
+                              "position": "beginning", 
+                              "type": "header2-reference"
+                            }
+                          ], 
+                          "id": "L. 123-2", 
+                          "type": "article-reference"
+                        }
+                      ], 
+                      "codeName": "code de l'éducation", 
+                      "type": "code-reference"
+                    }
+                  ], 
+                  "editType": "add", 
+                  "type": "edit"
+                }
+              ], 
+              "order": 1, 
+              "type": "header3"
+            }, 
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "children": [
+                        {
+                          "type": "quote", 
+                          "words": "À cette fin, il contribue à l'amélioration des conditions de vie étudiante, à la promotion du sentiment d'appartenance des étudiants à la communauté de leur établissement, au renforcement du lien social et au développement des initiatives collectives ou individuelles en faveur de la solidarité et de l'animation de la vie étudiante."
+                        }
+                      ], 
+                      "type": "sentence"
+                    }, 
+                    {
+                      "children": [
+                        {
+                          "children": [
+                            {
+                              "order": 3, 
+                              "type": "header2-reference"
+                            }
+                          ], 
+                          "id": "L. 123-2", 
+                          "type": "article-reference"
+                        }
+                      ], 
+                      "codeName": "code de l'éducation", 
+                      "type": "code-reference"
+                    }
+                  ], 
+                  "editType": "add", 
+                  "type": "edit"
+                }
+              ], 
+              "order": 2, 
+              "type": "header3"
+            }
+          ], 
+          "order": 4, 
+          "type": "header2"
+        }, 
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "type": "quote", 
+                      "words": "3° bis À la construction d'une société inclusive. À cette fin, il veille à favoriser l'inclusion des individus, sans distinction d'origine, de milieu social et de condition de santé ;"
+                    }
+                  ], 
+                  "isBis": true, 
+                  "order": 3, 
+                  "type": "header2"
+                }, 
+                {
+                  "children": [
+                    {
+                      "children": [
+                        {
+                          "order": 3, 
+                          "position": "after", 
+                          "type": "header2-reference"
+                        }
+                      ], 
+                      "id": "L. 123-2", 
+                      "type": "article-reference"
+                    }
+                  ], 
+                  "codeName": "code de l'éducation", 
+                  "type": "code-reference"
+                }
+              ], 
+              "editType": "add", 
+              "type": "edit"
+            }
+          ], 
+          "order": 5, 
+          "type": "header2"
+        }, 
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "type": "quote", 
+                      "words": "5° À l'attractivité et au rayonnement des territoires aux niveaux local, régional et national ;"
+                    }
+                  ], 
+                  "type": "header2"
+                }, 
+                {
+                  "children": [
+                    {
+                      "type": "quote", 
+                      "words": "6° Au développement et à la cohésion sociale du territoire national, par la présence de ses établissements ;"
+                    }
+                  ], 
+                  "type": "header2"
+                }, 
+                {
+                  "children": [
+                    {
+                      "type": "quote", 
+                      "words": "7° À la promotion et à la diffusion de la francophonie dans le monde ;"
+                    }
+                  ], 
+                  "type": "header2"
+                }, 
+                {
+                  "children": [
+                    {
+                      "type": "quote", 
+                      "words": "8° Au renforcement des interactions entre sciences et société."
+                    }
+                  ], 
+                  "type": "header2"
+                }, 
+                {
+                  "children": [
+                    {
+                      "id": "L. 123-2", 
+                      "type": "article-reference"
+                    }
+                  ], 
+                  "codeName": "code de l'éducation", 
+                  "type": "code-reference"
+                }
+              ], 
+              "editType": "add", 
+              "type": "edit"
+            }
+          ], 
+          "order": 6, 
+          "type": "header2"
+        }
+      ], 
+      "isNew": false, 
+      "order": 6, 
+      "type": "article"
+    }, 
+    {
+      "children": [
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "type": "quote", 
+                      "words": "tout au long de la vie"
+                    }
+                  ], 
+                  "type": "words"
+                }, 
+                {
+                  "children": [
+                    {
+                      "children": [
+                        {
+                          "order": 1, 
+                          "type": "header2-reference"
+                        }
+                      ], 
+                      "id": "L. 123-3", 
+                      "type": "article-reference"
+                    }
+                  ], 
+                  "codeName": "code de l'éducation", 
+                  "type": "code-reference"
+                }
+              ], 
+              "editType": "add", 
+              "type": "edit"
+            }
+          ], 
+          "order": 1, 
+          "type": "header2"
+        }, 
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "type": "quote", 
+                      "words": "au service de la société. Cette dernière repose sur le développement de l'innovation, du transfert de technologie lorsque celui-ci est possible, de la capacité d'expertise et d'appui aux associations et fondations, reconnues d'utilité publique, et aux politiques publiques menées pour répondre aux défis sociétaux, aux besoins sociaux, économiques et de développement durable."
+                    }
+                  ], 
+                  "type": "words"
+                }, 
+                {
+                  "children": [
+                    {
+                      "children": [
+                        {
+                          "order": 2, 
+                          "type": "header2-reference"
+                        }
+                      ], 
+                      "id": "L. 123-3", 
+                      "type": "article-reference"
+                    }
+                  ], 
+                  "codeName": "code de l'éducation", 
+                  "type": "code-reference"
+                }
+              ], 
+              "editType": "add", 
+              "type": "edit"
+            }
+          ], 
+          "order": 2, 
+          "type": "header2"
+        }, 
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "type": "quote", 
+                      "words": ", la promotion sociale"
+                    }
+                  ], 
+                  "type": "words"
+                }, 
+                {
+                  "children": [
+                    {
+                      "children": [
+                        {
+                          "children": [
+                            {
+                              "children": [
+                                {
+                                  "type": "quote", 
+                                  "words": "orientation"
+                                }
+                              ], 
+                              "position": "after", 
+                              "type": "words-reference"
+                            }
+                          ], 
+                          "order": 3, 
+                          "type": "header2-reference"
+                        }
+                      ], 
+                      "id": "L. 123-3", 
+                      "type": "article-reference"
+                    }
+                  ], 
+                  "codeName": "code de l'éducation", 
+                  "type": "code-reference"
+                }
+              ], 
+              "editType": "add", 
+              "type": "edit"
+            }
+          ], 
+          "order": 3, 
+          "type": "header2"
+        }, 
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "type": "quote", 
+                      "words": "4° La diffusion de la culture humaniste, en particulier à travers le développement des sciences humaines et sociales, et de la culture scientifique, technique et industrielle ;"
+                    }
+                  ], 
+                  "type": "words"
+                }, 
+                {
+                  "children": [
+                    {
+                      "children": [
+                        {
+                          "order": 4, 
+                          "type": "header2-reference"
+                        }
+                      ], 
+                      "id": "L. 123-3", 
+                      "type": "article-reference"
+                    }
+                  ], 
+                  "codeName": "code de l'éducation", 
+                  "type": "code-reference"
+                }
+              ], 
+              "editType": "edit", 
+              "type": "edit"
+            }
+          ], 
+          "order": 4, 
+          "type": "header2"
+        }
+      ], 
+      "isNew": false, 
+      "order": 7, 
+      "type": "article"
+    }, 
+    {
+      "children": [
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "type": "quote", 
+                  "words": "à leur réussite et"
+                }
+              ], 
+              "type": "words"
+            }, 
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "children": [
+                        {
+                          "children": [
+                            {
+                              "type": "quote", 
+                              "words": "et concourt"
+                            }
+                          ], 
+                          "position": "after", 
+                          "type": "words-reference"
+                        }
+                      ], 
+                      "order": 1, 
+                      "type": "header2-reference"
+                    }
+                  ], 
+                  "id": "L. 123-4", 
+                  "type": "article-reference"
+                }
+              ], 
+              "codeName": "code de l'éducation", 
+              "type": "code-reference"
+            }
+          ], 
+          "editType": "add", 
+          "type": "edit"
+        }
+      ], 
+      "isNew": false, 
+      "order": 8, 
+      "type": "article"
+    }, 
+    {
+      "children": [
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "id": "L. 123-4-2", 
+                  "type": "article"
+                }, 
+                {
+                  "children": [
+                    {
+                      "id": "L. 123-4-1", 
+                      "type": "article-reference"
+                    }
+                  ], 
+                  "codeName": "code de l'éducation", 
+                  "type": "code-reference"
+                }
+              ], 
+              "editType": "rename", 
+              "type": "edit"
+            }
+          ], 
+          "order": 1, 
+          "type": "header1"
+        }, 
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "type": "quote", 
+                      "words": "Art. L. 123-4-1. - Le service public de l'enseignement supérieur met à disposition de ses usagers des services et des ressources pédagogiques numériques."
+                    }, 
+                    {
+                      "type": "quote", 
+                      "words": "Les logiciels libres sont utilisés en priorité."
+                    }
+                  ], 
+                  "type": "words"
+                }, 
+                {
+                  "children": [
+                    {
+                      "id": "L. 123-4-1", 
+                      "type": "article-reference"
+                    }
+                  ], 
+                  "codeName": "code de l'éducation", 
+                  "type": "code-reference"
+                }
+              ], 
+              "editType": "add", 
+              "type": "edit"
+            }
+          ], 
+          "order": 2, 
+          "type": "header1"
+        }, 
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "type": "quote", 
+                      "words": "L. 123-4-2"
+                    }
+                  ], 
+                  "type": "words"
+                }, 
+                {
+                  "children": [
+                    {
+                      "children": [
+                        {
+                          "children": [
+                            {
+                              "children": [
+                                {
+                                  "type": "quote", 
+                                  "words": "L. 123-4-1"
+                                }
+                              ], 
+                              "type": "words-reference"
+                            }
+                          ], 
+                          "order": 3, 
+                          "type": "header2-reference"
+                        }
+                      ], 
+                      "id": "L. 321-1", 
+                      "type": "article-reference"
+                    }
+                  ], 
+                  "codeName": "code de la sécurité sociale", 
+                  "type": "code-reference"
+                }
+              ], 
+              "editType": "replace", 
+              "type": "edit"
+            }
+          ], 
+          "order": 3, 
+          "type": "header1"
+        }
+      ], 
+      "isNew": false, 
+      "order": 9, 
+      "type": "article"
+    }, 
+    {
+      "children": [
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "type": "quote", 
+                      "words": "Il soutient la valorisation des résultats de la recherche au service de la société. À cet effet, il veille au développement de l'innovation, du transfert de technologie lorsque celui-ci est possible, de la capacité d'expertise et d'appui aux associations et fondations, reconnues d'utilité publique, et aux politiques publiques menées pour répondre aux défis sociétaux, aux besoins sociaux, économiques et du développement durable."
+                    }
+                  ], 
+                  "type": "alinea"
+                }, 
+                {
+                  "children": [
+                    {
+                      "children": [
+                        {
+                          "order": 1, 
+                          "position": "after", 
+                          "type": "alinea-reference"
+                        }
+                      ], 
+                      "id": "L. 123-5", 
+                      "type": "article-reference"
+                    }
+                  ], 
+                  "codeName": "code de l'éducation", 
+                  "type": "code-reference"
+                }
+              ], 
+              "editType": "add", 
+              "type": "edit"
+            }
+          ], 
+          "order": 1, 
+          "type": "header2"
+        }, 
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "children": [
+                        {
+                          "type": "quote", 
+                          "words": "Il assure la liaison nécessaire entre les activités d'enseignement, de recherche et d'innovation."
+                        }
+                      ], 
+                      "type": "words"
+                    }, 
+                    {
+                      "children": [
+                        {
+                          "children": [
+                            {
+                              "children": [
+                                {
+                                  "order": 1, 
+                                  "type": "sentence-reference"
+                                }
+                              ], 
+                              "order": 2, 
+                              "type": "alinea-reference"
+                            }
+                          ], 
+                          "id": "L. 123-5", 
+                          "type": "article-reference"
+                        }
+                      ], 
+                      "codeName": "code de l'éducation", 
+                      "type": "code-reference"
+                    }
+                  ], 
+                  "editType": "edit", 
+                  "type": "edit"
+                }
+              ], 
+              "order": 1, 
+              "type": "header3"
+            }, 
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "children": [
+                        {
+                          "type": "quote", 
+                          "words": "À cette fin, il assure le développement continu de l'innovation et de l'expérimentation pédagogiques en son sein. Il favorise les interactions entre sciences et société. Il facilite la participation du public à la prospection, à la collecte de données et au progrès de la connaissance scientifique."
+                        }
+                      ], 
+                      "type": "sentence"
+                    }, 
+                    {
+                      "children": [
+                        {
+                          "children": [
+                            {
+                              "order": 2, 
+                              "type": "alinea-reference"
+                            }
+                          ], 
+                          "id": "L. 123-5", 
+                          "type": "article-reference"
+                        }
+                      ], 
+                      "codeName": "code de l'éducation", 
+                      "type": "code-reference"
+                    }
+                  ], 
+                  "editType": "add", 
+                  "type": "edit"
+                }
+              ], 
+              "order": 2, 
+              "type": "header3"
+            }
+          ], 
+          "order": 2, 
+          "type": "header2"
+        }, 
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "children": [
+                        {
+                          "type": "quote", 
+                          "words": "et les regroupements mentionnés au 2° de l'article L. 718-3"
+                        }
+                      ], 
+                      "type": "words"
+                    }, 
+                    {
+                      "children": [
+                        {
+                          "children": [
+                            {
+                              "children": [
+                                {
+                                  "children": [
+                                    {
+                                      "children": [
+                                        {
+                                          "type": "quote", 
+                                          "words": ", pôles de recherche et d'enseignement supérieur et réseaux thématiques de recherche avancée"
+                                        }
+                                      ], 
+                                      "type": "words-reference"
+                                    }
+                                  ], 
+                                  "order": 1, 
+                                  "type": "sentence-reference"
+                                }
+                              ], 
+                              "order": -2, 
+                              "type": "alinea-reference"
+                            }
+                          ], 
+                          "id": "L. 123-5", 
+                          "type": "article-reference"
+                        }
+                      ], 
+                      "codeName": "code de l'éducation", 
+                      "type": "code-reference"
+                    }
+                  ], 
+                  "editType": "replace", 
+                  "type": "edit"
+                }
+              ], 
+              "order": 1, 
+              "type": "header3"
+            }, 
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "children": [
+                        {
+                          "type": "quote", 
+                          "words": "et des regroupements mentionnés au même 2°"
+                        }
+                      ], 
+                      "type": "words"
+                    }, 
+                    {
+                      "children": [
+                        {
+                          "children": [
+                            {
+                              "children": [
+                                {
+                                  "children": [
+                                    {
+                                      "children": [
+                                        {
+                                          "type": "quote", 
+                                          "words": ", pôles de recherche et d'enseignement supérieur et réseaux thématiques de recherche avancée"
+                                        }
+                                      ], 
+                                      "type": "words-reference"
+                                    }
+                                  ], 
+                                  "order": 2, 
+                                  "position": "end", 
+                                  "type": "sentence-reference"
+                                }
+                              ], 
+                              "order": -2, 
+                              "type": "alinea-reference"
+                            }
+                          ], 
+                          "id": "L. 123-5", 
+                          "type": "article-reference"
+                        }
+                      ], 
+                      "codeName": "code de l'éducation", 
+                      "type": "code-reference"
+                    }
+                  ], 
+                  "editType": "replace", 
+                  "type": "edit"
+                }
+              ], 
+              "order": 2, 
+              "type": "header3"
+            }
+          ], 
+          "order": 3, 
+          "type": "header2"
+        }, 
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "children": [
+                        {
+                          "children": [
+                            {
+                              "children": [
+                                {
+                                  "children": [
+                                    {
+                                      "type": "quote", 
+                                      "words": ", pôles de recherche et d'enseignement supérieur et réseaux thématiques de recherche avancée"
+                                    }
+                                  ], 
+                                  "type": "words-reference"
+                                }
+                              ], 
+                              "order": 2, 
+                              "type": "sentence-reference"
+                            }
+                          ], 
+                          "order": -1, 
+                          "type": "alinea-reference"
+                        }
+                      ], 
+                      "id": "L. 123-5", 
+                      "type": "article-reference"
+                    }
+                  ], 
+                  "codeName": "code de l'éducation", 
+                  "type": "code-reference"
+                }
+              ], 
+              "editType": "delete", 
+              "type": "edit"
+            }
+          ], 
+          "order": 4, 
+          "type": "header2"
+        }
+      ], 
+      "isNew": false, 
+      "order": 10, 
+      "type": "article"
+    }, 
+    {
+      "children": [
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "type": "quote", 
+                  "words": "Il promeut des valeurs d'éthique, de responsabilité et d'exemplarité."
+                }
+              ], 
+              "type": "alinea"
+            }, 
+            {
+              "children": [
+                {
+                  "type": "quote", 
+                  "words": "Il mène une action contre les stéréotypes sexués, tant dans les enseignements que dans les différents aspects de la vie de la communauté éducative."
+                }
+              ], 
+              "type": "alinea"
+            }, 
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "order": -1, 
+                      "position": "before", 
+                      "type": "alinea-reference"
+                    }
+                  ], 
+                  "id": "L. 123-6", 
+                  "type": "article-reference"
+                }
+              ], 
+              "codeName": "code de l'éducation", 
+              "type": "code-reference"
+            }
+          ], 
+          "editType": "add", 
+          "type": "edit"
+        }
+      ], 
+      "isNew": false, 
+      "order": 11, 
+      "type": "article"
+    }
+  ]
+}

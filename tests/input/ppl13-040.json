@@ -1,0 +1,47 @@
+{
+ "articles": [
+  {
+   "alineas": {
+    "001": "Avant l'article L. 253-1 du code rural et de la pêche maritime, il est inséré un article L. 253-1 A ainsi rédigé :", 
+    "002": "\"Art. L. 253-1 A. - À compter du 1er janvier 2018, il est interdit aux personnes publiques mentionnées à l'article L. 1 du code général de la propriété des personnes publiques d'utiliser les produits phytopharmaceutiques visés par le premier alinéa de l'article L. 253-1, à l'exception des préparations naturelles peu préoccupantes visées au deuxième alinéa du même article, pour l'entretien des espaces verts, de forêts et de promenades relevant de leur domaine public ou privé.\""
+   }, 
+   "order": 1, 
+   "statut": "none", 
+   "titre": "1er", 
+   "type": "article"
+  }, 
+  {
+   "alineas": {
+    "001": "Le même code est ainsi modifié :", 
+    "002": "I. L'article L. 253-7 est ainsi modifié :", 
+    "003": "1° Au début du premier alinéa est ajoutée la mention : \"I.\" ;", 
+    "004": "2° Il est complété par un II ainsi rédigé :", 
+    "005": "\"II. À compter du 1er janvier 2018, la mise sur le marché, la délivrance, l'utilisation et la détention des produits visés au premier alinéa de l'article L. 253-1 pour un usage non professionnel sont interdites.\"", 
+    "006": "II. À la première phrase du premier alinéa de l'article L. 253-9, après les mots : \"à usage professionnel\", sont insérés les mots : \"et non professionnel\".", 
+    "007": "II. Après le 1° de l'article L. 253-15, il est inséré un ... ° ainsi rédigé :", 
+    "008": "\"... ° Le fait de détenir en vue de la vente, d'offrir en vue de la vente ou de céder sous toute autre forme à titre gratuit ou onéreux, ainsi que le fait de vendre, de distribuer et d'effectuer d'autres formes de cession proprement dites d'un produit visé au premier alinéa de l'article L. 253-1 pour un usage non professionnel ;\"."
+   }, 
+   "order": 2, 
+   "statut": "none", 
+   "titre": "2", 
+   "type": "article"
+  }, 
+  {
+   "alineas": {
+    "001": "Avant le 31 décembre 2014, le Gouvernement déposera sur le bureau du Parlement un rapport sur les freins tout à la fois juridiques et économiques qui empêchent le développement de la fabrication et de la commercialisation des substances à faible risque définies par le règlement communautaire (CE n° 1107/2009)."
+   }, 
+   "order": 3, 
+   "statut": "none", 
+   "titre": "3", 
+   "type": "article"
+  }
+ ], 
+ "definitif": false, 
+ "depot": true, 
+ "expose": "", 
+ "id": "00_S13-l040", 
+ "sections": [], 
+ "source": "http://www.senat.fr/leg/ppl13-040.html", 
+ "titre": "proposition de loi visant à mieux encadrer l'utilisation des produits phytosanitaires sur le territoire national", 
+ "type": "texte"
+}

@@ -1,0 +1,36 @@
+{
+  "children": [
+    {
+      "children": [
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "type": "quote", 
+                  "words": "L'État est le garant de l'égalité devant le service public de l'enseignement supérieur sur l'ensemble du territoire."
+                }
+              ], 
+              "type": "alinea"
+            }, 
+            {
+              "children": [
+                {
+                  "id": "L. 111-5", 
+                  "type": "article-reference"
+                }
+              ], 
+              "codeName": "code de l'éducation", 
+              "type": "code-reference"
+            }
+          ], 
+          "editType": "add", 
+          "type": "edit"
+        }
+      ], 
+      "isNew": false, 
+      "order": 1, 
+      "type": "article"
+    }
+  ]
+}

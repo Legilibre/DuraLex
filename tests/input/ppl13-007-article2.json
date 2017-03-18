@@ -1,0 +1,41 @@
+{
+ "articles": [
+  {
+   "alineas": {
+    "001": "Dans un délai de six mois à compter de la promulgation de la présente loi, le Gouvernement remet au Parlement un rapport précisant les modalités d'affectation de la pénalité mentionnée à l'article L. 616-1 du code de commerce aux territoires et aux filières concernés."
+   },
+   "order": 2,
+   "section": "T1",
+   "statut": "none",
+   "titre": "2",
+   "type": "article"
+  }
+ ],
+ "definitif": false,
+ "depot": true,
+ "expose": "",
+ "id": "00_A14-1037",
+ "sections": [
+  {
+   "id": "T1",
+   "titre": "Obligation de rechercher un repreneur en cas de projet de fermeture d'un établissement",
+   "type": "section",
+   "type_section": "titre"
+  },
+  {
+   "id": "T2",
+   "titre": "Mesure en faveur de la reprise de l'activité par les salariés",
+   "type": "section",
+   "type_section": "titre"
+  },
+  {
+   "id": "T3",
+   "titre": "Mesures en faveur de l'actionnariat de long terme",
+   "type": "section",
+   "type_section": "titre"
+  }
+ ],
+ "source": "http://www.assemblee-nationale.fr/14/propositions/pion1037.asp",
+ "titre": "N° 1037 - Proposition de loi de M. Bruno Le Roux visant à redonner des perspectives à l'économie réelle et à l'emploi industriel",
+ "type": "texte"
+}

@@ -1,0 +1,51 @@
+{
+ "articles": [
+  {
+   "alineas": {
+    "001": "Le code du travail est ainsi modifié :",
+    "002": "1° L'article L. 2323-22 est ainsi rédigé :",
+    "003": "\"Art. L. 2323-22. - Si le comité d'entreprise se prononce sur le caractère hostile de l'offre, il peut demander à l'autorité administrative la désignation d'un médiateur choisi sur la liste de personnalités mentionnées à l'article L. 2523-2. La demande est formulée à l'issue de l'audition de l'auteur de l'offre prévue au dernier alinéa de l'article L. 2323-21.",
+    "004": "\"Le médiateur se prononce sur les points en litige soulevés par le comité d'entreprise qui sont relatifs à la politique industrielle et financière et aux plans stratégiques que l'auteur de l'offre envisage d'appliquer à la société objet de l'offre ainsi qu'aux répercussions de leur mise en oeuvre sur l'ensemble des intérêts, l'emploi, les sites d'activité et la localisation des centres de décision de cette dernière société.",
+    "005": "\"La procédure de médiation prévue à la section II du chapitre III du titre II du livre V est applicable. Toutefois, les recommandations et rapports du médiateur sont immédiatement rendus publics et sont reproduits dans la note en réponse établie par la société faisant l'objet de l'offre, ou, s'il y a lieu, dans la note d'information commune établie par l'initiateur et la société faisant l'objet de l'offre.\" ;",
+    "006": "2° L'article L. 2323-23 est ainsi modifié :",
+    "007": "a) Le premier alinéa est ainsi rédigé :",
+    "008": "\"Préalablement à l'avis motivé rendu par le conseil d'administration ou le conseil de surveillance sur l'intérêt de l'offre et sur les conséquences de celle-ci pour la société visée, ses actionnaires et ses salariés, et avant la date de convocation de l'assemblée générale réunie en application de l'article L. 233-32 du code de commerce, le comité d'entreprise de l'entreprise faisant l'objet de l'offre est informé et consulté sur le projet d'offre. Il peut procéder à l'audition de son auteur.\" ;",
+    "009": "b) À la première phrase du dernier alinéa, les mots : \"des observations éventuellement formulées\", sont remplacés par les mots : \"de l'avis émis\" ;",
+    "010": "c) Il est complété par un alinéa ainsi rédigé :",
+    "011": "\"L'avis du comité d'entreprise est reproduit dans la note en réponse établie par la société faisant l'objet de l'offre, ou, s'il y a lieu, dans la note d'information commune établie par l'initiateur et la société faisant l'objet de l'offre.\""
+   },
+   "order": 6,
+   "section": "T3",
+   "statut": "none",
+   "titre": "6",
+   "type": "article"
+  }
+ ],
+ "definitif": false,
+ "depot": true,
+ "expose": "",
+ "id": "00_A14-1037",
+ "sections": [
+  {
+   "id": "T1",
+   "titre": "Obligation de rechercher un repreneur en cas de projet de fermeture d'un établissement",
+   "type": "section",
+   "type_section": "titre"
+  },
+  {
+   "id": "T2",
+   "titre": "Mesure en faveur de la reprise de l'activité par les salariés",
+   "type": "section",
+   "type_section": "titre"
+  },
+  {
+   "id": "T3",
+   "titre": "Mesures en faveur de l'actionnariat de long terme",
+   "type": "section",
+   "type_section": "titre"
+  }
+ ],
+ "source": "http://www.assemblee-nationale.fr/14/propositions/pion1037.asp",
+ "titre": "N° 1037 - Proposition de loi de M. Bruno Le Roux visant à redonner des perspectives à l'économie réelle et à l'emploi industriel",
+ "type": "texte"
+}

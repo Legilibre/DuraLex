@@ -1,0 +1,22 @@
+{
+ "articles": [
+  {
+   "alineas": {
+    "001": "L'article 38-2 de l'ordonnance n° 58-1270 du 22 décembre 1958 portant loi organique relative au statut de la magistrature est complété par un alinéa ainsi rédigé :", 
+    "002": "\"Les dispositions du présent article sont applicables au procureur de la République financier près le tribunal de grande instance de Paris dans les mêmes conditions qu'au procureur de la République près le même tribunal.\""
+   }, 
+   "order": 1, 
+   "statut": "none", 
+   "titre": "1er", 
+   "type": "article"
+  }
+ ], 
+ "definitif": false, 
+ "depot": true, 
+ "expose": "", 
+ "id": "00_A14-1019", 
+ "sections": [], 
+ "source": "http://www.assemblee-nationale.fr/14/projets/pl1019.asp", 
+ "titre": "N° 1019 - Projet de loi organique relatif au procureur de la République financier", 
+ "type": "texte"
+}

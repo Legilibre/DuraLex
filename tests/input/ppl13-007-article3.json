@@ -1,0 +1,42 @@
+{
+ "articles": [
+  {
+   "alineas": {
+    "001": "L'article L. 631-13 du code de commerce est complété par un alinéa ainsi rédigé :",
+    "002": "\"L'administrateur informe les représentants du comité d'entreprise ou, à défaut, les délégués du personnel ou le représentant des salariés, de la possibilité qu'ont les salariés de soumettre une ou plusieurs offres.\""
+   },
+   "order": 3,
+   "section": "T2",
+   "statut": "none",
+   "titre": "3",
+   "type": "article"
+  }
+ ],
+ "definitif": false,
+ "depot": true,
+ "expose": "",
+ "id": "00_A14-1037",
+ "sections": [
+  {
+   "id": "T1",
+   "titre": "Obligation de rechercher un repreneur en cas de projet de fermeture d'un établissement",
+   "type": "section",
+   "type_section": "titre"
+  },
+  {
+   "id": "T2",
+   "titre": "Mesure en faveur de la reprise de l'activité par les salariés",
+   "type": "section",
+   "type_section": "titre"
+  },
+  {
+   "id": "T3",
+   "titre": "Mesures en faveur de l'actionnariat de long terme",
+   "type": "section",
+   "type_section": "titre"
+  }
+ ],
+ "source": "http://www.assemblee-nationale.fr/14/propositions/pion1037.asp",
+ "titre": "N° 1037 - Proposition de loi de M. Bruno Le Roux visant à redonner des perspectives à l'économie réelle et à l'emploi industriel",
+ "type": "texte"
+}

@@ -1,0 +1,70 @@
+{
+  "children": [
+    {
+      "children": [
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "type": "quote", 
+                      "words": "Sont également soumis aux mêmes taux de la taxe sur la valeur ajoutée les ventes, commissions et courtages portant sur les services de presse en ligne reconnus comme tels en application de l'article 1er de la loi n° 86-897 du 1er août 1986 portant réforme du régime juridique de la presse."
+                    }
+                  ], 
+                  "type": "words"
+                }, 
+                {
+                  "children": [
+                    {
+                      "children": [
+                        {
+                          "order": 2, 
+                          "type": "alinea-reference"
+                        }
+                      ], 
+                      "id": "298", 
+                      "isSepties": true, 
+                      "type": "article-reference"
+                    }
+                  ], 
+                  "codeName": "code général des impôts", 
+                  "type": "code-reference"
+                }
+              ], 
+              "editType": "edit", 
+              "type": "edit"
+            }
+          ], 
+          "order": 1, 
+          "type": "header1"
+        }, 
+        {
+          "children": [
+            {
+              "content": "Le I s'applique aux opérations pour lesquelles la taxe sur la valeur ajoutée est exigible à compter du 1er février 2014.", 
+              "type": "article-content"
+            }
+          ], 
+          "order": 2, 
+          "type": "header1"
+        }
+      ], 
+      "isNew": false, 
+      "order": 1, 
+      "type": "article"
+    }, 
+    {
+      "children": [
+        {
+          "content": "La perte de recettes pour l'État est compensée à due concurrence par la création d'une taxe additionnelle aux droits visés aux articles 575 et 575 A du code général des impôts.", 
+          "type": "article-content"
+        }
+      ], 
+      "isNew": false, 
+      "order": 2, 
+      "type": "article"
+    }
+  ]
+}

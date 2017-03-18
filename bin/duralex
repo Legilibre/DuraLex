@@ -1,0 +1,53 @@
+#!/usr/bin/env python
+
+import codecs
+import os
+import json
+import sys
+
+sys.path.append(os.path.join(os.path.realpath(os.path.dirname(__file__)), '..'))
+
+import duralex.parser
+from duralex.DeleteEmptyChildrenVisitor import DeleteEmptyChildrenVisitor
+from duralex.DeleteParentVisitor import DeleteParentVisitor
+from duralex.SortReferencesVisitor import SortReferencesVisitor
+from duralex.ResolveFullyQualifiedReferencesVisitor import ResolveFullyQualifiedReferencesVisitor
+from duralex.ResolveFullyQualifiedDefinitionsVisitor import ResolveFullyQualifiedDefinitionsVisitor
+
+def handle_data(data):
+    ast = duralex.parser.parse_json_data(json.loads(data))
+
+    ResolveFullyQualifiedDefinitionsVisitor().visit(ast)
+    ResolveFullyQualifiedReferencesVisitor().visit(ast)
+    SortReferencesVisitor().visit(ast)
+    DeleteParentVisitor().visit(ast)
+    DeleteEmptyChildrenVisitor().visit(ast)
+
+    if '-q' not in sys.argv:
+        json_data = json.dumps(ast, sort_keys=True, indent=2, ensure_ascii=False).encode('utf-8')
+        sys.stdout.write(json_data)
+
+def main(argv=None):
+    if len(sys.argv) < 2 or not os.path.isfile(sys.argv[1]):
+        print(
+            'usage:\n'
+            + os.path.basename(sys.argv[0]) + ' filename.json [-v]\n'
+            + 'cat filename.json | ' + os.path.basename(sys.argv[0]) + ' - [-v]\n'
+            + '\n'
+            + '-v\tVerbose mode\n'
+        )
+        return 1
+
+    if sys.argv[1] == '-':
+        data = sys.stdin.read()
+        data = data.decode('utf-8')
+        handle_data(data)
+    else:
+        data = codecs.open(sys.argv[1], 'r', 'utf-8').read()
+        codecs.register(lambda name: codecs.lookup('utf-8') if name == 'cp65001' else None)
+        handle_data(data)
+
+    return 0
+
+if __name__ == "__main__":
+    sys.exit(main())

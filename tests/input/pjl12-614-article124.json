@@ -1,0 +1,170 @@
+{
+ "articles": [
+  {
+   "alineas": {
+    "001": "I. - Dans les conditions prévues à l'article 38 de la Constitution, le Gouvernement est autorisé à modifier par ordonnance le code de la recherche afin :",
+    "002": "1° D'adapter le code, à droit constant, afin d'y créer un nouveau livre relatif à la valorisation et au transfert de la recherche en direction du monde économique, des associations et fondations, reconnues d'utilité publique ;",
+    "003": "2° De remédier aux éventuelles erreurs de codification ;",
+    "004": "3° D'abroger les dispositions devenues sans objet ;",
+    "005": "4° D'étendre, le cas échéant avec les adaptations nécessaires, l'application des dispositions du code de la recherche en Nouvelle-Calédonie, en Polynésie française, dans les îles Wallis et Futuna et dans les Terres australes et antarctiques françaises ainsi que de permettre les adaptations nécessaires à l'application de ces dispositions à Mayotte, à Saint-Barthélemy, à Saint-Martin et à Saint-Pierre-et-Miquelon.",
+    "006": "II. - Dans les conditions prévues à l'article 38 de la Constitution, le Gouvernement est autorisé à modifier par ordonnance la partie législative du code de l'éducation afin :",
+    "007": "1° D'adapter le code, afin, notamment, d'introduire des dispositions relatives aux études de maïeutique et de modifier celles relatives aux établissements d'enseignement supérieur spécialisés ;",
+    "008": "2° De remédier aux éventuelles erreurs de codification ;",
+    "009": "3° D'abroger les dispositions devenues sans objet ;",
+    "010": "4° D'étendre, le cas échéant avec les adaptations nécessaires, l'application de ces dispositions du code de l'éducation à Mayotte, en Nouvelle-Calédonie, en Polynésie française et dans les îles Wallis et Futuna.",
+    "011": "III. - Les ordonnances prévues aux I et II doivent être prises dans un délai d'un an à compter de la promulgation de la présente loi.",
+    "012": "Pour chaque ordonnance, un projet de loi de ratification est déposé devant le Parlement dans un délai de six mois à compter de la publication de l'ordonnance."
+   },
+   "newtitre": "124",
+   "order": 124,
+   "section": "T7C2",
+   "statut": "none",
+   "titre": "65",
+   "type": "article"
+  }
+ ],
+ "definitif": true,
+ "depot": false,
+ "expose": "",
+ "id": "08_A14-ta180",
+ "sections": [
+  {
+   "id": "T1",
+   "titre": "Missions du service public de l'enseignement supérieur et de la recherche",
+   "type": "section",
+   "type_section": "titre"
+  },
+  {
+   "id": "T1C1",
+   "titre": "Les missions du service public de l'enseignement supérieur",
+   "type": "section",
+   "type_section": "chapitre"
+  },
+  {
+   "id": "T1C2",
+   "titre": "La politique de la recherche et du développement technologique",
+   "type": "section",
+   "type_section": "chapitre"
+  },
+  {
+   "id": "T2",
+   "titre": "Le conseil national de l'enseignement supérieur et de la recherche",
+   "type": "section",
+   "type_section": "titre"
+  },
+  {
+   "id": "T3",
+   "titre": "Les formations de l'enseignement supérieur",
+   "type": "section",
+   "type_section": "titre"
+  },
+  {
+   "id": "T3 bis",
+   "newid": "T4",
+   "titre": "Dispositions relatives aux stages en milieu professionnel",
+   "type": "section",
+   "type_section": "titre"
+  },
+  {
+   "id": "T4",
+   "newid": "T5",
+   "titre": "Les établissements d'enseignement supérieur",
+   "type": "section",
+   "type_section": "titre"
+  },
+  {
+   "id": "T4C1",
+   "newid": "T5C1",
+   "titre": "Les établissements publics d'enseignement supérieur",
+   "type": "section",
+   "type_section": "chapitre"
+  },
+  {
+   "id": "T4C1S1",
+   "newid": "T5C1S1",
+   "titre": "La gouvernance des universités",
+   "type": "section",
+   "type_section": "section"
+  },
+  {
+   "id": "T4C1S2",
+   "newid": "T5C1S2",
+   "titre": "Les autres établissements publics à caractère scientifique, culturel et professionnel et les établissements publics administratifs d'enseignement supérieur",
+   "type": "section",
+   "type_section": "section"
+  },
+  {
+   "id": "T4C1S3",
+   "newid": "T5C1S3",
+   "titre": "Dispositions communes relatives à la composition des conseils",
+   "type": "section",
+   "type_section": "section"
+  },
+  {
+   "id": "T4C2",
+   "newid": "T5C2",
+   "titre": "Coopération et regroupements des établissements",
+   "type": "section",
+   "type_section": "chapitre"
+  },
+  {
+   "id": "T4C3",
+   "newid": "T5C3",
+   "titre": "Les établissements d'enseignement supérieur privés",
+   "type": "section",
+   "type_section": "chapitre"
+  },
+  {
+   "id": "T5",
+   "newid": "T6",
+   "titre": "Les personnels de l'enseignement supérieur et de la recherche",
+   "type": "section",
+   "type_section": "titre"
+  },
+  {
+   "id": "T6",
+   "newid": "T7",
+   "titre": "Dispositions relatives à la recherche",
+   "type": "section",
+   "type_section": "titre"
+  },
+  {
+   "id": "T6C1",
+   "newid": "T7C1",
+   "titre": "L'organisation générale de la recherche",
+   "type": "section",
+   "type_section": "chapitre"
+  },
+  {
+   "id": "T6C2",
+   "newid": "T7C2",
+   "titre": "L'exercice des activités de transfert pour la création de valeur économique",
+   "type": "section",
+   "type_section": "chapitre"
+  },
+  {
+   "id": "T7",
+   "newid": "T8",
+   "titre": "Dispositions diverses, transitoires et finales",
+   "type": "section",
+   "type_section": "titre"
+  },
+  {
+   "id": "T7C1",
+   "newid": "T8C1",
+   "titre": "Dispositions diverses",
+   "type": "section",
+   "type_section": "chapitre"
+  },
+  {
+   "id": "T7C2",
+   "newid": "T8C2",
+   "titre": "Dispositions transitoires et finales",
+   "type": "section",
+   "type_section": "chapitre"
+  }
+ ],
+ "source": "http://www.assemblee-nationale.fr/14/ta/ta0180.asp",
+ "titre": "Texte adopté n° 180 - Projet de loi, adopté, dans les conditions prévues à l'article 45, alinéa 3, de la Constitution, par l'Assemblée nationale, relatif à l'enseignement supérieur et à la recherche",
+ "type": "texte"
+}

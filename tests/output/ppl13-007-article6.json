@@ -1,0 +1,178 @@
+{
+  "children": [
+    {
+      "children": [
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "type": "quote", 
+                      "words": "Art. L. 2323-22. - Si le comité d'entreprise se prononce sur le caractère hostile de l'offre, il peut demander à l'autorité administrative la désignation d'un médiateur choisi sur la liste de personnalités mentionnées à l'article L. 2523-2. La demande est formulée à l'issue de l'audition de l'auteur de l'offre prévue au dernier alinéa de l'article L. 2323-21."
+                    }, 
+                    {
+                      "type": "quote", 
+                      "words": "Le médiateur se prononce sur les points en litige soulevés par le comité d'entreprise qui sont relatifs à la politique industrielle et financière et aux plans stratégiques que l'auteur de l'offre envisage d'appliquer à la société objet de l'offre ainsi qu'aux répercussions de leur mise en oeuvre sur l'ensemble des intérêts, l'emploi, les sites d'activité et la localisation des centres de décision de cette dernière société."
+                    }, 
+                    {
+                      "type": "quote", 
+                      "words": "La procédure de médiation prévue à la section II du chapitre III du titre II du livre V est applicable. Toutefois, les recommandations et rapports du médiateur sont immédiatement rendus publics et sont reproduits dans la note en réponse établie par la société faisant l'objet de l'offre, ou, s'il y a lieu, dans la note d'information commune établie par l'initiateur et la société faisant l'objet de l'offre."
+                    }
+                  ], 
+                  "type": "words"
+                }, 
+                {
+                  "children": [
+                    {
+                      "id": "L. 2323-22", 
+                      "type": "article-reference"
+                    }
+                  ], 
+                  "codeName": "code du travail", 
+                  "type": "code-reference"
+                }
+              ], 
+              "editType": "edit", 
+              "type": "edit"
+            }
+          ], 
+          "order": 1, 
+          "type": "header2"
+        }, 
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "children": [
+                        {
+                          "type": "quote", 
+                          "words": "Préalablement à l'avis motivé rendu par le conseil d'administration ou le conseil de surveillance sur l'intérêt de l'offre et sur les conséquences de celle-ci pour la société visée, ses actionnaires et ses salariés, et avant la date de convocation de l'assemblée générale réunie en application de l'article L. 233-32 du code de commerce, le comité d'entreprise de l'entreprise faisant l'objet de l'offre est informé et consulté sur le projet d'offre. Il peut procéder à l'audition de son auteur."
+                        }
+                      ], 
+                      "type": "words"
+                    }, 
+                    {
+                      "children": [
+                        {
+                          "children": [
+                            {
+                              "order": 1, 
+                              "type": "alinea-reference"
+                            }
+                          ], 
+                          "id": "L. 2323-23", 
+                          "type": "article-reference"
+                        }
+                      ], 
+                      "codeName": "code du travail", 
+                      "type": "code-reference"
+                    }
+                  ], 
+                  "editType": "edit", 
+                  "type": "edit"
+                }
+              ], 
+              "order": 1, 
+              "type": "header3"
+            }, 
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "children": [
+                        {
+                          "type": "quote", 
+                          "words": "de l'avis émis"
+                        }
+                      ], 
+                      "type": "words"
+                    }, 
+                    {
+                      "children": [
+                        {
+                          "children": [
+                            {
+                              "children": [
+                                {
+                                  "children": [
+                                    {
+                                      "children": [
+                                        {
+                                          "type": "quote", 
+                                          "words": "des observations éventuellement formulées"
+                                        }
+                                      ], 
+                                      "type": "words-reference"
+                                    }
+                                  ], 
+                                  "order": 1, 
+                                  "type": "sentence-reference"
+                                }
+                              ], 
+                              "order": -1, 
+                              "type": "alinea-reference"
+                            }
+                          ], 
+                          "id": "L. 2323-23", 
+                          "type": "article-reference"
+                        }
+                      ], 
+                      "codeName": "code du travail", 
+                      "type": "code-reference"
+                    }
+                  ], 
+                  "editType": "replace", 
+                  "type": "edit"
+                }
+              ], 
+              "order": 2, 
+              "type": "header3"
+            }, 
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "children": [
+                        {
+                          "type": "quote", 
+                          "words": "L'avis du comité d'entreprise est reproduit dans la note en réponse établie par la société faisant l'objet de l'offre, ou, s'il y a lieu, dans la note d'information commune établie par l'initiateur et la société faisant l'objet de l'offre."
+                        }
+                      ], 
+                      "type": "alinea"
+                    }, 
+                    {
+                      "children": [
+                        {
+                          "id": "L. 2323-23", 
+                          "type": "article-reference"
+                        }
+                      ], 
+                      "codeName": "code du travail", 
+                      "type": "code-reference"
+                    }
+                  ], 
+                  "editType": "add", 
+                  "type": "edit"
+                }
+              ], 
+              "order": 3, 
+              "type": "header3"
+            }
+          ], 
+          "order": 2, 
+          "type": "header2"
+        }
+      ], 
+      "isNew": false, 
+      "order": 6, 
+      "type": "article"
+    }
+  ]
+}

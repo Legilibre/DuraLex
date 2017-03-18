@@ -1,0 +1,152 @@
+{
+  "children": [
+    {
+      "children": [
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "type": "quote", 
+                      "words": "d'un quart"
+                    }
+                  ], 
+                  "type": "words"
+                }, 
+                {
+                  "children": [
+                    {
+                      "children": [
+                        {
+                          "children": [
+                            {
+                              "children": [
+                                {
+                                  "children": [
+                                    {
+                                      "type": "quote", 
+                                      "words": "des trois dixièmes"
+                                    }
+                                  ], 
+                                  "type": "words-reference"
+                                }
+                              ], 
+                              "order": 2, 
+                              "type": "sentence-reference"
+                            }
+                          ], 
+                          "order": 1, 
+                          "type": "alinea-reference"
+                        }
+                      ], 
+                      "id": "L. 433-3", 
+                      "type": "article-reference"
+                    }
+                  ], 
+                  "codeName": "code monétaire et financier", 
+                  "type": "code-reference"
+                }, 
+                {
+                  "children": [
+                    {
+                      "children": [
+                        {
+                          "children": [
+                            {
+                              "children": [
+                                {
+                                  "children": [
+                                    {
+                                      "type": "quote", 
+                                      "words": "des trois dixièmes"
+                                    }
+                                  ], 
+                                  "type": "words-reference"
+                                }
+                              ], 
+                              "order": 1, 
+                              "type": "sentence-reference"
+                            }
+                          ], 
+                          "order": 1, 
+                          "type": "alinea-reference"
+                        }
+                      ], 
+                      "id": "L. 433-3", 
+                      "type": "article-reference"
+                    }
+                  ], 
+                  "codeName": "code monétaire et financier", 
+                  "type": "code-reference"
+                }
+              ], 
+              "editType": "replace", 
+              "type": "edit"
+            }
+          ], 
+          "order": 1, 
+          "type": "header2"
+        }, 
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "type": "quote", 
+                      "words": "un quart"
+                    }
+                  ], 
+                  "type": "words"
+                }, 
+                {
+                  "children": [
+                    {
+                      "children": [
+                        {
+                          "children": [
+                            {
+                              "children": [
+                                {
+                                  "children": [
+                                    {
+                                      "type": "quote", 
+                                      "words": "trois dixièmes"
+                                    }
+                                  ], 
+                                  "type": "words-reference"
+                                }
+                              ], 
+                              "order": 1, 
+                              "type": "sentence-reference"
+                            }
+                          ], 
+                          "order": 1, 
+                          "type": "alinea-reference"
+                        }
+                      ], 
+                      "id": "L. 433-3", 
+                      "type": "article-reference"
+                    }
+                  ], 
+                  "codeName": "code monétaire et financier", 
+                  "type": "code-reference"
+                }
+              ], 
+              "editType": "replace", 
+              "type": "edit"
+            }
+          ], 
+          "order": 2, 
+          "type": "header2"
+        }
+      ], 
+      "isNew": false, 
+      "order": 4, 
+      "type": "article"
+    }
+  ]
+}

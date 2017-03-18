@@ -1,0 +1,32 @@
+{
+ "articles": [
+  {
+   "alineas": {
+    "001": "I. - Le second alinéa de l'article 298 septies du code général des impôts est ainsi rédigé :", 
+    "002": "\"Sont également soumis aux mêmes taux de la taxe sur la valeur ajoutée les ventes, commissions et courtages portant sur les services de presse en ligne reconnus comme tels en application de l'article 1er de la loi n° 86-897 du 1er août 1986 portant réforme du régime juridique de la presse.\"", 
+    "003": "II. - Le I s'applique aux opérations pour lesquelles la taxe sur la valeur ajoutée est exigible à compter du 1er février 2014."
+   }, 
+   "order": 1, 
+   "statut": "none", 
+   "titre": "1er", 
+   "type": "article"
+  }, 
+  {
+   "alineas": {
+    "001": "La perte de recettes pour l'État est compensée à due concurrence par la création d'une taxe additionnelle aux droits visés aux articles 575 et 575 A du code général des impôts."
+   }, 
+   "order": 2, 
+   "statut": "none", 
+   "titre": "2", 
+   "type": "article"
+  }
+ ], 
+ "definitif": false, 
+ "depot": true, 
+ "expose": "", 
+ "id": "00_A14-1730", 
+ "sections": [], 
+ "source": "http://www.assemblee-nationale.fr/14/propositions/pion1730.asp", 
+ "titre": "N° 1730 - Proposition de loi de M. Bruno Le Roux tendant à harmoniser les taux de la taxe sur la valeur ajoutée applicables à la presse imprimée et à la presse en ligne", 
+ "type": "texte"
+}

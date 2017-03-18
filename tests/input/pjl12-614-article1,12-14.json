@@ -1,0 +1,212 @@
+{
+ "articles": [
+  {
+   "alineas": {
+    "001": "L'article L. 111-5 du code de l'éducation est complété par un alinéa ainsi rédigé :",
+    "002": "\"L'État est le garant de l'égalité devant le service public de l'enseignement supérieur sur l'ensemble du territoire.\""
+   },
+   "newtitre": "1er",
+   "order": 1,
+   "section": "T1C1",
+   "statut": "none",
+   "titre": "1er bis",
+   "type": "article"
+  },
+  {
+   "alineas": {
+    "001": "L'article L. 123-7 du même code est ainsi modifié :",
+    "002": "1° Le premier alinéa est ainsi modifié :",
+    "003": "a) Après la première phrase, sont insérées quatre phrases ainsi rédigées :",
+    "004": "\"Il promeut, aux plans européen et international, un meilleur partage des savoirs et leur diffusion auprès des sociétés civiles. Il encourage les coopérations transfrontalières et incite, à cet effet, les établissements d'enseignement supérieur implantés dans les collectivités relevant de l'article 73 de la Constitution à contribuer au rayonnement international des départements et régions d'outre-mer. Il favorise le développement de parcours comprenant des périodes d'études et d'activités à l'étranger sans porter préjudice au déroulement de carrière ou d'études des personnels et étudiants concernés. Il favorise également l'accueil des personnels de recherche étrangers pour la durée de leurs missions scientifiques.\" ;",
+    "005": "b) La deuxième phrase est ainsi rédigée :",
+    "006": "\"Il assure l'accueil des étudiants étrangers, en lien avec le réseau des oeuvres universitaires et scolaires mentionné à l'article L. 822-1 et l'établissement public mentionné à l'article 6 de la loi n° 2010-873 du 27 juillet 2010 relative à l'action extérieure de l'État, ainsi que leur formation.\" ;",
+    "007": "c) La troisième phrase est ainsi rédigée :",
+    "008": "\"Il soutient le développement des établissements français et des enseignements en langue française à l'étranger, ainsi que le développement de services et ressources pédagogiques numériques favorisant la connaissance et la promotion de la langue française.\" ;",
+    "009": "d) Avant la dernière phrase, est insérée une phrase ainsi rédigée :",
+    "010": "\"Il favorise l'orientation vers l'enseignement supérieur français des élèves français scolarisés à l'étranger et des élèves étrangers scolarisés dans des établissements d'enseignement français à l'étranger.\" ;",
+    "011": "2° Le second alinéa est ainsi modifié :",
+    "012": "a) Les mots : \"la Communauté\" sont remplacés par les mots : \"l'Union\" ;",
+    "013": "b) Est ajoutée une phrase ainsi rédigée :",
+    "014": "\"Ces accords visent à la délivrance de diplômes nationaux ou d'établissement, conjointement ou non avec des établissements d'enseignement supérieur à l'étranger.\""
+   },
+   "newtitre": "12",
+   "order": 12,
+   "section": "T1C1",
+   "statut": "none",
+   "titre": "8",
+   "type": "article"
+  },
+  {
+   "alineas": {
+    "001": "Le I de l'article L. 241-2 du même code est complété par un alinéa ainsi rédigé :",
+    "002": "\"Les vérifications de l'inspection générale de l'administration de l'éducation nationale et de la recherche portent également sur la gestion des ressources humaines des établissements.\""
+   },
+   "newtitre": "13",
+   "order": 13,
+   "section": "T1C1",
+   "statut": "none",
+   "titre": "8 bis",
+   "type": "article"
+  },
+  {
+   "alineas": {
+    "001": "L'article L. 111-1 du code de la recherche est ainsi rédigé :",
+    "002": "\"Art. L. 111-1. - La politique nationale de la recherche et du développement technologique vise à :",
+    "003": "\"1° Accroître les connaissances ;",
+    "004": "\"2° Partager la culture scientifique, technique et industrielle ;",
+    "005": "\"3° Valoriser les résultats de la recherche au service de la société. À cet effet, elle s'attache au développement de l'innovation, du transfert de technologie lorsque celui-ci est possible, de la capacité d'expertise et d'appui aux associations et fondations, reconnues d'utilité publique, et aux politiques publiques menées pour répondre aux défis sociétaux, aux besoins sociaux, économiques et du développement durable ;",
+    "006": "\"4° Promouvoir la langue française comme langue scientifique.\""
+   },
+   "newtitre": "14",
+   "order": 14,
+   "section": "T1C2",
+   "statut": "none",
+   "titre": "10",
+   "type": "article"
+  }
+ ],
+ "definitif": true,
+ "depot": false,
+ "expose": "",
+ "id": "08_A14-ta180",
+ "sections": [
+  {
+   "id": "T1",
+   "titre": "Missions du service public de l'enseignement supérieur et de la recherche",
+   "type": "section",
+   "type_section": "titre"
+  },
+  {
+   "id": "T1C1",
+   "titre": "Les missions du service public de l'enseignement supérieur",
+   "type": "section",
+   "type_section": "chapitre"
+  },
+  {
+   "id": "T1C2",
+   "titre": "La politique de la recherche et du développement technologique",
+   "type": "section",
+   "type_section": "chapitre"
+  },
+  {
+   "id": "T2",
+   "titre": "Le conseil national de l'enseignement supérieur et de la recherche",
+   "type": "section",
+   "type_section": "titre"
+  },
+  {
+   "id": "T3",
+   "titre": "Les formations de l'enseignement supérieur",
+   "type": "section",
+   "type_section": "titre"
+  },
+  {
+   "id": "T3 bis",
+   "newid": "T4",
+   "titre": "Dispositions relatives aux stages en milieu professionnel",
+   "type": "section",
+   "type_section": "titre"
+  },
+  {
+   "id": "T4",
+   "newid": "T5",
+   "titre": "Les établissements d'enseignement supérieur",
+   "type": "section",
+   "type_section": "titre"
+  },
+  {
+   "id": "T4C1",
+   "newid": "T5C1",
+   "titre": "Les établissements publics d'enseignement supérieur",
+   "type": "section",
+   "type_section": "chapitre"
+  },
+  {
+   "id": "T4C1S1",
+   "newid": "T5C1S1",
+   "titre": "La gouvernance des universités",
+   "type": "section",
+   "type_section": "section"
+  },
+  {
+   "id": "T4C1S2",
+   "newid": "T5C1S2",
+   "titre": "Les autres établissements publics à caractère scientifique, culturel et professionnel et les établissements publics administratifs d'enseignement supérieur",
+   "type": "section",
+   "type_section": "section"
+  },
+  {
+   "id": "T4C1S3",
+   "newid": "T5C1S3",
+   "titre": "Dispositions communes relatives à la composition des conseils",
+   "type": "section",
+   "type_section": "section"
+  },
+  {
+   "id": "T4C2",
+   "newid": "T5C2",
+   "titre": "Coopération et regroupements des établissements",
+   "type": "section",
+   "type_section": "chapitre"
+  },
+  {
+   "id": "T4C3",
+   "newid": "T5C3",
+   "titre": "Les établissements d'enseignement supérieur privés",
+   "type": "section",
+   "type_section": "chapitre"
+  },
+  {
+   "id": "T5",
+   "newid": "T6",
+   "titre": "Les personnels de l'enseignement supérieur et de la recherche",
+   "type": "section",
+   "type_section": "titre"
+  },
+  {
+   "id": "T6",
+   "newid": "T7",
+   "titre": "Dispositions relatives à la recherche",
+   "type": "section",
+   "type_section": "titre"
+  },
+  {
+   "id": "T6C1",
+   "newid": "T7C1",
+   "titre": "L'organisation générale de la recherche",
+   "type": "section",
+   "type_section": "chapitre"
+  },
+  {
+   "id": "T6C2",
+   "newid": "T7C2",
+   "titre": "L'exercice des activités de transfert pour la création de valeur économique",
+   "type": "section",
+   "type_section": "chapitre"
+  },
+  {
+   "id": "T7",
+   "newid": "T8",
+   "titre": "Dispositions diverses, transitoires et finales",
+   "type": "section",
+   "type_section": "titre"
+  },
+  {
+   "id": "T7C1",
+   "newid": "T8C1",
+   "titre": "Dispositions diverses",
+   "type": "section",
+   "type_section": "chapitre"
+  },
+  {
+   "id": "T7C2",
+   "newid": "T8C2",
+   "titre": "Dispositions transitoires et finales",
+   "type": "section",
+   "type_section": "chapitre"
+  }
+ ],
+ "source": "http://www.assemblee-nationale.fr/14/ta/ta0180.asp",
+ "titre": "Texte adopté n° 180 - Projet de loi, adopté, dans les conditions prévues à l'article 45, alinéa 3, de la Constitution, par l'Assemblée nationale, relatif à l'enseignement supérieur et à la recherche",
+ "type": "texte"
+}

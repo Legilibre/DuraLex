@@ -1,0 +1,400 @@
+{
+  "children": [
+    {
+      "children": [
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "type": "quote", 
+                  "words": "L'État est le garant de l'égalité devant le service public de l'enseignement supérieur sur l'ensemble du territoire."
+                }
+              ], 
+              "type": "alinea"
+            }, 
+            {
+              "children": [
+                {
+                  "id": "L. 111-5", 
+                  "type": "article-reference"
+                }
+              ], 
+              "codeName": "code de l'éducation", 
+              "type": "code-reference"
+            }
+          ], 
+          "editType": "add", 
+          "type": "edit"
+        }
+      ], 
+      "isNew": false, 
+      "order": 1, 
+      "type": "article"
+    }, 
+    {
+      "children": [
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "children": [
+                        {
+                          "type": "quote", 
+                          "words": "Il promeut, aux plans européen et international, un meilleur partage des savoirs et leur diffusion auprès des sociétés civiles. Il encourage les coopérations transfrontalières et incite, à cet effet, les établissements d'enseignement supérieur implantés dans les collectivités relevant de l'article 73 de la Constitution à contribuer au rayonnement international des départements et régions d'outre-mer. Il favorise le développement de parcours comprenant des périodes d'études et d'activités à l'étranger sans porter préjudice au déroulement de carrière ou d'études des personnels et étudiants concernés. Il favorise également l'accueil des personnels de recherche étrangers pour la durée de leurs missions scientifiques."
+                        }
+                      ], 
+                      "type": "sentence"
+                    }, 
+                    {
+                      "children": [
+                        {
+                          "children": [
+                            {
+                              "children": [
+                                {
+                                  "order": 1, 
+                                  "position": "after", 
+                                  "type": "sentence-reference"
+                                }
+                              ], 
+                              "order": 1, 
+                              "type": "alinea-reference"
+                            }
+                          ], 
+                          "id": "L. 123-7", 
+                          "type": "article-reference"
+                        }
+                      ], 
+                      "codeName": "code de l'éducation", 
+                      "type": "code-reference"
+                    }
+                  ], 
+                  "editType": "add", 
+                  "type": "edit"
+                }
+              ], 
+              "order": 1, 
+              "type": "header3"
+            }, 
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "children": [
+                        {
+                          "type": "quote", 
+                          "words": "Il assure l'accueil des étudiants étrangers, en lien avec le réseau des oeuvres universitaires et scolaires mentionné à l'article L. 822-1 et l'établissement public mentionné à l'article 6 de la loi n° 2010-873 du 27 juillet 2010 relative à l'action extérieure de l'État, ainsi que leur formation."
+                        }
+                      ], 
+                      "type": "words"
+                    }, 
+                    {
+                      "children": [
+                        {
+                          "children": [
+                            {
+                              "children": [
+                                {
+                                  "order": 2, 
+                                  "type": "sentence-reference"
+                                }
+                              ], 
+                              "order": 1, 
+                              "type": "alinea-reference"
+                            }
+                          ], 
+                          "id": "L. 123-7", 
+                          "type": "article-reference"
+                        }
+                      ], 
+                      "codeName": "code de l'éducation", 
+                      "type": "code-reference"
+                    }
+                  ], 
+                  "editType": "edit", 
+                  "type": "edit"
+                }
+              ], 
+              "order": 2, 
+              "type": "header3"
+            }, 
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "children": [
+                        {
+                          "type": "quote", 
+                          "words": "Il soutient le développement des établissements français et des enseignements en langue française à l'étranger, ainsi que le développement de services et ressources pédagogiques numériques favorisant la connaissance et la promotion de la langue française."
+                        }
+                      ], 
+                      "type": "words"
+                    }, 
+                    {
+                      "children": [
+                        {
+                          "children": [
+                            {
+                              "children": [
+                                {
+                                  "order": 3, 
+                                  "type": "sentence-reference"
+                                }
+                              ], 
+                              "order": 1, 
+                              "type": "alinea-reference"
+                            }
+                          ], 
+                          "id": "L. 123-7", 
+                          "type": "article-reference"
+                        }
+                      ], 
+                      "codeName": "code de l'éducation", 
+                      "type": "code-reference"
+                    }
+                  ], 
+                  "editType": "edit", 
+                  "type": "edit"
+                }
+              ], 
+              "order": 3, 
+              "type": "header3"
+            }, 
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "children": [
+                        {
+                          "type": "quote", 
+                          "words": "Il favorise l'orientation vers l'enseignement supérieur français des élèves français scolarisés à l'étranger et des élèves étrangers scolarisés dans des établissements d'enseignement français à l'étranger."
+                        }
+                      ], 
+                      "type": "sentence"
+                    }, 
+                    {
+                      "children": [
+                        {
+                          "children": [
+                            {
+                              "children": [
+                                {
+                                  "order": -1, 
+                                  "position": "before", 
+                                  "type": "sentence-reference"
+                                }
+                              ], 
+                              "order": 1, 
+                              "type": "alinea-reference"
+                            }
+                          ], 
+                          "id": "L. 123-7", 
+                          "type": "article-reference"
+                        }
+                      ], 
+                      "codeName": "code de l'éducation", 
+                      "type": "code-reference"
+                    }
+                  ], 
+                  "editType": "add", 
+                  "type": "edit"
+                }
+              ], 
+              "order": 4, 
+              "type": "header3"
+            }
+          ], 
+          "order": 1, 
+          "type": "header2"
+        }, 
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "children": [
+                        {
+                          "type": "quote", 
+                          "words": "l'Union"
+                        }
+                      ], 
+                      "type": "words"
+                    }, 
+                    {
+                      "children": [
+                        {
+                          "children": [
+                            {
+                              "children": [
+                                {
+                                  "children": [
+                                    {
+                                      "type": "quote", 
+                                      "words": "la Communauté"
+                                    }
+                                  ], 
+                                  "type": "words-reference"
+                                }
+                              ], 
+                              "order": 2, 
+                              "type": "alinea-reference"
+                            }
+                          ], 
+                          "id": "L. 123-7", 
+                          "type": "article-reference"
+                        }
+                      ], 
+                      "codeName": "code de l'éducation", 
+                      "type": "code-reference"
+                    }
+                  ], 
+                  "editType": "replace", 
+                  "type": "edit"
+                }
+              ], 
+              "order": 1, 
+              "type": "header3"
+            }, 
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "children": [
+                        {
+                          "type": "quote", 
+                          "words": "Ces accords visent à la délivrance de diplômes nationaux ou d'établissement, conjointement ou non avec des établissements d'enseignement supérieur à l'étranger."
+                        }
+                      ], 
+                      "type": "sentence"
+                    }, 
+                    {
+                      "children": [
+                        {
+                          "children": [
+                            {
+                              "order": 2, 
+                              "type": "alinea-reference"
+                            }
+                          ], 
+                          "id": "L. 123-7", 
+                          "type": "article-reference"
+                        }
+                      ], 
+                      "codeName": "code de l'éducation", 
+                      "type": "code-reference"
+                    }
+                  ], 
+                  "editType": "add", 
+                  "type": "edit"
+                }
+              ], 
+              "order": 2, 
+              "type": "header3"
+            }
+          ], 
+          "order": 2, 
+          "type": "header2"
+        }
+      ], 
+      "isNew": false, 
+      "order": 12, 
+      "type": "article"
+    }, 
+    {
+      "children": [
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "type": "quote", 
+                  "words": "Les vérifications de l'inspection générale de l'administration de l'éducation nationale et de la recherche portent également sur la gestion des ressources humaines des établissements."
+                }
+              ], 
+              "type": "alinea"
+            }, 
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "order": 1, 
+                      "type": "header1-reference"
+                    }
+                  ], 
+                  "id": "L. 241-2", 
+                  "type": "article-reference"
+                }
+              ], 
+              "codeName": "code de l'éducation", 
+              "type": "code-reference"
+            }
+          ], 
+          "editType": "add", 
+          "type": "edit"
+        }
+      ], 
+      "isNew": false, 
+      "order": 13, 
+      "type": "article"
+    }, 
+    {
+      "children": [
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "type": "quote", 
+                  "words": "Art. L. 111-1. - La politique nationale de la recherche et du développement technologique vise à :"
+                }, 
+                {
+                  "type": "quote", 
+                  "words": "1° Accroître les connaissances ;"
+                }, 
+                {
+                  "type": "quote", 
+                  "words": "2° Partager la culture scientifique, technique et industrielle ;"
+                }, 
+                {
+                  "type": "quote", 
+                  "words": "3° Valoriser les résultats de la recherche au service de la société. À cet effet, elle s'attache au développement de l'innovation, du transfert de technologie lorsque celui-ci est possible, de la capacité d'expertise et d'appui aux associations et fondations, reconnues d'utilité publique, et aux politiques publiques menées pour répondre aux défis sociétaux, aux besoins sociaux, économiques et du développement durable ;"
+                }, 
+                {
+                  "type": "quote", 
+                  "words": "4° Promouvoir la langue française comme langue scientifique."
+                }
+              ], 
+              "type": "words"
+            }, 
+            {
+              "children": [
+                {
+                  "id": "L. 111-1", 
+                  "type": "article-reference"
+                }
+              ], 
+              "codeName": "code de la recherche", 
+              "type": "code-reference"
+            }
+          ], 
+          "editType": "edit", 
+          "type": "edit"
+        }
+      ], 
+      "isNew": false, 
+      "order": 14, 
+      "type": "article"
+    }
+  ]
+}

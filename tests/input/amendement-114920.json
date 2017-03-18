@@ -1,0 +1,53 @@
+{
+    "amendements" : [
+        {"amendement": {
+            "id": "114920",
+            "legislature": "",
+            "texteloi_id": "20152016-535",
+            "numero": "6",
+            "sous_amendement_de": null,
+            "rectif": "1",
+            "sujet": "article 4",
+            "ordre_article": 80,
+            "sort": "Non soutenu",
+            "date": "2016-04-26",
+            "texte": "<p>Alinéa 6</p><p>Remplacer les mots :</p><p>\"et qui ne font pas\"</p><p>par les mots :</p><p>\", le cas échéant après concertation entre les administrations mentionnées au premier alinéa de l’article L. 300-2 du présent code lorsqu’elles font déjà\"</p>",
+            "expose": "<p>S’il faut bien entendu éviter que l’obligation pour les autorités administratives de publier en ligne, dans un standard ouvert aisément réutilisable, les bases de données qu’elles produisent ou qu’elles perçoivent ne conduise à créer des doublons, il convient dans un souci d’efficacité de prévoir certaines garanties en veillant notamment à ce que la disposition qui vise précisément à éviter ces doublons soit mise en œuvre en toute transparence, en tenant compte des situations existantes.</p><p>Le présent amendement a donc pour objet de prévoir une concertation entre les autorités administratives concernées. Cette concertation paraît d’autant plus utile au regard des dispositions prévues à l’article 9 du projet de loi, qui pour l’instant ne permet pas de comprendre clairement le rôle que les collectivités territoriales et leurs groupements ont vocation à jouer dans la cadre de cette nouvelle mission de service public relevant de la compétence de l’Etat, relative à la mise à disposition et à la publication de données de référence en vue de permettre leur réutilisation.</p><p>Ce manque de clarté a d’ailleurs été soulevé par le Conseil d’Etat, qui a considéré que l’article 9 était entachée d‘incompétence négative. Or, à cet égard, la nouvelle rédaction à laquelle a procédé l’Assemblée nationale, ne permet aucune clarification, puisqu’elle se borne à indiquer que toutes les autorités administratives concourent à l’exercice de cette mission, tout en renvoyant à un décret le soin de déterminer les modalités de leur implication.</p><p>En attendant, puisque les collectivités territoriales et leurs groupements sont <i>a priori</i>susceptibles de détenir des données de référence au sens de la définition prévue à l’article 9, et qu’elles peuvent déjà mettre en ligne ces données dans un standard ouvert et réutilisable, des discussions doivent avoir lieu en amont le cas échéant, afin de déterminer en toute transparence leurs responsabilités dans le cadre de la nouvelle mission de service public dévolue à l’Etat.</p><p><u>NB</u>:La présente rectification porte sur la liste des signataires.</p>",
+            "signataires": "MM. Genest, Darnaud, Médevielle, Gremillet",
+            "source": "http://www.senat.fr/amendements/2015-2016/535/Amdt_6.html",
+            "nb_multiples": "",
+            "cle_unicite": "a4f1276c36a079c9806c48d930e6a356",
+            "parlementaires": [
+              {
+                "parlementaire": "jacques-genest"
+              },
+              {
+                "parlementaire": "mathieu-darnaud"
+              },
+              {
+                "parlementaire": "pierre-medevielle"
+              },
+              {
+                "parlementaire": "daniel-gremillet"
+              }
+            ],
+            "groupes_parlementaires": [
+              {
+                "groupe": "LES-REP"
+              },
+              {
+                "groupe": "LES-REP"
+              },
+              {
+                "groupe": "UDI"
+              },
+              {
+                "groupe": "LES-REP"
+              }
+            ],
+            "url_nossenateurs": "http://www.nossenateurs.fr/amendement/20152016-535/6",
+            "avis_comm": "Défavorable",
+            "avis_gouv": null
+          }}
+    ]
+}
