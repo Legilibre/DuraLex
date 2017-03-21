@@ -14,6 +14,8 @@ The main use case is the evaluation of the edits described by the bill to automa
 DuraLex turns plain text into a standardized JSON tree structure intermediary representation.
 This standardized intermediary representation can then be used as an input for other (third party) tools.
 
+![article to json](article_to_json.jpg)
+
 ### Example
 
 The following bill article:
