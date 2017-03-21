@@ -64,19 +64,89 @@ You must add the `--diff` switch to the command line:
 ./bin/duralex --diff articles.json
 ```
 
-Then, using [jq](https://stedolan.github.io/jq/), it is easy to extract only the `diff` fields to get a complete unified diff that can be used as a patch:
+```json
+{
+  "children": [
+    {
+      "children": [
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "type": "quote",
+                  "words": "autorisé"
+                }
+              ],
+              "type": "words"
+            },
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "children": [
+                        {
+                          "children": [
+                            {
+                              "type": "quote",
+                              "words": "défendu"
+                            }
+                          ],
+                          "type": "words-reference"
+                        }
+                      ],
+                      "order": 1,
+                      "type": "sentence-reference"
+                    }
+                  ],
+                  "filename": "data/code des instruments monétaires et des médailles/9.md",
+                  "id": "9",
+                  "type": "article-reference"
+                }
+              ],
+              "codeName": "code des instruments monétaires et des médailles",
+              "type": "code-reference"
+            }
+          ],
+          "diff": "--- \"data/code des instruments monétaires et des médailles/9.md\"\n+++ \"data/code des instruments monétaires et des médailles/9.md\"\n@@ -1,6 +1,6 @@\n # titre 1\n \n-Il est expressément défendu à toutes personnes, quelles que soient les professions qu'elles exercent, de frapper ou de faire frapper des médailles, jetons ou pièces de plaisir, d'or, d'argent et autres métaux, ailleurs que dans les ateliers de la monnaie, à moins d'être munies d'une autorisation spéciale du ministre de l'économie et des finances.\n+Il est expressément autorisé à toutes personnes, quelles que soient les professions qu'elles exercent, de frapper ou de faire frapper des médailles, jetons ou pièces de plaisir, d'or, d'argent et autres métaux, ailleurs que dans les ateliers de la monnaie, à moins d'être munies d'une autorisation spéciale du ministre de l'économie et des finances.\n \n # titre 2\n ",
+          "editType": "replace",
+          "type": "edit"
+        }
+      ],
+      "isNew": false,
+      "order": 1,
+      "type": "article"
+    }
+  ]
+}
+```
+
+Then, using [jq](https://stedolan.github.io/jq/), it is easy to extract only the `diff` fields:
+
+```bash
+./bin/duralex --diff articles.json | jq -r '.. | .diff? | strings'
+```
+
+```patch
+--- "data/code des instruments monétaires et des médailles/9.md"
++++ "data/code des instruments monétaires et des médailles/9.md"
+@@ -1,6 +1,6 @@
+ # titre 1
+
+-Il est expressément défendu à toutes personnes, quelles que soient les professions qu'elles exercent, de frapper ou de faire frapper des médailles, jetons ou pièces de plaisir, d'or, d'argent et autres métaux, ailleurs que dans les ateliers de la monnaie, à moins d'être munies d'une autorisation spéciale du ministre de l'économie et des finances.
++Il est expressément autorisé à toutes personnes, quelles que soient les professions qu'elles exercent, de frapper ou de faire frapper des médailles, jetons ou pièces de plaisir, d'or, d'argent et autres métaux, ailleurs que dans les ateliers de la monnaie, à moins d'être munies d'une autorisation spéciale du ministre de l'économie et des finances.
+
+ # titre 2
+```
+
+Such output can be written in a patch file to be applied later:
 
 ```bash
 ./bin/duralex --diff articles.json | jq -r '.. | .diff? | strings' > articles.patch
 ```
 
-The patch can then be applied by calling:
-
-```bash
-patch -p0 < articles.patch
-```
-
-You can even use a pipe to patch files directly:
+or it can be piped apply the patch directly:
 
 ```bash
 ./bin/duralex --diff articles.json | jq -r '.. | .diff? | strings' | patch -p0
