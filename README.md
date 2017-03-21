@@ -2,7 +2,7 @@
 
 [![Build Status](http://img.shields.io/travis/promethe42/duralex.svg)](https://travis-ci.org/promethe42/duralex)
 
-DuraLex is a extensible French bill parsing and automating framework.
+DuraLex is an extensible French bill parsing and automating framework.
 It turns bills written in plain natural French into an intermediary tree representation that can be automatically processed.
 
 The main use case is the evaluation of the edits described by the bill to automagically apply them to the existing law texts.
