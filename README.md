@@ -55,6 +55,33 @@ will give the following intermediary representation:
 }
 ```
 
+## Generating patch files
+
+By default, the intermediary representation will not compute/feature the diff of each edit.
+You must add the `--diff` switch to the command line:
+
+```bash
+./bin/duralex --diff articles.json
+```
+
+Then, using [jq](https://stedolan.github.io/jq/), it is easy to extract only the `diff` fields to get a complete unified diff that can be used as a patch:
+
+```bash
+./bin/duralex --diff articles.json | jq -r '.. | .diff? | strings' > articles.patch
+```
+
+The patch can then be applied by calling:
+
+```bash
+patch -p0 < articles.patch
+```
+
+You can even use a pipe to patch files directly:
+
+```bash
+./bin/duralex --diff articles.json | jq -r '.. | .diff? | strings' | patch -p0
+```
+
 ## Installation
 
 ```bash
@@ -71,3 +98,4 @@ python main.py
 ## Related projects
 
 * https://github.com/Legilibre/NuitCodeCitoyen
+* https://github.com/Legilibre/Archeo-Lex

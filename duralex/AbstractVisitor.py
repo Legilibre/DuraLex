@@ -31,52 +31,55 @@ class AbstractVisitor(object):
             'words': self.visit_words_definition_node,
         }
 
-    def visit_code_reference_node(self, node):
+    def visit_code_reference_node(self, node, post):
         pass
 
-    def visit_book_reference_node(self, node):
+    def visit_book_reference_node(self, node, post):
         pass
 
-    def visit_law_reference_node(self, node):
+    def visit_law_reference_node(self, node, post):
         pass
 
-    def visit_title_reference_node(self, node):
+    def visit_title_reference_node(self, node, post):
         pass
 
-    def visit_article_reference_node(self, node):
+    def visit_article_reference_node(self, node, post):
         pass
 
-    def visit_header1_reference_node(self, node):
+    def visit_header1_reference_node(self, node, post):
         pass
 
-    def visit_header2_reference_node(self, node):
+    def visit_header2_reference_node(self, node, post):
         pass
 
-    def visit_header3_reference_node(self, node):
+    def visit_header3_reference_node(self, node, post):
         pass
 
-    def visit_alinea_reference_node(self, node):
+    def visit_alinea_reference_node(self, node, post):
         pass
 
-    def visit_sentence_reference_node(self, node):
+    def visit_sentence_reference_node(self, node, post):
         pass
 
-    def visit_words_reference_node(self, node):
+    def visit_words_reference_node(self, node, post):
         pass
 
-    def visit_edit_node(self, node):
+    def visit_edit_node(self, node, post):
         pass
 
-    def visit_words_definition_node(self, node):
+    def visit_words_definition_node(self, node, post):
         pass
 
     def visit_node(self, node):
         if 'type' in node and node['type'] in self.visitors:
-            self.visitors[node['type']](node)
+            self.visitors[node['type']](node, False)
 
         if 'children' in node:
             for child in node['children']:
                 self.visit_node(child)
+
+        if 'type' in node and node['type'] in self.visitors:
+            self.visitors[node['type']](node, True)
 
     def visit(self, node):
         self.visit_node(node)
