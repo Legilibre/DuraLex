@@ -27,9 +27,8 @@ def handle_data(data, diff):
     DeleteParentVisitor().visit(ast)
     DeleteEmptyChildrenVisitor().visit(ast)
 
-    AddArcheoLexFilenameVisitor().visit(ast)
-
     if diff:
+        AddArcheoLexFilenameVisitor().visit(ast)
         AddDiffVisitor().visit(ast)
 
     if '-q' not in sys.argv:
