@@ -146,7 +146,7 @@ Such output can be written in a patch file to be applied later:
 ./bin/duralex --diff articles.json | jq -r '.. | .diff? | strings' > articles.patch
 ```
 
-or it can be piped apply the patch directly:
+or it can be piped to apply the patch directly:
 
 ```bash
 ./bin/duralex --diff articles.json | jq -r '.. | .diff? | strings' | patch -p0
