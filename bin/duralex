@@ -22,7 +22,10 @@ from duralex.AddEditCursorVisitor import AddEditCursorVisitor
 from duralex.AddDiffVisitor import AddDiffVisitor
 
 def handle_data(data, diff, url):
-    data = duralex.bill_parser.parse_bill(data, url)
+    if data[0] == u'{':
+        data = json.loads(data)
+    else:
+        data = duralex.bill_parser.parse_bill(data, url)
     ast = duralex.alinea_parser.parse_json_data(data)
 
     ResolveFullyQualifiedDefinitionsVisitor().visit(ast)
@@ -40,18 +43,16 @@ def handle_data(data, diff, url):
 
 def main(argv=None):
     parser = argparse.ArgumentParser(prog='duralex')
-    parser.add_argument('--file', help='the path of the bill to process')
+    parser.add_argument('--file', help='the path of the bill to process', type=argparse.FileType('r'), default='-')
     parser.add_argument('--url', help='the URL of the bill to process')
     parser.add_argument('--diff', action='store_true', help='compute a diff for each edit')
 
     args = parser.parse_args()
 
     if args.file:
-        data = open(args.file, 'r').read()
+        data = args.file.read()
     elif args.url:
         data = urllib.urlopen(args.url).read()
-    else:
-        data = sys.stdin.read()
 
     # For some reason, the &nbsp; HTML entity will break the decoding.
     data = data.replace('&nbsp;', ' ')
