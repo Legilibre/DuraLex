@@ -1,14 +1,17 @@
 #!/usr/bin/env python
+# -*- coding=utf-8 -*-
 
 import codecs
 import os
 import json
 import sys
 import argparse
+import urllib
 
 sys.path.append(os.path.join(os.path.realpath(os.path.dirname(__file__)), '..'))
 
-import duralex.parser
+import duralex.alinea_parser
+import duralex.bill_parser
 from duralex.DeleteEmptyChildrenVisitor import DeleteEmptyChildrenVisitor
 from duralex.DeleteParentVisitor import DeleteParentVisitor
 from duralex.SortReferencesVisitor import SortReferencesVisitor
@@ -18,8 +21,9 @@ from duralex.AddArcheoLexFilenameVisitor import AddArcheoLexFilenameVisitor
 from duralex.AddEditCursorVisitor import AddEditCursorVisitor
 from duralex.AddDiffVisitor import AddDiffVisitor
 
-def handle_data(data, diff):
-    ast = duralex.parser.parse_json_data(json.loads(data))
+def handle_data(data, diff, url):
+    data = duralex.bill_parser.parse_bill(data, url)
+    ast = duralex.alinea_parser.parse_json_data(data)
 
     ResolveFullyQualifiedDefinitionsVisitor().visit(ast)
     ResolveFullyQualifiedReferencesVisitor().visit(ast)
@@ -31,26 +35,36 @@ def handle_data(data, diff):
         AddArcheoLexFilenameVisitor().visit(ast)
         AddDiffVisitor().visit(ast)
 
-    if '-q' not in sys.argv:
-        json_data = json.dumps(ast, sort_keys=True, indent=2, ensure_ascii=False).encode('utf-8')
-        sys.stdout.write(json_data)
+    json_data = json.dumps(ast, sort_keys=True, indent=2, ensure_ascii=False).encode('utf-8')
+    sys.stdout.write(json_data)
 
 def main(argv=None):
     parser = argparse.ArgumentParser(prog='duralex')
-    parser.add_argument('file', help='the bill JSON file to process or "-" to read from stdin')
-    parser.add_argument('--debug', action='store_true', help='enable debug output')
+    parser.add_argument('--file', help='the path of the bill to process')
+    parser.add_argument('--url', help='the URL of the bill to process')
     parser.add_argument('--diff', action='store_true', help='compute a diff for each edit')
 
     args = parser.parse_args()
 
-    if args.file == '-':
-        data = sys.stdin.read()
-        data = data.decode('utf-8')
-        handle_data(data, args.diff)
+    if args.file:
+        data = open(args.file, 'r').read()
+    elif args.url:
+        data = urllib.urlopen(args.url).read()
     else:
-        data = codecs.open(args.file, 'r', 'utf-8').read()
-        codecs.register(lambda name: codecs.lookup('utf-8') if name == 'cp65001' else None)
-        handle_data(data, args.diff)
+        data = sys.stdin.read()
+
+    # For some reason, the &nbsp; HTML entity will break the decoding.
+    data = data.replace('&nbsp;', ' ')
+
+    try:
+        data = data.decode('utf8')
+    except:
+        try:
+            data = data.decode('iso-8859-1')
+        except:
+            pass
+
+    handle_data(data, args.diff, args.url)
 
     return 0
 

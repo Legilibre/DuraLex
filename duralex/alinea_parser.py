@@ -3,7 +3,7 @@
 import re
 import sys
 
-import lexer
+import alinea_lexer
 
 def debug(node, tokens, i, msg):
     if '-v' in sys.argv:
@@ -58,7 +58,7 @@ def word_to_number(word):
     return -1
 
 def month_to_number(month):
-    return lexer.TOKEN_MONTH_NAMES.index(month) + 1
+    return alinea_lexer.TOKEN_MONTH_NAMES.index(month) + 1
 
 def unshift_node(parent, node):
     node['parent'] = parent
@@ -146,11 +146,11 @@ def parse_law_reference(tokens, i, parent):
     # l'ordonnance
     if i + 4 < len(tokens) and (tokens[i + 2] == u'ordonnance' or tokens[i + 4] == u'ordonnance'):
         node['lawType'] = 'ordonnance'
-        i = lexer.skip_to_token(tokens, i, u'ordonnance') + 2
+        i = alinea_lexer.skip_to_token(tokens, i, u'ordonnance') + 2
     # de la loi
     # la loi
     elif i + 4 < len(tokens) and ((tokens[i] == u'la' and tokens[i + 2] == u'loi') or (tokens[i] == u'de' and tokens[i + 4] == u'loi')):
-        i = lexer.skip_to_token(tokens, i, u'loi') + 2
+        i = alinea_lexer.skip_to_token(tokens, i, u'loi') + 2
     else:
         remove_node(parent, node)
         return i
@@ -159,14 +159,14 @@ def parse_law_reference(tokens, i, parent):
         node['lawType'] = 'organic'
         i += 2
 
-    i = lexer.skip_to_token(tokens, i, u'n°') + 1
+    i = alinea_lexer.skip_to_token(tokens, i, u'n°') + 1
     # If we didn't find the "n°" token, the reference is incomplete and we forget about it.
     # FIXME: we might have to handle the "la même ordonnance" or "la même loi" incomplete reference cases.
     if i >= len(tokens):
         remove_node(parent, node)
         return j
 
-    i = lexer.skip_spaces(tokens, i)
+    i = alinea_lexer.skip_spaces(tokens, i)
     node['lawId'] = tokens[i]
     # skip {lawId} and the following space
     i += 2
@@ -184,13 +184,13 @@ def parse_multiplicative_adverb(tokens, i, node):
     if i >= len(tokens):
         return i
 
-    adverbs = lexer.TOKEN_MULTIPLICATIVE_ADVERBS.sort(key = lambda s: -len(s))
-    for adverb in lexer.TOKEN_MULTIPLICATIVE_ADVERBS:
+    adverbs = alinea_lexer.TOKEN_MULTIPLICATIVE_ADVERBS.sort(key = lambda s: -len(s))
+    for adverb in alinea_lexer.TOKEN_MULTIPLICATIVE_ADVERBS:
         if tokens[i].endswith(adverb):
             node['is' + adverb.title()] = True;
             # skip {multiplicativeAdverb} and the following space
             i += 1
-            i = lexer.skip_spaces(tokens, i)
+            i = alinea_lexer.skip_spaces(tokens, i)
             return i
     return i
 
@@ -292,20 +292,20 @@ def parse_words_definition(tokens, i, parent):
     # les mots
     # des mots
     if tokens[i].lower() in [u'le', u'les', u'des'] and tokens[i + 2].startswith(u'mot'):
-        i = lexer.skip_to_quote_start(tokens, i)
+        i = alinea_lexer.skip_to_quote_start(tokens, i)
         i = parse_for_each(parse_quote, tokens, i, node)
-        # i = lexer.skip_spaces(tokens, i)
+        # i = alinea_lexer.skip_spaces(tokens, i)
     # le nombre
     # le chiffre
     elif tokens[i].lower() in [u'le'] and tokens[i + 2] in [u'nombre', u'chiffre']:
-        i = lexer.skip_to_quote_start(tokens, i)
+        i = alinea_lexer.skip_to_quote_start(tokens, i)
         i = parse_quote(tokens, i, node)
     # "
-    elif tokens[i] == lexer.TOKEN_DOUBLE_QUOTE_OPEN:
+    elif tokens[i] == alinea_lexer.TOKEN_DOUBLE_QUOTE_OPEN:
         i = parse_for_each(parse_quote, tokens, i, node)
-        i = lexer.skip_spaces(tokens, i)
+        i = alinea_lexer.skip_spaces(tokens, i)
     elif tokens[i] == u'la' and tokens[i + 2] == u'référence':
-        i = lexer.skip_to_quote_start(tokens, i)
+        i = alinea_lexer.skip_to_quote_start(tokens, i)
         i = parse_quote(tokens, i, node)
     else:
         debug(parent, tokens, i, 'parse_words_definition none')
@@ -391,7 +391,7 @@ def parse_mention_definition(tokens, i, parent):
         return i
     # :
     if tokens[i] == ':':
-        i = lexer.skip_to_quote_start(tokens, i)
+        i = alinea_lexer.skip_to_quote_start(tokens, i)
         i = parse_for_each(parse_quote, tokens, i, node)
 
     debug(parent, tokens, i, 'parse_mention_definition end')
@@ -483,7 +483,7 @@ def parse_article_id(tokens, i, node):
         node['id'] += tokens[i]
         # skip {articleId} and the following space
         i += 1
-        i = lexer.skip_spaces(tokens, i)
+        i = alinea_lexer.skip_spaces(tokens, i)
 
     # {articleId} {articleLetter}
     # FIXME: handle the {articleLetter}{multiplicativeAdverb} case?
@@ -491,7 +491,7 @@ def parse_article_id(tokens, i, node):
         node['id'] += ' ' + tokens[i]
         # skip {articleLetter} and the following space
         i += 1
-        i = lexer.skip_spaces(tokens, i)
+        i = alinea_lexer.skip_spaces(tokens, i)
 
     i = parse_multiplicative_adverb(tokens, i, node)
 
@@ -603,17 +603,17 @@ def parse_article_reference(tokens, i, parent):
     # à l'article
     if tokens[i].lower() in [u'de', u'à'] and tokens[i + 2] == u'l' and tokens[i + 4] == 'article':
         i += 5
-        i = lexer.skip_spaces(tokens, i)
+        i = alinea_lexer.skip_spaces(tokens, i)
     # l'article
-    elif tokens[i].lower() == u'l' and tokens[i + 1] == lexer.TOKEN_SINGLE_QUOTE and tokens[i + 2] == u'article':
+    elif tokens[i].lower() == u'l' and tokens[i + 1] == alinea_lexer.TOKEN_SINGLE_QUOTE and tokens[i + 2] == u'article':
         i += 3
-        i = lexer.skip_spaces(tokens, i)
+        i = alinea_lexer.skip_spaces(tokens, i)
     # elif tokens[i] == u'un' and tokens[i + 2] == u'article':
     #     i += 4
     # Article {articleNumber}
     elif tokens[i].lower().startswith(u'article'):
         i += 1
-        i = lexer.skip_spaces(tokens, i)
+        i = alinea_lexer.skip_spaces(tokens, i)
     else:
         remove_node(parent, node)
         return j
@@ -649,7 +649,7 @@ def parse_position(tokens, i, node):
         return i
 
     j = i
-    # i = lexer.skip_to_next_word(tokens, i)
+    # i = alinea_lexer.skip_to_next_word(tokens, i)
 
     # après
     if tokens[i].lower() == u'après':
@@ -845,22 +845,22 @@ def parse_words_reference(tokens, i, parent):
     })
     debug(parent, tokens, i, 'parse_words_reference')
     j = i
-    i = lexer.skip_to_next_word(tokens, i)
+    i = alinea_lexer.skip_to_next_word(tokens, i)
     i = parse_position(tokens, i, node)
     # le mot
     # les mots
     # des mots
     if tokens[i].lower() in [u'le', u'les', u'des'] and tokens[i + 2].startswith(u'mot'):
-        i = lexer.skip_to_quote_start(tokens, i)
+        i = alinea_lexer.skip_to_quote_start(tokens, i)
         i = parse_for_each(parse_quote, tokens, i, node)
     # le nombre
     # le chiffre
     elif tokens[i].lower() in [u'le'] and tokens[i + 2] in [u'nombre', u'chiffre']:
-        i = lexer.skip_to_quote_start(tokens, i)
+        i = alinea_lexer.skip_to_quote_start(tokens, i)
         i = parse_quote(tokens, i, node)
     # la référence
     elif tokens[i].lower() in [u'la'] and tokens[i + 2] == u'référence':
-        i = lexer.skip_to_quote_start(tokens, i)
+        i = alinea_lexer.skip_to_quote_start(tokens, i)
         i = parse_quote(tokens, i, node)
     else:
         debug(parent, tokens, i, 'parse_words_reference none')
@@ -935,7 +935,7 @@ def parse_article_part_reference(tokens, i, parent):
     if i >= len(tokens):
         return i
 
-    # i = lexer.skip_to_next_word(tokens, i)
+    # i = alinea_lexer.skip_to_next_word(tokens, i)
 
     j = parse_alinea_reference(tokens, i, parent)
     if j != i:
@@ -980,27 +980,27 @@ def parse_quote(tokens, i, parent):
 
     debug(parent, tokens, i, 'parse_quote')
 
-    i = lexer.skip_spaces(tokens, i)
+    i = alinea_lexer.skip_spaces(tokens, i)
 
     # "
-    if tokens[i] == lexer.TOKEN_DOUBLE_QUOTE_OPEN:
+    if tokens[i] == alinea_lexer.TOKEN_DOUBLE_QUOTE_OPEN:
         i += 1
     # est rédigé(e)
     # est ainsi rédigé(e)
     elif (i + 2 < len(tokens) and tokens[i + 2].startswith(u'rédigé')
         or (i + 4 < len(tokens) and tokens[i + 4].startswith(u'rédigé'))):
-        i = lexer.skip_to_quote_start(tokens, i + 2) + 1
+        i = alinea_lexer.skip_to_quote_start(tokens, i + 2) + 1
     else:
         remove_node(parent, node)
         return i
 
-    while i < len(tokens) and tokens[i] != lexer.TOKEN_DOUBLE_QUOTE_CLOSE and tokens[i] != lexer.TOKEN_NEW_LINE:
+    while i < len(tokens) and tokens[i] != alinea_lexer.TOKEN_DOUBLE_QUOTE_CLOSE and tokens[i] != alinea_lexer.TOKEN_NEW_LINE:
         node['words'] += tokens[i]
         i += 1
 
-    # skiplexer.TOKEN_DOUBLE_QUOTE_CLOSE
+    # skipalinea_lexer.TOKEN_DOUBLE_QUOTE_CLOSE
     i += 1
-    i = lexer.skip_spaces(tokens, i)
+    i = alinea_lexer.skip_spaces(tokens, i)
 
     debug(parent, tokens, i, 'parse_quote end')
 
@@ -1022,7 +1022,7 @@ def parse_edit(tokens, i, parent):
     i = parse_reference_list(tokens, i, node)
     # if we did not parse a reference
 
-    i = lexer.skip_spaces(tokens, i)
+    i = alinea_lexer.skip_spaces(tokens, i)
 
     # if we didn't find any reference as a subject and the subject/verb are not reversed
     if len(node['children']) == 0 and tokens[i] != 'Est' and tokens[i] != 'Sont':
@@ -1032,7 +1032,7 @@ def parse_edit(tokens, i, parent):
     # i = r
 
     j = i
-    i = lexer.skip_tokens(tokens, i, lambda t: t.lower() not in ['est', 'sont', 'devient'] and not t[0].isupper())
+    i = alinea_lexer.skip_tokens(tokens, i, lambda t: t.lower() not in ['est', 'sont', 'devient'] and not t[0].isupper())
 
     if i >= len(tokens):
         remove_node(parent, node)
@@ -1049,15 +1049,15 @@ def parse_edit(tokens, i, parent):
     # sont abrogées
     if tokens[i + 2].startswith(u'supprimé') or tokens[i + 2].startswith(u'abrogé'):
         node['editType'] = 'delete'
-        i = lexer.skip_to_end_of_line(tokens, i)
+        i = alinea_lexer.skip_to_end_of_line(tokens, i)
     # est ainsi rédigé
     # est ainsi rédigée
     # est ainsi modifié
     # est ainsi modifiée
     elif tokens[i + 4].startswith(u'rédigé') or tokens[i + 4].startswith(u'modifié'):
         node['editType'] = 'edit'
-        i = lexer.skip_to_end_of_line(tokens, i)
-        i = lexer.skip_spaces(tokens, i)
+        i = alinea_lexer.skip_to_end_of_line(tokens, i)
+        i = alinea_lexer.skip_spaces(tokens, i)
         i = parse_definition(tokens, i, node)
     # est remplacé par
     # est remplacée par
@@ -1067,18 +1067,18 @@ def parse_edit(tokens, i, parent):
         node['editType'] = 'replace'
         i += 6
         i = parse_definition(tokens, i, node)
-        i = lexer.skip_to_end_of_line(tokens, i)
+        i = alinea_lexer.skip_to_end_of_line(tokens, i)
     # remplacer
     elif tokens[i].lower() == u'remplacer':
         node['editType'] = 'replace'
         i += 2
         # i = parse_definition(tokens, i, node)
         i = parse_reference(tokens, i, node)
-        i = lexer.skip_to_end_of_line(tokens, i)
+        i = alinea_lexer.skip_to_end_of_line(tokens, i)
         if tokens[i].lower() == 'par':
             i += 2
             i = parse_definition(tokens, i, node)
-            i = lexer.skip_to_end_of_line(tokens, i)
+            i = alinea_lexer.skip_to_end_of_line(tokens, i)
     # est inséré
     # est insérée
     # sont insérés
@@ -1091,12 +1091,12 @@ def parse_edit(tokens, i, parent):
         node['editType'] = 'add'
         i += 4
         i = parse_definition(tokens, i, node)
-        i = lexer.skip_to_end_of_line(tokens, i)
+        i = alinea_lexer.skip_to_end_of_line(tokens, i)
     # est ainsi rétabli
     elif tokens[i + 4].startswith(u'rétabli'):
         node['editType'] = 'add'
-        i = lexer.skip_to_end_of_line(tokens, i)
-        i = lexer.skip_spaces(tokens, i)
+        i = alinea_lexer.skip_to_end_of_line(tokens, i)
+        i = alinea_lexer.skip_spaces(tokens, i)
         i = parse_definition(tokens, i, node)
     # est complété par
     elif tokens[i + 2] == u'complété':
@@ -1104,7 +1104,7 @@ def parse_edit(tokens, i, parent):
         i += 6
         # i = parse_definition(tokens, i, node)
         i = parse_definition_list(tokens, i, node)
-        # i = lexer.skip_to_end_of_line(tokens, i)
+        # i = alinea_lexer.skip_to_end_of_line(tokens, i)
     # devient
     elif tokens[i] == u'devient':
         node['editType'] = 'rename'
@@ -1115,14 +1115,14 @@ def parse_edit(tokens, i, parent):
         debug(parent, tokens, i, 'parse_edit remove')
         remove_node(parent, node)
         i = parse_raw_article_content(tokens, i, parent)
-        i = lexer.skip_to_end_of_line(tokens, i)
+        i = alinea_lexer.skip_to_end_of_line(tokens, i)
         return i
 
     # We've parsed pretty much everything we could handle. At this point,
     # there should be no meaningful content. But their might be trailing
-    # spaces or ponctuation (ofent "." or ";"), so we lexer.skip_ to the end of
+    # spaces or ponctuation (ofent "." or ";"), so we alinea_lexer.skip_ to the end of
     # the line.
-    i = lexer.skip_to_end_of_line(tokens, i)
+    i = alinea_lexer.skip_to_end_of_line(tokens, i)
 
     debug(parent, tokens, i, 'parse_edit end')
 
@@ -1136,7 +1136,7 @@ def parse_raw_article_content(tokens, i, parent):
 
     debug(parent, tokens, i, 'parse_raw_article_content')
 
-    while i < len(tokens) and tokens[i] != lexer.TOKEN_NEW_LINE:
+    while i < len(tokens) and tokens[i] != alinea_lexer.TOKEN_NEW_LINE:
         node['content'] += tokens[i]
         i += 1
 
@@ -1206,11 +1206,11 @@ def parse_definition_list(tokens, i, parent):
         return i
 
     i = parse_definition(tokens, i, parent)
-    i = lexer.skip_spaces(tokens, i)
+    i = alinea_lexer.skip_spaces(tokens, i)
     if ((i + 2 < len(tokens) and tokens[i] == u',' and tokens[i + 2] in [u'à', u'au'])
         or (i + 2 < len(tokens) and tokens[i] == u'et')):
         i = parse_definition_list(tokens, i + 2, parent)
-    i = lexer.skip_spaces(tokens, i)
+    i = alinea_lexer.skip_spaces(tokens, i)
 
     return i
 
@@ -1222,16 +1222,16 @@ def parse_reference_list(tokens, i, parent):
         return i
 
     i = parse_reference(tokens, i, parent)
-    i = lexer.skip_spaces(tokens, i)
+    i = alinea_lexer.skip_spaces(tokens, i)
     if ((i + 2 < len(tokens) and tokens[i] == u',' and tokens[i + 2] in [u'à', u'au'])
         or (i + 2 < len(tokens) and tokens[i] == u'et')):
         i = parse_reference_list(tokens, i + 2, parent)
-    i = lexer.skip_spaces(tokens, i)
+    i = alinea_lexer.skip_spaces(tokens, i)
 
     return i
 
 def parse_one_of(fns, tokens, i, parent):
-    # i = lexer.skip_to_next_word(tokens, i)
+    # i = alinea_lexer.skip_to_next_word(tokens, i)
 
     if i >= len(tokens):
         return i
@@ -1276,7 +1276,7 @@ def parse_article_header1(tokens, i, parent):
     if i >= len(tokens):
         return i
 
-    i = lexer.skip_spaces(tokens, i)
+    i = alinea_lexer.skip_spaces(tokens, i)
 
     node = create_node(parent, {
         'type': 'header1',
@@ -1290,7 +1290,7 @@ def parse_article_header1(tokens, i, parent):
     if is_roman_number(tokens[i]) and tokens[i + 1] == u'.':
         debug(parent, tokens, i, 'parse_article_header1 found article header-1')
         node['order'] = parse_roman_number(tokens[i])
-        i = lexer.skip_to_next_word(tokens, i + 2)
+        i = alinea_lexer.skip_to_next_word(tokens, i + 2)
     else:
         remove_node(parent, node)
         node = parent
@@ -1322,13 +1322,13 @@ def parse_article_header2(tokens, i, parent):
 
     debug(parent, tokens, i, 'parse_article_header2')
 
-    i = lexer.skip_spaces(tokens, i)
+    i = alinea_lexer.skip_spaces(tokens, i)
     if re.compile(u'\d+°').match(tokens[i]):
         debug(parent, tokens, i, 'parse_article_header2 found article header-2')
 
         node['order'] = parse_int(tokens[i])
         # skip {number}°
-        i = lexer.skip_to_next_word(tokens, i + 2)
+        i = alinea_lexer.skip_to_next_word(tokens, i + 2)
     else:
         remove_node(parent, node)
         node = parent
@@ -1356,7 +1356,7 @@ def parse_article_header3(tokens, i, parent):
 
     debug(parent, tokens, i, 'parse_article_header3')
 
-    i = lexer.skip_spaces(tokens, i)
+    i = alinea_lexer.skip_spaces(tokens, i)
     match = re.compile('([a-z]+)').match(tokens[i])
     if match and (tokens[i + 1] == u')' or (tokens[i + 2] == u'(' and tokens[i + 5] == u')')):
         node['order'] = ord(match.group()[0].encode('utf-8')) - ord('a') + 1
@@ -1420,8 +1420,11 @@ def parse_json_article(data, parent):
         remove_node(parent, node)
 
 def parse_json_alineas(data, parent):
-    text = lexer.TOKEN_NEW_LINE.join(value for key, value in list(iter(sorted(data.iteritems()))))
-    tokens = lexer.tokenize(text)
+    text = alinea_lexer.TOKEN_NEW_LINE.join(value for key, value in list(iter(sorted(data.iteritems()))))
+    return parse_alineas(text, parent)
+
+def parse_alineas(data, parent):
+    tokens = alinea_lexer.tokenize(data.strip())
     parse_for_each(parse_article_header1, tokens, 0, parent)
 
     if len(parent['children']) == 0:
@@ -1439,13 +1442,20 @@ def parse_json_amendement(data, node):
     text = re.sub(r'<[^>]*?>', ' ', text)
     text = data['sujet'] + ' '  + text
 
-    tokens = lexer.tokenize(text)
+    tokens = alinea_lexer.tokenize(text)
     parse_for_each(parse_article_header1, tokens, 0, node)
 
 def parse_json_amendements(data, node):
     if 'amendements' in data:
         for amendement_data in data['amendements']:
             parse_json_amendement(amendement_data['amendement'], node)
+
+def parse_data(data):
+    node = {'children': []}
+
+    parse_alineas(data, node)
+
+    return node
 
 def parse_json_data(data):
     node = {'children': []}

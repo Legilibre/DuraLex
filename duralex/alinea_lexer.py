@@ -51,6 +51,11 @@ TOKEN_MULTIPLICATIVE_ADVERBS = [
 ]
 
 def tokenize(text):
+    try:
+        text = text.decode('utf-8')
+    except:
+        pass
+    
     text = text.replace(u'\xa0', u' ')
     tokens = TOKEN_DELIMITERS.split(text)
     # remove empty strings
