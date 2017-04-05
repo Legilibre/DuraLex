@@ -33,7 +33,7 @@ def pretty_diff_output(lines):
 def get_compare_outputs_fn(description, input_filename, output_filename):
     def test(self):
         process = subprocess.Popen(
-            '../bin/duralex ' + input_filename,
+            '../bin/duralex --file ' + input_filename,
             shell=True,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
