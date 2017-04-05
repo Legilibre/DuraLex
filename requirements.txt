@@ -1,1 +1,4 @@
 colorama
+html5lib
+simplejson
+beautifulsoup4
