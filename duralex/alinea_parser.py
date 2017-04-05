@@ -5,9 +5,17 @@ import sys
 
 import alinea_lexer
 
+def_types = [
+    'header1',
+    'header2',
+    'header3',
+    'alinea',
+    'sentence'
+]
+
 def debug(node, tokens, i, msg):
     if '-v' in sys.argv:
-        print('    ' * getNodeDepth(node) + msg + ' ' + str(tokens[i:i+8]))
+        print('    ' * get_node_depth(node) + msg + ' ' + str(tokens[i:i+8]))
 
 def is_number(token):
     return re.compile('\d+').match(token)
@@ -253,6 +261,7 @@ def parse_sentence_definition(tokens, i, parent):
     if is_number_word(tokens[i]) and tokens[i + 2].startswith(u'phrase'):
         count = word_to_number(tokens[i])
         i += 4
+        # ainsi rédigé
         # est rédigé
         # est ainsi rédigé
         if (i + 2 < len(tokens) and tokens[i + 2].startswith(u'rédigé')
@@ -260,6 +269,8 @@ def parse_sentence_definition(tokens, i, parent):
             # we expect {count} definitions => {count} quotes
             # but they don't always match, so for now we parse all of the available contents
             # FIXME: issue a warning because the expected count doesn't match?
+            i = alinea_lexer.skip_spaces(tokens, i)
+            i = alinea_lexer.skip_to_quote_start(tokens, i)
             i = parse_for_each(
                 parse_quote,
                 tokens,
@@ -334,7 +345,11 @@ def parse_article_definition(tokens, i, parent):
         return i
 
     i = parse_article_id(tokens, i, node)
-    i = parse_for_each(parse_quote, tokens, i, node)
+
+    i = alinea_lexer.skip_spaces(tokens, i)
+    if tokens[i] == u'ainsi' and tokens[i + 2] == u'rédigé':
+        i = alinea_lexer.skip_to_quote_start(tokens, i)
+        i = parse_for_each(parse_quote, tokens, i, node)
 
     debug(parent, tokens, i, 'parse_article_definition end')
 
@@ -350,6 +365,7 @@ def parse_alinea_definition(tokens, i, parent):
     if is_number_word(tokens[i]) and tokens[i + 2].startswith(u'alinéa'):
         count = word_to_number(tokens[i])
         i += 4
+        # ainsi rédigé
         # est rédigé
         # est ainsi rédigé
         if (i + 2 < len(tokens) and tokens[i + 2].startswith(u'rédigé')
@@ -357,6 +373,8 @@ def parse_alinea_definition(tokens, i, parent):
             # we expect {count} definitions => {count} quotes
             # but they don't always match, so for now we parse all of the available contents
             # FIXME: issue a warning because the expected count doesn't match?
+            i = alinea_lexer.skip_spaces(tokens, i)
+            i = alinea_lexer.skip_to_quote_start(tokens, i)
             i = parse_for_each(
                 parse_quote,
                 tokens,
@@ -364,12 +382,10 @@ def parse_alinea_definition(tokens, i, parent):
                 lambda: create_node(parent, {'type': 'alinea', 'children': []})
             )
         else:
-            create_node(parent, {'type': 'alinea', 'count': count})
+            node = create_node(parent, {'type': 'alinea', 'count': count})
     else:
         debug(parent, tokens, i, 'parse_alinea_definition none')
         return i
-
-    # i = parse_for_each(parse_quote, tokens, i, node)
 
     debug(parent, tokens, i, 'parse_alinea_definition end')
 
@@ -410,12 +426,14 @@ def parse_header1_definition(tokens, i, parent):
     if tokens[i].lower() == u'un' and is_roman_number(tokens[i + 2]):
         node['title'] = parse_roman_number(tokens[i + 2])
         i += 4
+        i = alinea_lexer.skip_spaces(tokens, i)
+        if tokens[i] == u'ainsi' and tokens[i + 2] == u'rédigé':
+            i = alinea_lexer.skip_to_quote_start(tokens, i)
+            i = parse_quote(tokens, i, node)
     else:
         debug(parent, tokens, i, 'parse_header1_definition end')
         remove_node(parent, node)
         return i
-
-    i = parse_quote(tokens, i, node)
 
     return i
 
@@ -434,7 +452,10 @@ def parse_header2_definition(tokens, i, parent):
         # FIXME: should we simply ignore the 'order' field all together?
         node['order'] = '...'
         i += 8
-        i = parse_quote(tokens, i, node)
+        i = alinea_lexer.skip_spaces(tokens, i)
+        if tokens[i] == u'ainsi' and tokens[i + 2] == u'rédigé':
+            i = alinea_lexer.skip_to_quote_start(tokens, i + 4)
+            i = parse_quote(tokens, i, node)
     # un {order}° ({orderLetter}) ({multiplicativeAdverb}) ({articlePartRef})
     elif tokens[i].lower() == u'un' and re.compile(u'\d+°').match(tokens[i + 2]):
         node = create_node(parent, {
@@ -448,7 +469,10 @@ def parse_header2_definition(tokens, i, parent):
             i += 2
         i = parse_multiplicative_adverb(tokens, i, node)
         i = parse_article_part_reference(tokens, i, node)
-        i = parse_quote(tokens, i, node)
+        i = alinea_lexer.skip_spaces(tokens, i)
+        if tokens[i] == u'ainsi' and tokens[i + 2] == u'rédigé':
+            i = alinea_lexer.skip_to_quote_start(tokens, i + 4)
+            i = parse_quote(tokens, i, node)
     # des {start}° à {end}°
     elif (tokens[i].lower() == u'des' and re.compile(u'\d+°').match(tokens[i + 2])
         and tokens[i + 4] == u'à' and re.compile(u'\d+°').match(tokens[i + 6])):
@@ -458,6 +482,7 @@ def parse_header2_definition(tokens, i, parent):
         # ainsi rédigés
         if (i + 2 < len(tokens) and tokens[i + 2].startswith(u'rédigé')
             or (i + 4 < len(tokens) and tokens[i + 4].startswith(u'rédigé'))):
+            i = alinea_lexer.skip_to_quote_start(tokens, i + 4)
             i = parse_for_each(
                 parse_quote,
                 tokens,
@@ -551,7 +576,10 @@ def parse_title_definition(tokens, i, parent):
         remove_node(parent, node)
         return i
 
-    i = parse_for_each(parse_quote, tokens, i, node)
+    i = alinea_lexer.skip_spaces(tokens, i)
+    if tokens[i] == u'ainsi' and tokens[i + 2] == u'rédigé':
+        i = alinea_lexer.skip_to_quote_start(tokens, i)
+        i = parse_for_each(parse_quote, tokens, i, node)
 
     debug(parent, tokens, i, 'parse_title_definition end')
 
@@ -601,7 +629,7 @@ def parse_article_reference(tokens, i, parent):
     i = parse_position(tokens, i, node)
     # de l'article
     # à l'article
-    if tokens[i].lower() in [u'de', u'à'] and tokens[i + 2] == u'l' and tokens[i + 4] == 'article':
+    if tokens[i].lower() in [u'de', u'à'] and tokens[i + 2] == u'l' and tokens[i + 4] == u'article':
         i += 5
         i = alinea_lexer.skip_spaces(tokens, i)
     # l'article
@@ -614,6 +642,9 @@ def parse_article_reference(tokens, i, parent):
     elif tokens[i].lower().startswith(u'article'):
         i += 1
         i = alinea_lexer.skip_spaces(tokens, i)
+    # le même article
+    elif tokens[i].lower() == u'le' and tokens[i + 2] == u'même' and tokens[i + 4] == u'article':
+        i += 6
     else:
         remove_node(parent, node)
         return j
@@ -916,7 +947,8 @@ def parse_header1_reference(tokens, i, parent):
     i = parse_position(tokens, i, node)
     # le {romanPartNumber}
     # du {romanPartNumber}
-    if tokens[i].lower() in [u'le', u'du'] and is_roman_number(tokens[i + 2]):
+    # un {romanPartNumber}
+    if tokens[i].lower() in [u'le', u'du', u'un'] and is_roman_number(tokens[i + 2]):
         node['order'] = parse_roman_number(tokens[i + 2])
         i += 4
     else:
@@ -985,11 +1017,12 @@ def parse_quote(tokens, i, parent):
     # "
     if tokens[i] == alinea_lexer.TOKEN_DOUBLE_QUOTE_OPEN:
         i += 1
-    # est rédigé(e)
-    # est ainsi rédigé(e)
-    elif (i + 2 < len(tokens) and tokens[i + 2].startswith(u'rédigé')
-        or (i + 4 < len(tokens) and tokens[i + 4].startswith(u'rédigé'))):
-        i = alinea_lexer.skip_to_quote_start(tokens, i + 2) + 1
+    # # est rédigé(es)
+    # # ainsi rédigé(es)
+    # # est ainsi rédigé(es)
+    # elif (i + 2 < len(tokens) and tokens[i + 2].startswith(u'rédigé')
+    #     or (i + 4 < len(tokens) and tokens[i + 4].startswith(u'rédigé'))):
+    #     i = alinea_lexer.skip_to_quote_start(tokens, i + 2) + 1
     else:
         remove_node(parent, node)
         return i
@@ -1212,6 +1245,17 @@ def parse_definition_list(tokens, i, parent):
         i = parse_definition_list(tokens, i + 2, parent)
     i = alinea_lexer.skip_spaces(tokens, i)
 
+    # est rédigé(es)
+    # ainsi rédigé(es)
+    # est ainsi rédigé(es)
+    if (i + 2 < len(tokens) and tokens[i + 2].startswith(u'rédigé')
+        or (i + 4 < len(tokens) and tokens[i + 4].startswith(u'rédigé'))):
+        i += 6
+        def_nodes = filter_nodes(parent, lambda x: x['type'] in def_types)
+        for def_node in def_nodes:
+            i = alinea_lexer.skip_to_quote_start(tokens, i)
+            i = parse_quote(tokens, i, def_node)
+
     return i
 
 # Parse multiple references separated by comas or the "et" word.
@@ -1413,11 +1457,8 @@ def parse_json_article(data, parent):
 
     node['order'] = data['order']
 
-    if '--article' not in sys.argv or node['order'] in [int(id) for id in sys.argv[sys.argv.index('--article') + 1].split(',')]:
-        if 'alineas' in data:
-            parse_json_alineas(data['alineas'], node)
-    else:
-        remove_node(parent, node)
+    if 'alineas' in data:
+        parse_json_alineas(data['alineas'], node)
 
 def parse_json_alineas(data, parent):
     text = alinea_lexer.TOKEN_NEW_LINE.join(value for key, value in list(iter(sorted(data.iteritems()))))
@@ -1466,11 +1507,6 @@ def parse_json_data(data):
     return node
 
 def resolve_fully_qualified_definitions(node):
-    def_types = [
-        'alinea',
-        'sentence'
-    ]
-
     if 'type' in node and node['type'] == 'edit':
         def_nodes = filter_nodes(node, lambda x : x['type'] in def_types)
         # if we have more than 1 definition in a single edit, we assume:
