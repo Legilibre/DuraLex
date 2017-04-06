@@ -348,17 +348,6 @@ def parse_bill(string, url):
             line = re_clean_coord.sub('', line)
             line = re_clean_subsec_space.sub(r'\1\4 \5', line)
             line = re_clean_subsec_space2.sub(r'\1 \2 \3\4', line)
-            # line = line.decode('utf-8')
-            # try:
-            #     tmp = line.decode('utf-8')
-            #     print('utf-8')
-            # except:
-            #     try:
-            #         tmp = line.decode('iso-8859-15')
-            #         print('iso')
-            #     except:
-            #         tmp = line
-            #         print('fail')
             line = re_clean_punc_space.sub(r'\1 \2', line)#.encode('utf-8')
             line = re_clean_spaces.sub(' ', line)
             line = re_mat_sec.sub(lambda x: lower_but_first(x.group(1))+x.group(4) if re_mat_n.match(x.group(4)) else x.group(0), line)
@@ -370,6 +359,11 @@ def parse_bill(string, url):
             line = line.strip()
             if line:
                 ali_num += 1
+                # match alinea numbering in the form of "(ali_num) actual alinea content goes here..."
+                m = re.compile(r"^\((\d)\) (.*)$", re.MULTILINE).match(line)
+                if m:
+                    ali_num = int(m.group(1))
+                    line = m.group(2)
                 article["alineas"]["%03d" % ali_num] = line
         else:
             #metas
