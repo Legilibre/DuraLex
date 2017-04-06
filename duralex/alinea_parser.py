@@ -184,6 +184,10 @@ def parse_law_reference(tokens, i, parent):
         # skip {lawDate} and the following space
         i += 7
 
+    # i = alinea_lexer.skip_spaces(tokens, i)
+    # if tokens[i] == u'relative':
+    #     print('foo')
+
     debug(parent, tokens, i, 'parse_law_reference end')
 
     return i
@@ -1064,13 +1068,11 @@ def parse_edit(tokens, i, parent):
         return i
     # i = r
 
-    j = i
-    i = alinea_lexer.skip_tokens(tokens, i, lambda t: t.lower() not in ['est', 'sont', 'devient'] and not t[0].isupper())
-
-    if i >= len(tokens):
+    i = alinea_lexer.skip_tokens(tokens, i, lambda t: t.lower() not in [u'est', u'sont', u'devient'] and not t == u'.')
+    if i + 2 >= len(tokens):
         remove_node(parent, node)
         debug(parent, tokens, i, 'parse_edit eof')
-        return j
+        return r
 
     # sont supprimés
     # sont supprimées
