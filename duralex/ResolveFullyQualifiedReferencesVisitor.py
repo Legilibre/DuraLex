@@ -1,4 +1,4 @@
-from duralex.parser import *
+from duralex.alinea_parser import *
 
 from AbstractVisitor import AbstractVisitor
 

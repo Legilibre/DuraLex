@@ -70,12 +70,16 @@ def month_to_number(month):
 
 def unshift_node(parent, node):
     node['parent'] = parent
+    if 'children' not in parent:
+        parent['children'] = []
     parent['children'] = [node] + parent['children']
 
 def push_node(parent, node):
     if 'parent' in node:
         remove_node(node['parent'], node)
     node['parent'] = parent
+    if 'children' not in parent:
+        parent['children'] = []
     parent['children'].append(node)
 
 def create_node(parent, node):
@@ -179,7 +183,7 @@ def parse_law_reference(tokens, i, parent):
     # skip {lawId} and the following space
     i += 2
 
-    if tokens[i] == u'du':
+    if i < len(tokens) and tokens[i] == u'du':
         node['lawDate'] = tokens[i + 6] + u'-' + str(month_to_number(tokens[i + 4])) + u'-' + tokens[i + 2]
         # skip {lawDate} and the following space
         i += 7
@@ -474,7 +478,7 @@ def parse_header2_definition(tokens, i, parent):
         i = parse_multiplicative_adverb(tokens, i, node)
         i = parse_article_part_reference(tokens, i, node)
         i = alinea_lexer.skip_spaces(tokens, i)
-        if tokens[i] == u'ainsi' and tokens[i + 2] == u'rédigé':
+        if i < len(tokens) and tokens[i] == u'ainsi' and tokens[i + 2] == u'rédigé':
             i = alinea_lexer.skip_to_quote_start(tokens, i + 4)
             i = parse_quote(tokens, i, node)
     # des {start}° à {end}°
@@ -516,7 +520,7 @@ def parse_article_id(tokens, i, node):
 
     # {articleId} {articleLetter}
     # FIXME: handle the {articleLetter}{multiplicativeAdverb} case?
-    if re.compile('^[A-Z]$').match(tokens[i]):
+    if i < len(tokens) and re.compile('^[A-Z]$').match(tokens[i]):
         node['id'] += ' ' + tokens[i]
         # skip {articleLetter} and the following space
         i += 1
@@ -764,6 +768,10 @@ def parse_alinea_reference(tokens, i, parent):
     elif tokens[i].lower() == u'l' and tokens[i + 2] == u'avant-dernier' and tokens[i + 4] == u'alinéa':
         node['order'] = -2
         i += 6
+    # à l'avant-dernier alinéa
+    elif tokens[i].lower() == u'à' and tokens[i + 2] == u'l' and tokens[i + 4] == u'avant-dernier' and tokens[i + 6] == u'alinéa':
+        node['order'] = -2
+        i += 10
     # alinéa {order}
     elif tokens[i].lower() == u'alinéa' and is_number(tokens[i + 2]):
         node['order'] = parse_int(tokens[i + 2])

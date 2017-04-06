@@ -1,4 +1,4 @@
-from duralex.parser import *
+from duralex.alinea_parser import *
 
 from AbstractVisitor import AbstractVisitor
 
@@ -8,7 +8,7 @@ class SortReferencesVisitor(AbstractVisitor):
             super(SortReferencesVisitor, self).visit_node(node)
 
     def sort_references(self, node):
-        root_refs = filter_nodes(node, lambda n: 'type' in n and n['type'] in AbstractVisitor.REF_TYPES and 'parent' in n and n['parent']['type'] not in AbstractVisitor.REF_TYPES)
+        root_refs = filter_nodes(node, lambda n: 'type' in n and n['type'] in AbstractVisitor.REF_TYPES and 'parent' in n and ('type' not in n['parent'] or n['parent']['type'] not in AbstractVisitor.REF_TYPES))
 
         if len(root_refs) == 0:
             return False
