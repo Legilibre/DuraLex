@@ -1,6 +1,6 @@
 # DuraLex
 
-[![Build Status](http://img.shields.io/travis/promethe42/duralex.svg)](https://travis-ci.org/promethe42/duralex)
+[![Build Status](https://img.shields.io/travis/Legilibre/duralex.svg)](https://travis-ci.org/Legilibre/duralex)
 
 DuraLex is an extensible French bill parsing and automating framework.
 It turns bills written in plain natural French into an intermediary tree representation that can be automatically processed.
