@@ -64,8 +64,11 @@ class AddDiffVisitor(AbstractVisitor):
 
         if node['editType'] == 'replace':
             # FIXME: properly detect we're supposed to replace words
-            defNode = parser.filter_nodes(node, lambda x: x['type'] == 'words')[-1]
-            new_content = old_content[0:self.begin] + defNode['children'][0]['words'] + old_content[self.end:]
+            def_node = parser.filter_nodes(node, lambda x: x['type'] == 'words')[-1]
+            new_content = old_content[0:self.begin] + def_node['children'][0]['words'] + old_content[self.end:]
+        elif node['editType'] == 'add':
+            def_node = parser.filter_nodes(node, lambda x: x['type'] == 'words' or x['type'] == 'mention')[-1]
+            new_content = old_content[0:self.begin] + def_node['children'][0]['words'] + old_content[self.begin:]
 
         diff = difflib.unified_diff(
             old_content.splitlines(),

@@ -49,10 +49,10 @@ def main(argv=None):
 
     args = parser.parse_args()
 
-    if args.file:
-        data = args.file.read()
-    elif args.url:
+    if args.url:
         data = urllib.urlopen(args.url).read()
+    elif args.file:
+        data = args.file.read()
 
     # For some reason, the &nbsp; HTML entity will break the decoding.
     data = data.replace('&nbsp;', ' ')
