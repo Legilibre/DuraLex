@@ -77,4 +77,4 @@ class DuralexTestCase(unittest.TestCase):
 
         diff = difflib.unified_diff(a.splitlines(), b.splitlines(), fromfile='computed', tofile='expected')
         diff_lines = list(diff)
-        self.assertEqual(len(diff_lines), 0, self.pretty_diff_output(diff_lines))
+        self.assertEqual(len(diff_lines), 0, '\n' + a + self.pretty_diff_output(diff_lines))
