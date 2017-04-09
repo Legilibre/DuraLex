@@ -263,3 +263,33 @@ class ParseEditTest(DuralexTestCase):
                 }
             ]}
         )
+
+    def test_the_nth_sentence_redacted_with_quote(self):
+        self.assertEqualAST(
+            self.call_parse_func(
+                parser.parse_edit,
+                (u"la deuxième phrase est ainsi rédigée :\n"
+                u"\"ceci est un test\"")
+            ),
+            {'children':[
+                {
+                    'editType': u'edit',
+                    'type': u'edit',
+                    'children': [
+                        {
+                            'type': u'sentence-reference',
+                            'order': 2
+                        },
+                        {
+                            'type': u'words',
+                            'children': [
+                                {
+                                    'type': u'quote',
+                                    'words': u'ceci est un test'
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]}
+        )
