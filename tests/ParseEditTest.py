@@ -182,3 +182,44 @@ class ParseEditTest(DuralexTestCase):
                 }
             ]}
         )
+
+    def test_insert_two_alineas_with_quotes(self):
+        self.assertEqualAST(
+            self.call_parse_func(
+                parser.parse_edit,
+                (u"Avant le dernier alinéa, sont insérés deux alinéas ainsi rédigés :\n"
+                u"\"alinéa 1\"\n"
+                u"\"alinéa 2\"\n")
+            ),
+            {'children':[
+                {
+                    'editType': u'add',
+                    'type': u'edit',
+                    'children': [
+                        {
+                            'type': u'alinea-reference',
+                            'position': u'before',
+                            'order': -1
+                        },
+                        {
+                            'type': u'alinea',
+                            'children': [
+                                {
+                                    'type': u'quote',
+                                    'words': u'alinéa 1'
+                                }
+                            ]
+                        },
+                        {
+                            'type': 'alinea',
+                            'children': [
+                                {
+                                    'type': u'quote',
+                                    'words': u'alinéa 2'
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]}
+        )
