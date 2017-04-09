@@ -223,3 +223,43 @@ class ParseEditTest(DuralexTestCase):
                 }
             ]}
         )
+
+    def test_insert_n_sentences_with_n_quotes(self):
+        self.assertEqualAST(
+            self.call_parse_func(
+                parser.parse_edit,
+                (u"à l'article 42 sont insérées deux phrases ainsi rédigées :\n"
+                u"\"phrase 1\"\n"
+                u"\"phrase 2\"\n")
+            ),
+            {'children':[
+                {
+                    'editType': u'add',
+                    'type': u'edit',
+                    'children': [
+                        {
+                            'type': u'article-reference',
+                            'id': u'42'
+                        },
+                        {
+                            'type': u'sentence',
+                            'children': [
+                                {
+                                    'type': u'quote',
+                                    'words': u'phrase 1'
+                                }
+                            ]
+                        },
+                        {
+                            'type': 'sentence',
+                            'children': [
+                                {
+                                    'type': u'quote',
+                                    'words': u'phrase 2'
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]}
+        )
