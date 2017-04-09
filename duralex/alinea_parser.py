@@ -106,12 +106,12 @@ def delete_parent(root):
             delete_parent(child)
     return root
 
-def copy_node(node):
+def copy_node(node, recursive=True):
     c = node.copy()
     if 'parent' in c:
         del c['parent']
     c['children'] = []
-    if 'children' in node:
+    if 'children' in node and recursive:
         for child in node['children']:
             push_node(c, copy_node(child))
     return c
@@ -1361,17 +1361,15 @@ def parse_article_header1(tokens, i, parent):
         node['order'] = parse_roman_number(tokens[i])
         i = alinea_lexer.skip_to_next_word(tokens, i + 2)
     else:
-        remove_node(parent, node)
-        node = parent
-
-    j = i
-    i = parse_edit(tokens, i, node)
-    i = parse_for_each(parse_article_header2, tokens, i, node)
-    if i == j:
-        i = parse_raw_article_content(tokens, i, node)
-
-    if node != parent and len(node['children']) == 0:
-        remove_node(parent, node)
+        j = i
+        i = parse_edit(tokens, i, node)
+        i = parse_for_each(parse_article_header2, tokens, i, node)
+        if i == j:
+            i = parse_raw_article_content(tokens, i, node)
+        if len(node['children']) == 0:
+            remove_node(parent, node)
+        else:
+            node['order'] = len(filter(lambda x: x['type'] == 'header1', parent['children']))
 
     debug(parent, tokens, i, 'parse_article_header1 end')
 
