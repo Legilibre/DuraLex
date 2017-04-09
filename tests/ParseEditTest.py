@@ -162,3 +162,23 @@ class ParseEditTest(DuralexTestCase):
                 }
             ]}
         )
+
+    def test_dangling_code_reference(self):
+        self.assertEqualAST(
+            self.call_parse_func(
+                parser.parse_edit,
+                u"Le code de l'éducation est ainsi modifié"
+            ),
+            {'children':[
+                {
+                    'editType': u'edit',
+                    'type': u'edit',
+                    'children': [
+                        {
+                            'codeName': u'code de l\'éducation',
+                            'type': u'code-reference'
+                        }
+                    ]
+                }
+            ]}
+        )

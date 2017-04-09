@@ -46,7 +46,18 @@ class DuralexTestCase(unittest.TestCase):
                 if 'parent' not in child:
                     child['parent'] = ast
                 self.add_parent(child)
+        return ast
 
+    def add_children(self, ast):
+        if not 'children' in ast:
+            ast['children'] = []
+        for child in ast['children']:
+            self.add_children(child)
+        return ast
+
+    def make_ast(self, ast):
+        ast = self.add_parent(ast)
+        ast = self.add_children(ast)
         return ast
 
     def call_visitor(self, visitor, ast):
@@ -64,6 +75,6 @@ class DuralexTestCase(unittest.TestCase):
         a = json.dumps(a, sort_keys=True, indent=2, ensure_ascii=False).encode('utf-8')
         b = json.dumps(b, sort_keys=True, indent=2, ensure_ascii=False).encode('utf-8')
 
-        diff = difflib.unified_diff(a.splitlines(), b.splitlines())
+        diff = difflib.unified_diff(a.splitlines(), b.splitlines(), fromfile='computed', tofile='expected')
         diff_lines = list(diff)
         self.assertEqual(len(diff_lines), 0, self.pretty_diff_output(diff_lines))

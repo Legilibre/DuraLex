@@ -19,7 +19,7 @@ class ResolveFullyQualifiedReferencesVisitor(AbstractVisitor):
 
         # If we have an 'edit' node in an 'edit' node, the parent gives its
         # context to its descendants.
-        if 'type' in node and node['type'] not in AbstractVisitor.REF_TYPES and len(node['children']) > 1 and node['children'][0]['type'] == 'edit' and node['children'][0]['editType'] == 'edit':
+        if ('type' not in node or node['type'] not in AbstractVisitor.REF_TYPES) and len(node['children']) >= 1 and node['children'][0]['type'] == 'edit' and node['children'][0]['editType'] == 'edit':
             context = node['children'][0]['children'][0]
             remove_node(node, node['children'][0])
             self.ctx.append([copy_node(ctx_node) for ctx_node in filter_nodes(context, lambda x: x['type'] in AbstractVisitor.REF_TYPES)])

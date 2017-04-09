@@ -203,3 +203,59 @@ class ParseAlineaReferenceTest(DuralexTestCase):
                 }
             ]}
         )
+
+    def test_number_word_alinea_header1_article_id_code(self):
+        self.assertEqualAST(
+            self.call_parse_func(
+                parser.parse_alinea_reference,
+                u"le premier alinéa du II de l'article L. 121-3 du code de l'éducation"
+            ),
+            {'children': [
+                {
+                    'order': 1,
+                    'type': u'alinea-reference',
+                    'children': [
+                        {
+                            'order': 2,
+                            'type': u'header1-reference',
+                            'children': [
+                                {
+                                    'id': u'L. 121-3',
+                                    'type': u'article-reference',
+                                    'children': [
+                                        {
+                                            'codeName': u'code de l\'éducation',
+                                            'type': u'code-reference'
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]}
+        )
+
+    def test_the_same_alinea(self):
+        self.assertEqualAST(
+            self.call_parse_func(
+                parser.parse_alinea_reference,
+                u"le même alinéa",
+                {'children':[
+                    {
+                        'type': u'alinea-reference',
+                        'order': 42
+                    }
+                ]}
+            ),
+            {'children':[
+                {
+                    'type': u'alinea-reference',
+                    'order': 42
+                },
+                {
+                    'type': u'alinea-reference',
+                    'order': 42
+                }
+            ]}
+        )

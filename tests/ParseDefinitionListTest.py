@@ -54,3 +54,67 @@ class ParseDefinitionListTest(DuralexTestCase):
                 }
             ]}
         )
+
+    def test_n_header1_with_n_quotes(self):
+        self.assertEqualAST(
+            self.call_parse_func(
+                parser.parse_definition_list,
+                ("un III et un IV ainsi rédigés :\n"
+                "\"ceci est le contenu du premier header1\"\n"
+                "\"ceci est le contenu du second header1\"")
+            ),
+            {'children': [
+                {
+                    'type': u'header1',
+                    'order': 3,
+                    'children': [
+                        {
+                            'type': u'quote',
+                            'words': u'ceci est le contenu du premier header1'
+                        }
+                    ],
+                },
+                {
+                    'type': u'header1',
+                    'order': 4,
+                    'children': [
+                        {
+                            'type': u'quote',
+                            'words': u'ceci est le contenu du second header1'
+                        }
+                    ],
+                }
+            ]}
+        )
+
+    def test_n_header2_with_n_quotes(self):
+        self.assertEqualAST(
+            self.call_parse_func(
+                parser.parse_definition_list,
+                ("un 2° et un 3° ainsi rédigés :\n"
+                "\"ceci est le contenu du premier header2\"\n"
+                "\"ceci est le contenu du second header2\"")
+            ),
+            {'children': [
+                {
+                    'type': u'header2',
+                    'order': 2,
+                    'children': [
+                        {
+                            'type': u'quote',
+                            'words': u'ceci est le contenu du premier header2'
+                        }
+                    ],
+                },
+                {
+                    'type': u'header2',
+                    'order': 3,
+                    'children': [
+                        {
+                            'type': u'quote',
+                            'words': u'ceci est le contenu du second header2'
+                        }
+                    ],
+                }
+            ]}
+        )

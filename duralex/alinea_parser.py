@@ -436,10 +436,10 @@ def parse_header1_definition(tokens, i, parent):
     debug(parent, tokens, i, 'parse_header1_definition')
     # un {romanPartNumber}
     if tokens[i].lower() == u'un' and is_roman_number(tokens[i + 2]):
-        node['title'] = parse_roman_number(tokens[i + 2])
+        node['order'] = parse_roman_number(tokens[i + 2])
         i += 4
         i = alinea_lexer.skip_spaces(tokens, i)
-        if tokens[i] == u'ainsi' and tokens[i + 2] == u'rédigé':
+        if i + 2 < len(tokens) and tokens[i] == u'ainsi' and tokens[i + 2] == u'rédigé':
             i = alinea_lexer.skip_to_quote_start(tokens, i)
             i = parse_quote(tokens, i, node)
     else:
@@ -657,6 +657,15 @@ def parse_article_reference(tokens, i, parent):
     # le même article
     elif tokens[i].lower() == u'le' and tokens[i + 2] == u'même' and tokens[i + 4] == u'article':
         i += 6
+        article_refs = filter_nodes(
+            get_root(parent),
+            lambda n: 'type' in n and n['type'] == 'article-reference'
+        )
+        # the last one in order of traversal is the previous one in order of syntax
+        # don't forget the current node is in the list too => -2 instead of -1
+        article_ref = copy_node(article_refs[-2])
+        push_node(parent, article_ref)
+        remove_node(parent, node)
     else:
         remove_node(parent, node)
         return j
@@ -750,14 +759,16 @@ def parse_alinea_reference(tokens, i, parent):
     # elif tokens[i].lowers() == u'aux' and is_number_word(tokens[i + 2]) and tokens[i + 6] == u'alinéas':
     # le même alinéa
     elif tokens[i].lower() in [u'le'] and tokens[i + 2] == u'même' and tokens[i + 4] == u'alinéa':
-        alineaRefs = filter_nodes(
+        i += 6
+        alinea_refs = filter_nodes(
             get_root(parent),
             lambda n: 'type' in n and n['type'] == 'alinea-reference'
         )
         # the last one in order of traversal is the previous one in order of syntax
         # don't forget the current node is in the list too => -2 instead of -1
-        alinea = copy_node(alineaRefs[-2])
-        push_node(node, alinea)
+        alinea_ref = copy_node(alinea_refs[-2])
+        push_node(parent, alinea_ref)
+        remove_node(parent, node)
     # du dernier alinéa
     # au dernier alinéa
     # le dernier alinéa
@@ -1265,7 +1276,7 @@ def parse_definition_list(tokens, i, parent):
     if (i + 2 < len(tokens) and tokens[i + 2].startswith(u'rédigé')
         or (i + 4 < len(tokens) and tokens[i + 4].startswith(u'rédigé'))):
         i += 6
-        def_nodes = filter_nodes(parent, lambda x: x['type'] in def_types)
+        def_nodes = filter_nodes(parent, lambda x: 'type' in x and x['type'] in def_types)
         for def_node in def_nodes:
             i = alinea_lexer.skip_to_quote_start(tokens, i)
             i = parse_quote(tokens, i, def_node)

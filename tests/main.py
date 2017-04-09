@@ -4,7 +4,6 @@
 import unittest
 
 from ParseArticleReferenceTest import ParseArticleReferenceTest
-from SortReferencesVisitorTest import SortReferencesVisitorTest
 from ParseEditTest import ParseEditTest
 from ParseAlineaReferenceTest import ParseAlineaReferenceTest
 from ParseAlineaDefinitionTest import ParseAlineaDefinitionTest
@@ -17,6 +16,10 @@ from ParseSentenceDefinitionTest import ParseSentenceDefinitionTest
 from ParseWordsDefinitionTest import ParseWordsDefinitionTest
 from ParseArticleDefinitionTest import ParseArticleDefinitionTest
 from ParseMentionDefinitionTest import ParseMentionDefinitionTest
+from ParseHeader1DefinitionTest import ParseHeader1DefinitionTest
+from ParseDefinitionListTest import ParseDefinitionListTest
+from ResolveFullyQualifiedReferencesVisitorTest import ResolveFullyQualifiedReferencesVisitorTest
+from SortReferencesVisitorTest import SortReferencesVisitorTest
 
 if __name__ == '__main__':
     unittest.main()

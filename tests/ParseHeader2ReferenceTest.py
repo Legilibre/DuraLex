@@ -33,3 +33,29 @@ class ParseHeader2ReferenceTest(DuralexTestCase):
                 }
             ]}
         )
+
+    def test_header2_order_letter_adverb_article_code(self):
+        self.assertEqualAST(
+            self.call_parse_func(
+                parser.parse_header2_reference,
+                "le 3° de l'article L. 711-2 du code de l'éducation"
+            ),
+            {'children': [
+                {
+                    'order': 3,
+                    'type': u'header2-reference',
+                    'children': [
+                        {
+                            'children': [
+                                {
+                                    'codeName': u'code de l\'éducation',
+                                    'type': u'code-reference'
+                                }
+                            ],
+                            'id': u'L. 711-2',
+                            'type': u'article-reference'
+                        }
+                    ],
+                }
+            ]}
+        )
