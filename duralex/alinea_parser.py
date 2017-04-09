@@ -323,6 +323,7 @@ def parse_words_definition(tokens, i, parent):
     elif tokens[i] == alinea_lexer.TOKEN_DOUBLE_QUOTE_OPEN:
         i = parse_for_each(parse_quote, tokens, i, node)
         i = alinea_lexer.skip_spaces(tokens, i)
+    # la référence
     elif tokens[i] == u'la' and tokens[i + 2] == u'référence':
         i = alinea_lexer.skip_to_quote_start(tokens, i)
         i = parse_quote(tokens, i, node)
@@ -343,8 +344,10 @@ def parse_article_definition(tokens, i, parent):
     })
     debug(parent, tokens, i, 'parse_article_definition')
 
+    # un article
     if tokens[i] == u'un' and tokens[i + 2] == u'article':
         i += 4
+    # l'article
     elif tokens[i] == u'l' and tokens[i + 2] == u'article':
         i += 4
     else:
@@ -355,7 +358,7 @@ def parse_article_definition(tokens, i, parent):
     i = parse_article_id(tokens, i, node)
 
     i = alinea_lexer.skip_spaces(tokens, i)
-    if tokens[i] == u'ainsi' and tokens[i + 2] == u'rédigé':
+    if i < len(tokens) and tokens[i] == u'ainsi' and tokens[i + 2] == u'rédigé':
         i = alinea_lexer.skip_to_quote_start(tokens, i)
         i = parse_for_each(parse_quote, tokens, i, node)
 
@@ -407,6 +410,7 @@ def parse_mention_definition(tokens, i, parent):
         'children': []
     })
     debug(parent, tokens, i, 'parse_mention_definition')
+    # la mention
     if tokens[i].lower() == u'la' and tokens[i + 2] == u'mention':
         i += 4
     else:
@@ -507,12 +511,12 @@ def parse_article_id(tokens, i, node):
     node['id'] = ''
 
     # article {articleId} de {lawReference}
-    if tokens[i] == 'L' and tokens[i + 1] == '.':
+    if i < len(tokens) and tokens[i] == 'L' and tokens[i + 1] == '.':
         while not re.compile('\d+(-\d+)?').match(tokens[i]):
             node['id'] += tokens[i]
             i += 1
 
-    if re.compile('\d+(-\d+)?').match(tokens[i]):
+    if i < len(tokens) and re.compile('\d+(-\d+)?').match(tokens[i]):
         node['id'] += tokens[i]
         # skip {articleId} and the following space
         i += 1
@@ -528,7 +532,7 @@ def parse_article_id(tokens, i, node):
 
     i = parse_multiplicative_adverb(tokens, i, node)
 
-    if is_space(node['id']):
+    if not node['id'] or is_space(node['id']):
         del node['id']
 
     return i
