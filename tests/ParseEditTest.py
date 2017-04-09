@@ -293,3 +293,49 @@ class ParseEditTest(DuralexTestCase):
                 }
             ]}
         )
+
+    def test_is_inserted(self):
+        self.assertEqualAST(
+            self.call_parse_func(
+                parser.parse_edit,
+                u"Est ajoutée une phrase"
+            ),
+            {'children':[
+                {
+                    'editType': u'add',
+                    'type': u'edit',
+                    'children': [
+                        {
+                            'type': u'sentence',
+                            'count': 1
+                        }
+                    ]
+                }
+            ]}
+        )
+
+    def test_is_inserted_with_quote(self):
+        self.assertEqualAST(
+            self.call_parse_func(
+                parser.parse_edit,
+                (u"Est ajoutée une phrase ainsi rédigée :\n"
+                "\"ceci est une phrase\"")
+            ),
+            {'children':[
+                {
+                    'editType': u'add',
+                    'type': u'edit',
+                    'children': [
+                        {
+                            'type': u'sentence',
+                            'children': [
+                                {
+                                    'type': u'quote',
+                                    'words': u'ceci est une phrase'
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]}
+        )
