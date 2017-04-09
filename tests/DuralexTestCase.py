@@ -20,7 +20,7 @@ init()
 
 class DuralexTestCase(unittest.TestCase):
     def pretty_diff_output(self, lines):
-        out = ''
+        out = '\n'
 
         for line in lines:
             if line[0] == '-':
@@ -29,12 +29,13 @@ class DuralexTestCase(unittest.TestCase):
                 out += Fore.GREEN + line
             else:
                 out += Fore.RESET + line
-            out = out + '\n'
+            out = out + Fore.RESET + '\n'
 
         return out
 
-    def call_parse_func(self, fn, data):
-        ast = {'children':[]}
+    def call_parse_func(self, fn, data, ast=None):
+        if not ast:
+            ast = {'children':[]}
         fn(lexer.tokenize(data), 0, ast)
         # default_visitors(ast)
         return ast
