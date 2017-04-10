@@ -3,7 +3,8 @@
 
 import unittest
 
-from ParseArticleHeader1Test import ParseArticleHeader1Test
+from ParseBillHeader1Test import ParseBillHeader1Test
+from ParseRawContentTest import ParseRawContentTest
 from ParseArticleReferenceTest import ParseArticleReferenceTest
 from ParseEditTest import ParseEditTest
 from ParseAlineaReferenceTest import ParseAlineaReferenceTest

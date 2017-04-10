@@ -1341,57 +1341,57 @@ def parse_reference(tokens, i, parent):
 
 # {romanNumber}.
 # u'ex': I., II.
-def parse_article_header1(tokens, i, parent):
+def parse_bill_header1(tokens, i, parent):
     if i >= len(tokens):
         return i
 
     i = alinea_lexer.skip_spaces(tokens, i)
 
     node = create_node(parent, {
-        'type': 'header1',
+        'type': 'bill-header1',
         'order': 0,
         'children': [],
     })
 
-    debug(parent, tokens, i, 'parse_article_header1')
+    debug(parent, tokens, i, 'parse_bill_header1')
 
     # skip'{romanNumber}.'
     if is_roman_number(tokens[i]) and tokens[i + 1] == u'.':
-        debug(parent, tokens, i, 'parse_article_header1 found article header-1')
+        debug(parent, tokens, i, 'parse_bill_header1 found article header-1')
         node['order'] = parse_roman_number(tokens[i])
         i = alinea_lexer.skip_to_next_word(tokens, i + 2)
-    else:
-        j = i
-        i = parse_edit(tokens, i, node)
-        i = parse_for_each(parse_article_header2, tokens, i, node)
-        if i == j:
-            i = parse_raw_article_content(tokens, i, node)
-        if len(node['children']) == 0:
-            remove_node(parent, node)
-        else:
-            node['order'] = len(filter(lambda x: x['type'] == 'header1', parent['children']))
 
-    debug(parent, tokens, i, 'parse_article_header1 end')
+    j = i
+    i = parse_edit(tokens, i, node)
+    i = parse_for_each(parse_bill_header2, tokens, i, node)
+    if i == j:
+        i = parse_raw_article_content(tokens, i, node)
+    if len(node['children']) == 0:
+        remove_node(parent, node)
+    else:
+        node['order'] = len(filter(lambda x: x['type'] == node['type'], parent['children']))
+
+    debug(parent, tokens, i, 'parse_bill_header1 end')
 
     return i
 
 # {number}°
 # u'ex': 1°, 2°
-def parse_article_header2(tokens, i, parent):
+def parse_bill_header2(tokens, i, parent):
     if i >= len(tokens):
         return i
 
     node = create_node(parent, {
-        'type': 'header2',
+        'type': 'bill-header2',
         'order': 0,
         'children': [],
     })
 
-    debug(parent, tokens, i, 'parse_article_header2')
+    debug(parent, tokens, i, 'parse_bill_header2')
 
     i = alinea_lexer.skip_spaces(tokens, i)
     if re.compile(u'\d+°').match(tokens[i]):
-        debug(parent, tokens, i, 'parse_article_header2 found article header-2')
+        debug(parent, tokens, i, 'parse_bill_header2 found article header-2')
 
         node['order'] = parse_int(tokens[i])
         # skip {number}°
@@ -1401,27 +1401,27 @@ def parse_article_header2(tokens, i, parent):
         node = parent
 
     i = parse_edit(tokens, i, node)
-    i = parse_for_each(parse_article_header3, tokens, i, node)
+    i = parse_for_each(parse_bill_header3, tokens, i, node)
 
     if node != parent and len(node['children']) == 0:
         remove_node(parent, node)
 
-    debug(parent, tokens, i, 'parse_article_header2 end')
+    debug(parent, tokens, i, 'parse_bill_header2 end')
 
     return i
 
 # {number})
 # u'ex': a), b), a (nouveau))
-def parse_article_header3(tokens, i, parent):
+def parse_bill_header3(tokens, i, parent):
     if i >= len(tokens):
         return i
 
     node = create_node(parent, {
-        'type': 'header3',
+        'type': 'bill-header3',
         'children': [],
     })
 
-    debug(parent, tokens, i, 'parse_article_header3')
+    debug(parent, tokens, i, 'parse_bill_header3')
 
     i = alinea_lexer.skip_spaces(tokens, i)
     match = re.compile('([a-z]+)').match(tokens[i])
@@ -1442,7 +1442,7 @@ def parse_article_header3(tokens, i, parent):
     if node != parent and len(node['children']) == 0:
         remove_node(parent, node)
 
-    debug(parent, tokens, i, 'parse_article_header3 end')
+    debug(parent, tokens, i, 'parse_bill_header3 end')
 
     return i
 
@@ -1489,7 +1489,7 @@ def parse_json_alineas(data, parent):
 
 def parse_alineas(data, parent):
     tokens = alinea_lexer.tokenize(data.strip())
-    parse_for_each(parse_article_header1, tokens, 0, parent)
+    parse_for_each(parse_bill_header1, tokens, 0, parent)
 
     if len(parent['children']) == 0:
         parse_raw_article_content(tokens, 0, parent)
@@ -1507,7 +1507,7 @@ def parse_json_amendement(data, node):
     text = data['sujet'] + ' '  + text
 
     tokens = alinea_lexer.tokenize(text)
-    parse_for_each(parse_article_header1, tokens, 0, node)
+    parse_for_each(parse_bill_header1, tokens, 0, node)
 
 def parse_json_amendements(data, node):
     if 'amendements' in data:
