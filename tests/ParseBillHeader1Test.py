@@ -5,6 +5,26 @@ from DuralexTestCase import DuralexTestCase
 import duralex.alinea_parser as parser
 
 class ParseBillHeader1Test(DuralexTestCase):
+    def test_header1_raw_content(self):
+        self.assertEqualAST(
+            self.call_parse_func(
+                parser.parse_bill_header1,
+                (u"I. Ceci est un header1.")
+            ),
+            {'children':[
+                {
+                    'type': u'bill-header1',
+                    'order': 1,
+                    'children': [
+                        {
+                            'content': u'Ceci est un header1.',
+                            'type': u'raw-content'
+                        }
+                    ]
+                }
+            ]}
+        )
+
     def test_header1_incomplete_edit_header2_edit(self):
         self.assertEqualAST(
             self.call_parse_func(

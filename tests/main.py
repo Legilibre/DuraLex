@@ -4,6 +4,8 @@
 import unittest
 
 from ParseBillHeader1Test import ParseBillHeader1Test
+from ParseBillHeader2Test import ParseBillHeader2Test
+from ParseBillHeader3Test import ParseBillHeader3Test
 from ParseRawContentTest import ParseRawContentTest
 from ParseArticleReferenceTest import ParseArticleReferenceTest
 from ParseEditTest import ParseEditTest

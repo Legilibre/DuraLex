@@ -4,23 +4,23 @@ from DuralexTestCase import DuralexTestCase
 
 import duralex.alinea_parser as parser
 
-class ParseBillHeader2Test(DuralexTestCase):
-    def test_header2_raw_content(self):
+class ParseBillHeader3Test(DuralexTestCase):
+    def test_header3_raw_content(self):
         self.assertEqualAST(
             self.call_parse_func(
                 parser.parse_bill_header2,
-                u"42° Ceci est un header2."
+                u"b) Ceci est un header3."
             ),
             {'children':[
                 {
-                    'type': u'bill-header2',
-                    'order': 42,
+                    'type': u'bill-header3',
+                    'order': 2,
                     'children': [
                         {
-                            'content': u'Ceci est un header2.',
-                            'type': u'raw-content'
+                            'type': u'raw-content',
+                            'content': u'Ceci est un header3.'
                         }
-                    ],
+                    ]
                 }
             ]}
         )

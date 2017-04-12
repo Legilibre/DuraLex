@@ -1188,7 +1188,7 @@ def parse_edit(tokens, i, parent):
 
 def parse_raw_article_content(tokens, i, parent):
     node = create_node(parent, {
-        'type': 'article-content',
+        'type': 'raw-content',
         'content': ''
     })
 
@@ -1364,8 +1364,10 @@ def parse_bill_header1(tokens, i, parent):
     j = i
     i = parse_edit(tokens, i, node)
     i = parse_for_each(parse_bill_header2, tokens, i, node)
-    if i == j:
+    if len(node['children']) == 0:
         i = parse_raw_article_content(tokens, i, node)
+        i = parse_for_each(parse_bill_header2, tokens, i, node)
+
     if len(node['children']) == 0:
         remove_node(parent, node)
     else:
@@ -1383,7 +1385,6 @@ def parse_bill_header2(tokens, i, parent):
 
     node = create_node(parent, {
         'type': 'bill-header2',
-        'order': 0,
         'children': [],
     })
 
@@ -1395,13 +1396,18 @@ def parse_bill_header2(tokens, i, parent):
 
         node['order'] = parse_int(tokens[i])
         # skip {number}°
-        i = alinea_lexer.skip_to_next_word(tokens, i + 2)
+        i += 2
+        i = alinea_lexer.skip_to_next_word(tokens, i)
     else:
         remove_node(parent, node)
         node = parent
 
+    j = i
     i = parse_edit(tokens, i, node)
     i = parse_for_each(parse_bill_header3, tokens, i, node)
+    if len(node['children']) == 0 and 'order' in node:
+        i = parse_raw_article_content(tokens, i, node)
+        i = parse_for_each(parse_bill_header3, tokens, i, node)
 
     if node != parent and len(node['children']) == 0:
         remove_node(parent, node)
@@ -1424,6 +1430,10 @@ def parse_bill_header3(tokens, i, parent):
     debug(parent, tokens, i, 'parse_bill_header3')
 
     i = alinea_lexer.skip_spaces(tokens, i)
+    if i >= len(tokens):
+        remove_node(parent, node)
+        return i
+
     match = re.compile('([a-z]+)').match(tokens[i])
     if match and (tokens[i + 1] == u')' or (tokens[i + 2] == u'(' and tokens[i + 5] == u')')):
         node['order'] = ord(match.group()[0].encode('utf-8')) - ord('a') + 1
@@ -1437,7 +1447,10 @@ def parse_bill_header3(tokens, i, parent):
         remove_node(parent, node)
         node = parent
 
+    j = i
     i = parse_edit(tokens, i, node)
+    if len(node['children']) == 0 and 'order' in node:
+        i = parse_raw_article_content(tokens, i, node)
 
     if node != parent and len(node['children']) == 0:
         remove_node(parent, node)
