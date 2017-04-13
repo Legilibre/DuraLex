@@ -61,3 +61,23 @@ class ParseWordsReferenceTest(DuralexTestCase):
                 }
             ]}
         )
+
+    def test_after_words(self):
+        self.assertEqualAST(
+            self.call_parse_func(
+                parser.parse_words_reference,
+                u"après les mots : \"ceci est un test\""
+            ),
+            {'children':[
+                {
+                    'type': u'words-reference',
+                    'position': u'after',
+                    'children': [
+                        {
+                            'type': u'quote',
+                            'words': u'ceci est un test'
+                        }
+                    ]
+                }
+            ]}
+        )

@@ -53,3 +53,46 @@ class ParseHeader1DefinitionTest(DuralexTestCase):
                 }
             ]}
         )
+
+    def test_scope_with_quotes(self):
+        self.assertEqualAST(
+            self.call_parse_func(
+                parser.parse_header1_definition,
+                (u"des III à V ainsi rédigés :\n"
+                u"\"ceci est le contenu du header1 3\"\n"
+                u"\"ceci est le contenu du header1 4\"\n"
+                u"\"ceci est le contenu du header1 5\"")
+            ),
+            {'children': [
+                {
+                    'type': u'header1',
+                    'order': 3,
+                    'children': [
+                        {
+                            'type': u'quote',
+                            'words': u'ceci est le contenu du header1 3'
+                        }
+                    ],
+                },
+                {
+                    'type': u'header1',
+                    'order': 4,
+                    'children': [
+                        {
+                            'type': u'quote',
+                            'words': u'ceci est le contenu du header1 4'
+                        }
+                    ],
+                },
+                {
+                    'type': u'header1',
+                    'order': 5,
+                    'children': [
+                        {
+                            'type': u'quote',
+                            'words': u'ceci est le contenu du header1 5'
+                        }
+                    ],
+                }
+            ]}
+        )

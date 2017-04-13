@@ -45,7 +45,7 @@ class ParseHeader2DefinitionTest(DuralexTestCase):
             ]}
         )
 
-    def test_header2_order_letter_adverb(self):
+    def test_header2_order_suborder(self):
         self.assertEqualAST(
             self.call_parse_func(
                 parser.parse_header2_definition,
@@ -58,5 +58,59 @@ class ParseHeader2DefinitionTest(DuralexTestCase):
                     'isBis': True,
                     'subOrder': 'A'
                 }
+            ]}
+        )
+
+    def test_scope_with_quotes(self):
+        self.assertEqualAST(
+            self.call_parse_func(
+                parser.parse_header2_definition,
+                (u"des 5° à 8° ainsi rédigés :\n"
+                u"\"ceci est le contenu du header2 5\"\n"
+                u"\"ceci est le contenu du header2 6\"\n"
+                u"\"ceci est le contenu du header2 7\"\n"
+                u"\"ceci est le contenu du header2 8\"")
+            ),
+            {'children': [
+                {
+                    'type': u'header2',
+                    'order': 5,
+                    'children': [
+                        {
+                            'type': u'quote',
+                            'words': u'ceci est le contenu du header2 5'
+                        }
+                    ],
+                },
+                {
+                    'type': u'header2',
+                    'order': 6,
+                    'children': [
+                        {
+                            'type': u'quote',
+                            'words': u'ceci est le contenu du header2 6'
+                        }
+                    ],
+                },
+                {
+                    'type': u'header2',
+                    'order': 7,
+                    'children': [
+                        {
+                            'type': u'quote',
+                            'words': u'ceci est le contenu du header2 7'
+                        }
+                    ],
+                },
+                {
+                    'type': u'header2',
+                    'order': 8,
+                    'children': [
+                        {
+                            'type': u'quote',
+                            'words': u'ceci est le contenu du header2 8'
+                        }
+                    ],
+                },
             ]}
         )

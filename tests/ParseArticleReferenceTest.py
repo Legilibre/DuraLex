@@ -155,3 +155,33 @@ class ParseArticleReferenceTest(DuralexTestCase):
                 }
             ]}
         )
+
+    def test_article_id_same_code(self):
+        self.assertEqualAST(
+            self.call_parse_func(
+                parser.parse_article_reference,
+                u"l'article L. 123-2 du même code",
+                {'children':[
+                    {
+                        'codeName': u'code de l\'éducation',
+                        'type': u'code-reference'
+                    }
+                ]}
+            ),
+            {'children': [
+                {
+                    'codeName': u'code de l\'éducation',
+                    'type': u'code-reference'
+                },
+                {
+                    'id': u'L. 123-2',
+                    'type': u'article-reference',
+                    'children': [
+                        {
+                            'codeName': u'code de l\'éducation',
+                            'type': u'code-reference'
+                        }
+                    ]
+                }
+            ]}
+        )

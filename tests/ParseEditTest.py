@@ -427,3 +427,47 @@ class ParseEditTest(DuralexTestCase):
                 }
             ]}
         )
+
+    def test_rename_article(self):
+        self.assertEqualAST(
+            self.call_parse_func(
+                parser.parse_edit,
+                u"l'article L. 123-4-1 devient l'article L. 123-4-2"
+            ),
+            {'children':[
+                {
+                    'type': u'edit',
+                    'editType': u'rename',
+                    'children': [
+                        {
+                            'type': u'article-reference',
+                            'id': u'L. 123-4-1'
+                        },
+                        {
+                            'type': u'article',
+                            'id': u'L. 123-4-2'
+                        }
+                    ]
+                }
+            ]}
+        )
+
+    def test_restore_article(self):
+        self.assertEqualAST(
+            self.call_parse_func(
+                parser.parse_edit,
+                u"l'article L. 123-4-1 est ainsi rétabli"
+            ),
+            {'children':[
+                {
+                    'type': u'edit',
+                    'editType': u'add',
+                    'children': [
+                        {
+                            'type': u'article-reference',
+                            'id': u'L. 123-4-1'
+                        }
+                    ]
+                }
+            ]}
+        )
