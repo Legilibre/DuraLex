@@ -1026,6 +1026,41 @@ def parse_header2_reference(tokens, i, parent):
     debug(parent, tokens, i, 'parse_header2_reference end')
     return i
 
+def parse_header3_reference(tokens, i, parent):
+    if i >= len(tokens):
+        return i
+
+    node = create_node(parent, {
+        'type': 'header3-reference'
+    })
+    debug(parent, tokens, i, 'parse_header3_reference')
+    j = i
+    i = parse_position(tokens, i, node)
+
+    # le {orderLetter} ({articlePartRef})
+    # du {orderLetter} ({articlePartRef})
+    # au {orderLetter} ({articlePartRef})
+    if tokens[i].lower() in [u'le', u'du', u'au'] and re.compile(u'[a-z]').match(tokens[i + 2]):
+        node['order'] = ord(str(tokens[i + 2])) - ord('a') + 1
+        i += 4
+        i = parse_multiplicative_adverb(tokens, i, node)
+        i = parse_article_part_reference(tokens, i, node)
+    # le même {orderLetter} ({articlePartRef})
+    # du même {orderLetter} ({articlePartRef})
+    # au même {orderLetter} ({articlePartRef})
+    elif tokens[i].lower() in [u'le', u'du', u'au'] and tokens[i + 2] == u'même' and re.compile(u'[a-z]').match(tokens[i + 4]):
+        node['order'] = ord(str(tokens[i + 4])) - ord('a') + 1
+        i += 6
+        i = parse_multiplicative_adverb(tokens, i, node)
+        i = parse_article_part_reference(tokens, i, node)
+    else:
+        debug(parent, tokens, i, 'parse_header3_reference none')
+        remove_node(parent, node)
+        return j
+    # i = parse_quote(tokens, i, node)
+    debug(parent, tokens, i, 'parse_header3_reference end')
+    return i
+
 def parse_header1_reference(tokens, i, parent):
     if i >= len(tokens):
         return i
@@ -1086,6 +1121,11 @@ def parse_article_part_reference(tokens, i, parent):
     i = j
 
     j = parse_header2_reference(tokens, i, parent)
+    if j != i:
+        return j
+    i = j
+
+    j = parse_header3_reference(tokens, i, parent)
     if j != i:
         return j
     i = j
