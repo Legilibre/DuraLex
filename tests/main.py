@@ -28,6 +28,7 @@ from ParseHeader3DefinitionTest import ParseHeader3DefinitionTest
 from ParseHeader3ReferenceTest import ParseHeader3ReferenceTest
 from ResolveFullyQualifiedReferencesVisitorTest import ResolveFullyQualifiedReferencesVisitorTest
 from SortReferencesVisitorTest import SortReferencesVisitorTest
+from ForkReferenceVisitorTest import ForkReferenceVisitorTest
 
 if __name__ == '__main__':
     unittest.main()

@@ -14,6 +14,7 @@ import duralex.alinea_parser
 import duralex.bill_parser
 from duralex.DeleteEmptyChildrenVisitor import DeleteEmptyChildrenVisitor
 from duralex.DeleteParentVisitor import DeleteParentVisitor
+from duralex.ForkReferenceVisitor import ForkReferenceVisitor
 from duralex.SortReferencesVisitor import SortReferencesVisitor
 from duralex.ResolveFullyQualifiedReferencesVisitor import ResolveFullyQualifiedReferencesVisitor
 from duralex.ResolveFullyQualifiedDefinitionsVisitor import ResolveFullyQualifiedDefinitionsVisitor
@@ -28,6 +29,7 @@ def handle_data(data, diff, url):
         data = duralex.bill_parser.parse_bill(data, url)
     ast = duralex.alinea_parser.parse_json_data(data)
 
+    ForkReferenceVisitor().visit(ast)
     ResolveFullyQualifiedDefinitionsVisitor().visit(ast)
     ResolveFullyQualifiedReferencesVisitor().visit(ast)
     SortReferencesVisitor().visit(ast)
