@@ -204,7 +204,7 @@ class ParseArticleReferenceTest(DuralexTestCase):
     def test_article_id_list(self):
         self.assertEqualAST(
             self.call_parse_func(
-                parser.parse_reference_list,
+                parser.parse_article_reference,
                 u"les articles 3, 4 et 5"
             ),
             {'children':[
@@ -226,7 +226,7 @@ class ParseArticleReferenceTest(DuralexTestCase):
     def test_article_id_list_code_name(self):
         self.assertEqualAST(
             self.call_parse_func(
-                parser.parse_reference_list,
+                parser.parse_article_reference,
                 u"les articles 3, 4 et 5 du code de l'éducation"
             ),
             {'children':[

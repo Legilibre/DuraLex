@@ -713,7 +713,8 @@ def parse_article_reference(tokens, i, parent):
         i = alinea_lexer.skip_spaces(tokens, i)
         i = parse_article_id(tokens, i, node)
     # les articles
-    elif tokens[i].lower() in [u'l', u'les'] and tokens[i + 2].startswith(u'article'):
+    # des articles
+    elif tokens[i].lower() in [u'des', u'les'] and tokens[i + 2].startswith(u'article'):
         i += 3
         i = alinea_lexer.skip_spaces(tokens, i)
         i = parse_article_id(tokens, i, node)
@@ -836,6 +837,7 @@ def parse_position(tokens, i, node):
 def parse_alinea_reference(tokens, i, parent):
     if i >= len(tokens):
         return i
+
     node = create_node(parent, {
         'type': 'alinea-reference',
         'children': []
@@ -852,7 +854,8 @@ def parse_alinea_reference(tokens, i, parent):
         i += 6
     # l'alinéa
     elif tokens[i].lower() == u'l' and tokens[i + 2].startswith(u'alinéa'):
-        i += 4
+        node['order'] = parse_int(tokens[i + 4])
+        i += 6
     # de l'alinéa
     elif tokens[i] == 'de' and tokens[i + 2].lower() == [u'l'] and tokens[i + 4].startswith(u'alinéa'):
         i += 6
@@ -896,6 +899,33 @@ def parse_alinea_reference(tokens, i, parent):
     elif tokens[i].lower() == u'alinéa' and is_number(tokens[i + 2]):
         node['order'] = parse_int(tokens[i + 2])
         i += 4
+    # les alinéas
+    # des alinéas
+    elif tokens[i].lower() in [u'les', u'des'] and tokens[i + 2] == u'alinéas':
+        node['order'] = parse_int(tokens[i + 4])
+        i += 5
+        i = alinea_lexer.skip_spaces(tokens, i)
+        nodes = []
+        while tokens[i] == u',':
+            nodes.append(create_node(parent, {
+                'type':'alinea-reference',
+                'order': parse_int(tokens[i + 2])
+            }))
+            i += 3
+            i = alinea_lexer.skip_spaces(tokens, i)
+        if tokens[i] == u'et':
+            i += 2
+            nodes.append(create_node(parent, {
+                'type':'alinea-reference',
+                'order': parse_int(tokens[i])
+            }))
+            i += 2
+        i = parse_article_part_reference(tokens, i, node)
+        if len(node['children']) != 0:
+            for n in nodes:
+                for c in node['children']:
+                    push_node(n, copy_node(c))
+        return i
     else:
         debug(parent, tokens, i, 'parse_alinea_reference none')
         remove_node(parent, node)
@@ -1465,6 +1495,11 @@ def parse_one_of(fns, tokens, i, parent):
     return i
 
 def parse_reference(tokens, i, parent):
+
+    # node = create_node(parent, {'type':'reference'})
+    node = parent
+
+    j = i
     i = parse_one_of(
         [
             parse_law_reference,
@@ -1479,14 +1514,12 @@ def parse_reference(tokens, i, parent):
         ],
         tokens,
         i,
-        parent
+        node
     )
 
-    if i >= len(tokens):
-        return i
-
-    # if tokens[i] == u'et':
-    #     i += 2
+    # if len(node['children']) == 0:
+    #     remove_node(parent, node)
+    #     return j
 
     return i
 

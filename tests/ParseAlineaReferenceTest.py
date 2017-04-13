@@ -9,11 +9,12 @@ class ParseAlineaReferenceTest(DuralexTestCase):
         self.assertEqualAST(
             self.call_parse_func(
                 parser.parse_alinea_reference,
-                u"l'alinéa"
+                u"l'alinéa 42"
             ),
             {'children': [
                 {
-                    'type': u'alinea-reference'
+                    'type': u'alinea-reference',
+                    'order': 42
                 }
             ]}
         )
@@ -286,6 +287,52 @@ class ParseAlineaReferenceTest(DuralexTestCase):
                     'type': u'alinea-reference',
                     'position': u'before',
                     'order': -1
+                }
+            ]}
+        )
+
+    def test_alinea_id_list(self):
+        self.assertEqualAST(
+            self.call_parse_func(
+            parser.parse_alinea_reference,
+                u"les alinéas 3, 4 et 5"
+            ),
+            {'children':[
+                {
+                    'type': u'alinea-reference',
+                    'order': 3
+                },
+                {
+                    'type': u'alinea-reference',
+                    'order': 4
+                },
+                {
+                    'type': u'alinea-reference',
+                    'order': 5
+                }
+            ]}
+        )
+
+    def test_alinea_id_of_article_id_list(self):
+        self.assertEqualAST(
+            self.call_parse_func(
+            parser.parse_alinea_reference,
+                u"l'alinéa 3 des articles 2 et 3"
+            ),
+            {'children':[
+                {
+                    'type': u'alinea-reference',
+                    'order': 3,
+                    'children': [
+                        {
+                            'type': u'article-reference',
+                            'id': u'2'
+                        },
+                        {
+                            'type': u'article-reference',
+                            'id': u'3'
+                        }
+                    ]
                 }
             ]}
         )
