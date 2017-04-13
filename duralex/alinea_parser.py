@@ -352,10 +352,10 @@ def parse_article_definition(tokens, i, parent):
     debug(parent, tokens, i, 'parse_article_definition')
 
     # un article
-    if tokens[i] == u'un' and tokens[i + 2] == u'article':
+    if tokens[i].lower() == u'un' and tokens[i + 2] == u'article':
         i += 4
     # l'article
-    elif tokens[i] == u'l' and tokens[i + 2] == u'article':
+    elif tokens[i].lower() == u'l' and tokens[i + 2] == u'article':
         i += 4
     else:
         debug(parent, tokens, i, 'parse_article_definition none')
@@ -975,6 +975,8 @@ def parse_words_reference(tokens, i, parent):
     if tokens[i].lower() in [u'le', u'les', u'des'] and tokens[i + 2].startswith(u'mot'):
         i = alinea_lexer.skip_to_quote_start(tokens, i)
         i = parse_for_each(parse_quote, tokens, i, node)
+        i = alinea_lexer.skip_to_next_word(tokens, i)
+        i = parse_reference(tokens, i, node)
     # le nombre
     # le chiffre
     elif tokens[i].lower() in [u'le'] and tokens[i + 2] in [u'nombre', u'chiffre']:

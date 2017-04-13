@@ -81,3 +81,34 @@ class ParseWordsReferenceTest(DuralexTestCase):
                 }
             ]}
         )
+
+    def test_words_reference_position_in_article(self):
+        self.assertEqualAST(
+            self.call_parse_func(
+                parser.parse_words_reference,
+                u"après les mots : \"aux dispositions de l'article L. 123-5\", la fin de l'article L. 112-3 du code de la recherche"
+            ),
+            {'children':[
+                {
+                    'type': u'words-reference',
+                    'position': u'after',
+                    'children': [
+                        {
+                            'type': u'quote',
+                            'words': u'aux dispositions de l\'article L. 123-5'
+                        },
+                        {
+                            'type': u'article-reference',
+                            'position': u'end',
+                            'id': u'L. 112-3',
+                            'children': [
+                                {
+                                    'type': u'code-reference',
+                                    'codeName': u'code de la recherche'
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]}
+        )
