@@ -200,3 +200,65 @@ class ParseArticleReferenceTest(DuralexTestCase):
                 }
             ]}
         )
+
+    def test_article_id_list(self):
+        self.assertEqualAST(
+            self.call_parse_func(
+                parser.parse_reference_list,
+                u"les articles 3, 4 et 5"
+            ),
+            {'children':[
+                {
+                    'type': u'article-reference',
+                    'id': u'3'
+                },
+                {
+                    'type': u'article-reference',
+                    'id': u'4'
+                },
+                {
+                    'type': u'article-reference',
+                    'id': u'5'
+                }
+            ]}
+        )
+
+    def test_article_id_list_code_name(self):
+        self.assertEqualAST(
+            self.call_parse_func(
+                parser.parse_reference_list,
+                u"les articles 3, 4 et 5 du code de l'éducation"
+            ),
+            {'children':[
+                {
+                    'type': u'article-reference',
+                    'id': u'3',
+                    'children': [
+                        {
+                            'type': u'code-reference',
+                            'codeName': u'code de l\'éducation'
+                        }
+                    ]
+                },
+                {
+                    'type': u'article-reference',
+                    'id': u'4',
+                    'children': [
+                        {
+                            'type': u'code-reference',
+                            'codeName': u'code de l\'éducation'
+                        }
+                    ]
+                },
+                {
+                    'type': u'article-reference',
+                    'id': u'5',
+                    'children': [
+                        {
+                            'type': u'code-reference',
+                            'codeName': u'code de l\'éducation'
+                        }
+                    ]
+                }
+            ]}
+        )

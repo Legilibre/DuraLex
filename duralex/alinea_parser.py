@@ -695,7 +695,6 @@ def parse_article_reference(tokens, i, parent):
 
     node = create_node(parent, {
         'type': 'article-reference',
-        'id': ''
     })
 
     debug(parent, tokens, i, 'parse_article_reference')
@@ -707,16 +706,60 @@ def parse_article_reference(tokens, i, parent):
     if tokens[i].lower() in [u'de', u'à'] and tokens[i + 2] == u'l' and tokens[i + 4] == u'article':
         i += 5
         i = alinea_lexer.skip_spaces(tokens, i)
+        i = parse_article_id(tokens, i, node)
     # l'article
-    elif tokens[i].lower() == u'l' and tokens[i + 1] == alinea_lexer.TOKEN_SINGLE_QUOTE and tokens[i + 2] == u'article':
+    elif tokens[i].lower() == u'l' and tokens[i + 2].startswith(u'article'):
         i += 3
         i = alinea_lexer.skip_spaces(tokens, i)
+        i = parse_article_id(tokens, i, node)
+    # les articles
+    elif tokens[i].lower() in [u'l', u'les'] and tokens[i + 2].startswith(u'article'):
+        i += 3
+        i = alinea_lexer.skip_spaces(tokens, i)
+        i = parse_article_id(tokens, i, node)
+        i = alinea_lexer.skip_spaces(tokens, i)
+        nodes = []
+        while tokens[i] == u',':
+            i += 2
+            nodes.append(create_node(parent, {'type':'article-reference'}))
+            i = parse_article_id(tokens, i, nodes[-1])
+            i = alinea_lexer.skip_spaces(tokens, i)
+        if tokens[i] == u'et':
+            i += 2
+            nodes.append(create_node(parent, {'type':'article-reference'}))
+            i = parse_article_id(tokens, i, nodes[-1])
+        # i = parse_article_part_reference(tokens, i, node)
+        # de la loi
+        # de l'ordonnance
+        # du code
+        # les mots
+        # l'alinéa
+        i = parse_one_of(
+            [
+                parse_law_reference,
+                parse_code_reference,
+                parse_words_reference,
+                parse_alinea_reference
+            ],
+            tokens,
+            i,
+            node
+        )
+        # if there are are descendant *-reference nodes parsed by the previous call to
+        # parse_one_of, we must make sure they apply to all the article-reference nodes
+        # we just created
+        if len(node['children']) != 0:
+            for n in nodes:
+                for c in node['children']:
+                    push_node(n, copy_node(c))
+        return i
     # elif tokens[i] == u'un' and tokens[i + 2] == u'article':
     #     i += 4
     # Article {articleNumber}
     elif tokens[i].lower().startswith(u'article'):
         i += 1
         i = alinea_lexer.skip_spaces(tokens, i)
+        i = parse_article_id(tokens, i, node)
     # le même article
     # du même article
     elif tokens[i].lower() in [u'le', u'du'] and tokens[i + 2] == u'même' and tokens[i + 4] == u'article':
@@ -733,8 +776,6 @@ def parse_article_reference(tokens, i, parent):
     else:
         remove_node(parent, node)
         return j
-
-    i = parse_article_id(tokens, i, node)
 
     # i = parse_article_part_reference(tokens, i, node)
     # de la loi
