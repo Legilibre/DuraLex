@@ -431,22 +431,38 @@ def parse_mention_definition(tokens, i, parent):
 def parse_header1_definition(tokens, i, parent):
     if i >= len(tokens):
         return i
-    node = create_node(parent, {
-        'type': 'header1',
-        'children': []
-    })
+
     debug(parent, tokens, i, 'parse_header1_definition')
     # un {romanPartNumber}
     if tokens[i].lower() == u'un' and is_roman_number(tokens[i + 2]):
-        node['order'] = parse_roman_number(tokens[i + 2])
+        node = create_node(parent, {
+            'type': 'header1',
+            'order': parse_roman_number(tokens[i + 2]),
+            'children': []
+        })
         i += 4
         i = alinea_lexer.skip_spaces(tokens, i)
         if i + 2 < len(tokens) and tokens[i] == u'ainsi' and tokens[i + 2] == u'rédigé':
             i = alinea_lexer.skip_to_quote_start(tokens, i)
             i = parse_quote(tokens, i, node)
+    # des {start} à {end}
+    elif (tokens[i].lower() == u'des' and is_roman_number(tokens[i + 2])
+        and tokens[i + 4] == u'à' and is_roman_number(tokens[i + 6])):
+        start = parse_roman_number(tokens[i + 2])
+        end = parse_roman_number(tokens[i + 6])
+        i += 8
+        # ainsi rédigés
+        if (i + 2 < len(tokens) and tokens[i + 2].startswith(u'rédigé')
+            or (i + 4 < len(tokens) and tokens[i + 4].startswith(u'rédigé'))):
+            i = alinea_lexer.skip_to_quote_start(tokens, i + 4)
+            i = parse_for_each(
+                parse_quote,
+                tokens,
+                i,
+                lambda : create_node(parent, {'type': 'header1', 'order': start + len(parent['children']), 'children': []})
+            )
     else:
         debug(parent, tokens, i, 'parse_header1_definition end')
-        remove_node(parent, node)
         return i
 
     return i
