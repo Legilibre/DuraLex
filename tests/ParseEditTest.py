@@ -137,6 +137,40 @@ class ParseEditTest(DuralexTestCase):
             ]}
         )
 
+    def test_single_word_replaced_by_single_word(self):
+        self.assertEqualAST(
+            self.call_parse_func(
+                parser.parse_edit,
+                "le mot : \"original\" est remplacé par le mot : \"remplacement\""
+            ),
+            {'children': [
+                {
+                    'type': u'edit',
+                    'editType': u'replace',
+                    'children': [
+                        {
+                            'type': u'words-reference',
+                            'children': [
+                                {
+                                    'type': u'quote',
+                                    'words': u'original'
+                                }
+                            ]
+                        },
+                        {
+                            'type': u'words',
+                            'children': [
+                                {
+                                    'type': u'quote',
+                                    'words': u'remplacement'
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]}
+        )
+
     def test_before_header2_add_header2_suborder(self):
         self.assertEqualAST(
             self.call_parse_func(
@@ -332,6 +366,60 @@ class ParseEditTest(DuralexTestCase):
                                 {
                                     'type': u'quote',
                                     'words': u'ceci est une phrase'
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]}
+        )
+
+    def test_is_ratified(self):
+        self.assertEqualAST(
+            self.call_parse_func(
+                parser.parse_edit,
+                "l'article 42 est ratifié"
+            ),
+            {'children':[
+                {
+                    'type': u'edit',
+                    'editType': u'ratified',
+                    'children': [
+                        {
+                            'type': u'article-reference',
+                            'id': u'42'
+                        }
+                    ]
+                }
+            ]}
+        )
+
+    def test_reference_replaced_by_reference(self):
+        self.assertEqualAST(
+            self.call_parse_func(
+                parser.parse_edit,
+                u"la référence : \"L. 321-5\" est remplacée par la référence : \"L. 313-1\""
+            ),
+            {'children':[
+                {
+                    'type': u'edit',
+                    'editType': u'replace',
+                    'children': [
+                        {
+                            'type': u'words-reference',
+                            'children': [
+                                {
+                                    'type': u'quote',
+                                    'words': u'L. 321-5'
+                                }
+                            ]
+                        },
+                        {
+                            'type': u'words',
+                            'children': [
+                                {
+                                    'type': u'quote',
+                                    'words': u'L. 313-1'
                                 }
                             ]
                         }

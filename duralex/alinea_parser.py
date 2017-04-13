@@ -188,9 +188,11 @@ def parse_law_reference(tokens, i, parent):
         # skip {lawDate} and the following space
         i += 7
 
-    # i = alinea_lexer.skip_spaces(tokens, i)
-    # if tokens[i] == u'relative':
-    #     print('foo')
+    i = alinea_lexer.skip_spaces(tokens, i)
+    if i < len(tokens) and tokens[i] == u'modifiant':
+        j = alinea_lexer.skip_to_token(tokens, i, 'code')
+        if j < len(tokens):
+            i = parse_code_reference(tokens, j, node)
 
     debug(parent, tokens, i, 'parse_law_reference end')
 
@@ -655,7 +657,8 @@ def parse_article_reference(tokens, i, parent):
         i += 1
         i = alinea_lexer.skip_spaces(tokens, i)
     # le même article
-    elif tokens[i].lower() == u'le' and tokens[i + 2] == u'même' and tokens[i + 4] == u'article':
+    # du même article
+    elif tokens[i].lower() in [u'le', u'du'] and tokens[i + 2] == u'même' and tokens[i + 4] == u'article':
         i += 6
         article_refs = filter_nodes(
             get_root(parent),
@@ -1105,14 +1108,14 @@ def parse_edit(tokens, i, parent):
     # est abrogée
     # sont abrogés
     # sont abrogées
-    if tokens[i + 2].startswith(u'supprimé') or tokens[i + 2].startswith(u'abrogé'):
+    if i + 2 < len(tokens) and (tokens[i + 2].startswith(u'supprimé') or tokens[i + 2].startswith(u'abrogé')):
         node['editType'] = 'delete'
         i = alinea_lexer.skip_to_end_of_line(tokens, i)
     # est ainsi rédigé
     # est ainsi rédigée
     # est ainsi modifié
     # est ainsi modifiée
-    elif tokens[i + 4].startswith(u'rédigé') or tokens[i + 4].startswith(u'modifié'):
+    elif i + 4 < len(tokens) and (tokens[i + 4].startswith(u'rédigé') or tokens[i + 4].startswith(u'modifié')):
         node['editType'] = 'edit'
         i = alinea_lexer.skip_to_end_of_line(tokens, i)
         i = alinea_lexer.skip_spaces(tokens, i)
@@ -1121,7 +1124,7 @@ def parse_edit(tokens, i, parent):
     # est remplacée par
     # sont remplacés par
     # sont remplacées par
-    elif tokens[i + 2].startswith(u'remplacé'):
+    elif i + 2 < len(tokens) and (tokens[i + 2].startswith(u'remplacé')):
         node['editType'] = 'replace'
         i += 6
         i = parse_definition(tokens, i, node)
@@ -1145,19 +1148,19 @@ def parse_edit(tokens, i, parent):
     # est ajoutée
     # sont ajoutés
     # sont ajoutées
-    elif tokens[i + 2].startswith(u'inséré') or tokens[i + 2].startswith(u'ajouté'):
+    elif i + 2 < len(tokens) and (tokens[i + 2].startswith(u'inséré') or tokens[i + 2].startswith(u'ajouté')):
         node['editType'] = 'add'
         i += 4
         i = parse_definition(tokens, i, node)
         i = alinea_lexer.skip_to_end_of_line(tokens, i)
     # est ainsi rétabli
-    elif tokens[i + 4].startswith(u'rétabli'):
+    elif i + 4 < len(tokens) and tokens[i + 4].startswith(u'rétabli'):
         node['editType'] = 'add'
         i = alinea_lexer.skip_to_end_of_line(tokens, i)
         i = alinea_lexer.skip_spaces(tokens, i)
         i = parse_definition(tokens, i, node)
     # est complété par
-    elif tokens[i + 2] == u'complété':
+    elif i + 2 < len(tokens) and tokens[i + 2] == u'complété':
         node['editType'] = 'add'
         i += 6
         # i = parse_definition(tokens, i, node)
@@ -1168,6 +1171,10 @@ def parse_edit(tokens, i, parent):
         node['editType'] = 'rename'
         i += 2
         i = parse_definition(tokens, i, node)
+    # est ratifié:
+    elif i + 2 < len(tokens) and (tokens[i].lower() == u'est' and tokens[i + 2] == u'ratifié'):
+        node['editType']= 'ratified'
+        i += 4
     else:
         i = r
         debug(parent, tokens, i, 'parse_edit remove')

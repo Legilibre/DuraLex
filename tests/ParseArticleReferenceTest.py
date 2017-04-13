@@ -131,3 +131,27 @@ class ParseArticleReferenceTest(DuralexTestCase):
                 }
             ]}
         )
+
+    def test_the_same_article_2(self):
+        self.assertEqualAST(
+            self.call_parse_func(
+                parser.parse_article_reference,
+                u"du même article",
+                {'children':[
+                    {
+                        'id': u'L. 111-5',
+                        'type': u'article-reference'
+                    }
+                ]}
+            ),
+            {'children':[
+                {
+                    'id': u'L. 111-5',
+                    'type': u'article-reference'
+                },
+                {
+                    'id': u'L. 111-5',
+                    'type': u'article-reference'
+                }
+            ]}
+        )

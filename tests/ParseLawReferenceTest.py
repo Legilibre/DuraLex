@@ -9,7 +9,7 @@ class ParseLawReferenceTest(DuralexTestCase):
         self.assertEqualAST(
             self.call_parse_func(
                 parser.parse_law_reference,
-                "l'ordonnance n° 2008-1305 du 11 décembre 2008"
+                u"l'ordonnance n° 2008-1305 du 11 décembre 2008"
             ),
             {'children':[
                 {
@@ -25,7 +25,7 @@ class ParseLawReferenceTest(DuralexTestCase):
         self.assertEqualAST(
             self.call_parse_func(
                 parser.parse_law_reference,
-                "de l'ordonnance n° 2008-1305 du 11 décembre 2008"
+                u"de l'ordonnance n° 2008-1305 du 11 décembre 2008"
             ),
             {'children':[
                 {
@@ -41,7 +41,7 @@ class ParseLawReferenceTest(DuralexTestCase):
         self.assertEqualAST(
             self.call_parse_func(
                 parser.parse_law_reference,
-                "la loi n° 2007-1199"
+                u"la loi n° 2007-1199"
             ),
             {'children':[
                 {
@@ -55,7 +55,7 @@ class ParseLawReferenceTest(DuralexTestCase):
         self.assertEqualAST(
             self.call_parse_func(
                 parser.parse_law_reference,
-                "de la loi n° 2007-1199"
+                u"de la loi n° 2007-1199"
             ),
             {'children':[
                 {
@@ -69,7 +69,7 @@ class ParseLawReferenceTest(DuralexTestCase):
         self.assertEqualAST(
             self.call_parse_func(
                 parser.parse_law_reference,
-                "la loi n° 2007-1199 du 10 août 2007"
+                u"la loi n° 2007-1199 du 10 août 2007"
             ),
             {'children':[
                 {
@@ -84,13 +84,35 @@ class ParseLawReferenceTest(DuralexTestCase):
         self.assertEqualAST(
             self.call_parse_func(
                 parser.parse_law_reference,
-                "de la loi n° 2007-1199 du 10 août 2007"
+                u"de la loi n° 2007-1199 du 10 août 2007"
             ),
             {'children':[
                 {
                     'type': u'law-reference',
                     'lawId': u'2007-1199',
                     'lawDate': u'2007-8-10'
+                }
+            ]}
+        )
+
+    def test_law_with_id_and_code_name(self):
+        self.assertEqualAST(
+            self.call_parse_func(
+                parser.parse_law_reference,
+                u"l'ordonnance n° 2008-1305 du 11 décembre 2008 modifiant la partie législative du code de la recherche"
+            ),
+            {'children':[
+                {
+                    'type': u'law-reference',
+                    'lawType': u'ordonnance',
+                    'lawId': u'2008-1305',
+                    'lawDate': u'2008-12-11',
+                    'children': [
+                        {
+                            'type': u'code-reference',
+                            'codeName': u'code de la recherche'
+                        }
+                    ]
                 }
             ]}
         )

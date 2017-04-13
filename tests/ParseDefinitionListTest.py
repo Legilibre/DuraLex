@@ -9,7 +9,12 @@ class ParseDefinitionListTest(DuralexTestCase):
         self.assertEqualAST(
             self.call_parse_func(
                 parser.parse_definition_list,
-                "cinq phrases et cinq alinéas ainsi rédigés : \n\"alinéa 1\"\n\"alinéa 2\"\n\"alinéa 3\"\n\"alinéa 4\""
+                (u"cinq phrases et cinq alinéas ainsi rédigés : \n"
+                u"\"alinéa 1\"\n"
+                u"\"alinéa 2\"\n"
+                u"\"alinéa 3\"\n"
+                u"\"alinéa 4\"\n"
+                u"\"alinéa 5\"\n")
             ),
             {'children': [
                 {
@@ -48,6 +53,15 @@ class ParseDefinitionListTest(DuralexTestCase):
                         {
                             'type': u'quote',
                             'words': u'alinéa 4'
+                        }
+                    ],
+                    'type': u'alinea'
+                },
+                {
+                    'children': [
+                        {
+                            'type': u'quote',
+                            'words': u'alinéa 5'
                         }
                     ],
                     'type': u'alinea'
@@ -115,6 +129,46 @@ class ParseDefinitionListTest(DuralexTestCase):
                             'words': u'ceci est le contenu du second header2'
                         }
                     ],
+                }
+            ]}
+        )
+
+    def test_n_alineas_with_quotes(self):
+        self.assertEqualAST(
+            self.call_parse_func(
+                parser.parse_definition_list,
+                (u"trois alinéas ainsi rédigés : \n"
+                u"\"alinéa 1\"\n"
+                u"\"alinéa 2\"\n"
+                u"\"alinéa 3\"")
+            ),
+            {'children': [
+                {
+                    'children': [
+                        {
+                            'type': u'quote',
+                            'words': u'alinéa 1'
+                        }
+                    ],
+                    'type': u'alinea'
+                },
+                {
+                    'children': [
+                        {
+                            'type': u'quote',
+                            'words': u'alinéa 2'
+                        }
+                    ],
+                    'type': u'alinea'
+                },
+                {
+                    'children': [
+                        {
+                            'type': u'quote',
+                            'words': u'alinéa 3'
+                        }
+                    ],
+                    'type': u'alinea'
                 }
             ]}
         )
