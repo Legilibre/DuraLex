@@ -501,7 +501,7 @@ def parse_header2_definition(tokens, i, parent):
                 parse_quote,
                 tokens,
                 i,
-                lambda : create_node(parent, {'type': 'header2', 'children': []})
+                lambda : create_node(parent, {'type': 'header2', 'order': start + len(parent['children']), 'children': []})
             )
     else:
         debug(parent, tokens, i, 'parse_header2_definition end')
