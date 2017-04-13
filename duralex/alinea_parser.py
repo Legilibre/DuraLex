@@ -243,6 +243,11 @@ def parse_definition(tokens, i, parent):
         return j
     i = j
 
+    j = parse_header3_definition(tokens, i, parent)
+    if j != i:
+        return j
+    i = j
+
     j = parse_sentence_definition(tokens, i, parent)
     if j != i:
         return j
@@ -521,6 +526,46 @@ def parse_header2_definition(tokens, i, parent):
             )
     else:
         debug(parent, tokens, i, 'parse_header2_definition end')
+        return i
+
+    return i
+
+def parse_header3_definition(tokens, i, parent):
+    if i >= len(tokens):
+        return i
+
+    debug(parent, tokens, i, 'parse_header3_definition')
+
+    # un {orderLetter}
+    if tokens[i].lower() == u'un' and re.compile(u'[a-z]').match(tokens[i + 2]):
+        node = create_node(parent, {
+            'type': 'header3',
+            'order': ord(str(tokens[i + 2])) - ord('a') + 1,
+            'children': []
+        })
+        i += 4
+        i = alinea_lexer.skip_spaces(tokens, i)
+        if i < len(tokens) and tokens[i] == u'ainsi' and tokens[i + 2] == u'rédigé':
+            i = alinea_lexer.skip_to_quote_start(tokens, i + 4)
+            i = parse_quote(tokens, i, node)
+    # des {orderLetter} à {orderLetter}
+    elif (tokens[i].lower() == u'des' and re.compile(u'[a-z]').match(tokens[i + 2])
+        and tokens[i + 4] == u'à' and re.compile(u'[a-z]').match(tokens[i + 6])):
+        start = ord(str(tokens[i + 2])) - ord('a') + 1
+        end = ord(str(tokens[i + 6])) - ord('a') + 1
+        i += 8
+        # ainsi rédigés
+        if (i + 2 < len(tokens) and tokens[i + 2].startswith(u'rédigé')
+            or (i + 4 < len(tokens) and tokens[i + 4].startswith(u'rédigé'))):
+            i = alinea_lexer.skip_to_quote_start(tokens, i + 4)
+            i = parse_for_each(
+                parse_quote,
+                tokens,
+                i,
+                lambda : create_node(parent, {'type': 'header3', 'order': start + len(parent['children']), 'children': []})
+            )
+    else:
+        debug(parent, tokens, i, 'parse_header3_definition end')
         return i
 
     return i
