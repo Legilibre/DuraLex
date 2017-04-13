@@ -33,6 +33,20 @@ class ParseSentenceReferenceTest(DuralexTestCase):
             ]}
         )
 
+    def test_position_sentence_3(self):
+        self.assertEqualAST(
+            self.call_parse_func(
+                parser.parse_sentence_reference,
+                u"la seconde phrase"
+            ),
+            {'children':[
+                {
+                    'type': u'sentence-reference',
+                    'order': 2
+                }
+            ]}
+        )
+
     def test_position_sentence_article_id_code_name(self):
         self.assertEqualAST(
             self.call_parse_func(
@@ -75,6 +89,21 @@ class ParseSentenceReferenceTest(DuralexTestCase):
                             ]
                         }
                     ]
+                }
+            ]}
+        )
+
+    def test_after_the_nth_sentence(self):
+        self.assertEqualAST(
+            self.call_parse_func(
+                parser.parse_sentence_reference,
+                u"après la première phrase"
+            ),
+            {'children':[
+                {
+                    'type': u'sentence-reference',
+                    'position': u'after',
+                    'order': 1,
                 }
             ]}
         )

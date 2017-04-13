@@ -74,6 +74,21 @@ class ParseAlineaReferenceTest(DuralexTestCase):
             ]}
         )
 
+    def test_before_the_last_alinea(self):
+        self.assertEqualAST(
+            self.call_parse_func(
+                parser.parse_alinea_reference,
+                u"avant le dernier alinéa"
+            ),
+            {'children': [
+                {
+                    'type': u'alinea-reference',
+                    'order': -1,
+                    'position': u'before'
+                }
+            ]}
+        )
+
     def test_before_last_alinea(self):
         self.assertEqualAST(
             self.call_parse_func(

@@ -74,6 +74,41 @@ class ParseEditTest(DuralexTestCase):
             ]}
         )
 
+    def test_edit_article_with_quotes(self):
+        self.assertEqualAST(
+            self.call_parse_func(
+                parser.parse_edit,
+                (u"l'article 42 est ainsi rédigé :\n"
+                u"\"ceci est la 1ère phrase\"\n"
+                u"\"ceci est la 2nde phrase\"")
+            ),
+            {'children':[
+                {
+                    'type': u'edit',
+                    'editType': u'edit',
+                    'children': [
+                        {
+                            'type': u'article-reference',
+                            'id': u'42'
+                        },
+                        {
+                            'type': u'words',
+                            'children': [
+                                {
+                                    'type': u'quote',
+                                    'words': u'ceci est la 1ère phrase'
+                                },
+                                {
+                                    'type': u'quote',
+                                    'words': u'ceci est la 2nde phrase'
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]}
+        )
+
     def test_article_completed_by_alinea_with_quote(self):
         self.assertEqualAST(
             self.call_parse_func(
