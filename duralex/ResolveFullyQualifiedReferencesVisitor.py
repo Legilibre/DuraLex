@@ -49,16 +49,5 @@ class ResolveFullyQualifiedReferencesVisitor(AbstractVisitor):
             else:
                 unshift_node(n[len(n) - 1], node)
             return True
-        # If we have multiple *-reference node in a single 'edit' node
-        elif 'type' in node and node['type'] == 'edit' and len(filter_nodes(node, lambda x: x['type'] in AbstractVisitor.REF_TYPES and x['parent'] == node and len(filter_nodes(node, lambda y: y['type'] == x['type'])) == 1)) > 1:
-            local_ctx = [copy_node(item) for item in filter_nodes(node, lambda x: x['type'] in AbstractVisitor.REF_TYPES)]
-            for i in reversed(range(0, len(node['children']))):
-                child = node['children'][i]
-                if 'type' in child and child['type'] in AbstractVisitor.REF_TYPES:
-                    remove_node(node, child)
-            unshift_node(node, local_ctx[0])
-            for i in range(1, len(local_ctx)):
-                unshift_node(local_ctx[i - 1], local_ctx[i])
-            return True
 
         return False

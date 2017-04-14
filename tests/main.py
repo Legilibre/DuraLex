@@ -29,6 +29,7 @@ from ParseHeader3ReferenceTest import ParseHeader3ReferenceTest
 from ResolveFullyQualifiedReferencesVisitorTest import ResolveFullyQualifiedReferencesVisitorTest
 from SortReferencesVisitorTest import SortReferencesVisitorTest
 from ForkReferenceVisitorTest import ForkReferenceVisitorTest
+from ForkEditVisitorTest import ForkEditVisitorTest
 
 if __name__ == '__main__':
     unittest.main()
