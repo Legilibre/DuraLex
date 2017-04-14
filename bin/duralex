@@ -22,11 +22,11 @@ from duralex.ResolveFullyQualifiedDefinitionsVisitor import ResolveFullyQualifie
 from duralex.AddArcheoLexFilenameVisitor import AddArcheoLexFilenameVisitor
 from duralex.AddDiffVisitor import AddDiffVisitor
 
-def handle_data(data, diff, url):
+def handle_data(data, args):
     if data[0] == u'{':
         data = json.loads(data)
     else:
-        data = duralex.bill_parser.parse_bill(data, url)
+        data = duralex.bill_parser.parse_bill(data, args.url)
     ast = duralex.alinea_parser.parse_json_data(data)
 
     ForkReferenceVisitor().visit(ast)
@@ -35,9 +35,11 @@ def handle_data(data, diff, url):
     SortReferencesVisitor().visit(ast)
     DeleteParentVisitor().visit(ast)
     DeleteEmptyChildrenVisitor().visit(ast)
-    DeleteUUIDVisitor().visit(ast)
 
-    if diff:
+    if not args.uuid:
+        DeleteUUIDVisitor().visit(ast)
+
+    if args.diff:
         AddArcheoLexFilenameVisitor().visit(ast)
         AddDiffVisitor().visit(ast)
 
@@ -49,6 +51,7 @@ def main(argv=None):
     parser.add_argument('--file', help='the path of the bill to process', type=argparse.FileType('r'), default='-')
     parser.add_argument('--url', help='the URL of the bill to process')
     parser.add_argument('--diff', action='store_true', help='compute a diff for each edit')
+    parser.add_argument('--uuid', action='store_true', help='add a unique ID on each node')
 
     args = parser.parse_args()
 
@@ -68,7 +71,7 @@ def main(argv=None):
         except:
             pass
 
-    handle_data(data, args.diff, args.url)
+    handle_data(data, args)
 
     return 0
 
