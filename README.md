@@ -31,6 +31,7 @@ optional arguments:
   --file FILE  the path of the bill to process
   --url URL    the URL of the bill to process
   --diff       compute a diff for each edit
+  --uuid       add a unique ID on each node
 ```
 
 Examples:
