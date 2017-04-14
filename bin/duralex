@@ -20,7 +20,6 @@ from duralex.SortReferencesVisitor import SortReferencesVisitor
 from duralex.ResolveFullyQualifiedReferencesVisitor import ResolveFullyQualifiedReferencesVisitor
 from duralex.ResolveFullyQualifiedDefinitionsVisitor import ResolveFullyQualifiedDefinitionsVisitor
 from duralex.AddArcheoLexFilenameVisitor import AddArcheoLexFilenameVisitor
-from duralex.AddEditCursorVisitor import AddEditCursorVisitor
 from duralex.AddDiffVisitor import AddDiffVisitor
 
 def handle_data(data, diff, url):
