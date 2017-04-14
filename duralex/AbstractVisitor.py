@@ -1,19 +1,4 @@
 class AbstractVisitor(object):
-    REF_TYPES = [
-        'code-reference',
-        'book-reference',
-        'law-reference',
-        'title-reference',
-        'article-reference',
-        'header1-reference',
-        'header2-reference',
-        'header3-reference',
-        'alinea-reference',
-        'sentence-reference',
-        'words-reference',
-        'incomplete-reference'
-    ]
-
     def __init__(self):
         self.visitors = {
             'edit': self.visit_edit_node,

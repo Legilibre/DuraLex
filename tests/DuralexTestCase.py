@@ -5,6 +5,7 @@ import sys
 import os
 import json
 import difflib
+import uuid
 
 sys.path.append(os.path.join(os.path.realpath(os.path.dirname(__file__)), '..'))
 
@@ -13,6 +14,7 @@ import duralex.alinea_lexer as lexer
 
 from duralex.DeleteEmptyChildrenVisitor import DeleteEmptyChildrenVisitor
 from duralex.DeleteParentVisitor import DeleteParentVisitor
+from duralex.DeleteUUIDVisitor import DeleteUUIDVisitor
 
 from colorama import init, Fore
 
@@ -49,28 +51,37 @@ class DuralexTestCase(unittest.TestCase):
         return ast
 
     def add_children(self, ast):
-        if not 'children' in ast:
+        if 'children' not in ast:
             ast['children'] = []
         for child in ast['children']:
             self.add_children(child)
         return ast
 
+    def add_uuid(self, ast):
+        if 'uuid' not in ast:
+            ast['uuid'] = str(uuid.uuid4())
+        for child in ast['children']:
+            self.add_uuid(child)
+        return ast
+
     def make_ast(self, ast):
         ast = self.add_parent(ast)
         ast = self.add_children(ast)
+        ast = self.add_uuid(ast)
         return ast
 
     def call_visitor(self, visitor, ast):
-        self.add_parent(ast)
+        ast = self.make_ast(ast)
         visitor().visit(ast)
-        DeleteParentVisitor().visit(ast)
         return ast
 
     def assertEqualAST(self, a, b):
         DeleteParentVisitor().visit(a)
         DeleteEmptyChildrenVisitor().visit(a)
+        DeleteUUIDVisitor().visit(a)
         DeleteParentVisitor().visit(b)
         DeleteEmptyChildrenVisitor().visit(b)
+        DeleteUUIDVisitor().visit(b)
 
         a = json.dumps(a, sort_keys=True, indent=2, ensure_ascii=False).encode('utf-8')
         b = json.dumps(b, sort_keys=True, indent=2, ensure_ascii=False).encode('utf-8')

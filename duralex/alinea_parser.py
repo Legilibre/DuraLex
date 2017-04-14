@@ -2,16 +2,10 @@
 
 import re
 import sys
+import uuid
 
 import alinea_lexer
-
-def_types = [
-    'header1',
-    'header2',
-    'header3',
-    'alinea',
-    'sentence'
-]
+import node_type
 
 def debug(node, tokens, i, msg):
     if '-v' in sys.argv:
@@ -86,28 +80,31 @@ def create_node(parent, node):
     if parent:
         push_node(parent, node)
     node['children'] = []
+    node['uuid'] = str(uuid.uuid4())
 
     return node
 
+def compare_nodes(a, b):
+    return a['uuid'] == b['uuid'] if 'uuid' in a and 'uuid' in b else a == b
+
 def remove_node(parent, node):
-    if node not in parent['children']:
+    if not parent:
         raise Exception('invalid parent')
     if 'parent' not in node or node['parent'] != parent:
         raise Exception('parent node does not match')
 
-    parent['children'].remove(node)
-    del node['parent']
+    for i in range(0, len(parent['children'])):
+        if compare_nodes(node, parent['children'][i]):
+            del parent['children'][i]
+            del node['parent']
+            return True
 
-def delete_parent(root):
-    if 'parent' in root:
-        del root['parent']
-    if 'children' in root:
-        for child in root['children']:
-            delete_parent(child)
-    return root
+    return False
 
 def copy_node(node, recursive=True):
     c = node.copy()
+    if 'uuid' in c:
+        c['uuid'] = str(uuid.uuid4())
     if 'parent' in c:
         del c['parent']
     c['children'] = []
@@ -1457,7 +1454,7 @@ def parse_definition_list(tokens, i, parent):
     if (i + 2 < len(tokens) and tokens[i + 2].startswith(u'rédigé')
         or (i + 4 < len(tokens) and tokens[i + 4].startswith(u'rédigé'))):
         i += 6
-        def_nodes = filter_nodes(parent, lambda x: 'type' in x and x['type'] in def_types)
+        def_nodes = filter_nodes(parent, lambda x: node_type.is_definition(x))
         for def_node in def_nodes:
             i = alinea_lexer.skip_to_quote_start(tokens, i)
             i = parse_quote(tokens, i, def_node)
@@ -1728,7 +1725,7 @@ def parse_json_data(data):
 
 def resolve_fully_qualified_definitions(node):
     if 'type' in node and node['type'] == 'edit':
-        def_nodes = filter_nodes(node, lambda x : x['type'] in def_types)
+        def_nodes = filter_nodes(node, lambda x : node_type.is_definition(x))
         # if we have more than 1 definition in a single edit, we assume:
         # - they have different types
         # - the final type of definition is the combination of all those types
@@ -1749,7 +1746,7 @@ def resolve_fully_qualified_definitions(node):
                     children.append(child)
                     remove_node(content_node, child)
                 remove_node(node, content_node)
-                sorted_types = sorted(types + [content_node], key=lambda x : def_types.index(x['type']))
+                sorted_types = sorted(types + [content_node], key=lambda x : node_type.DEFINITION.index(x['type']))
                 type_node = node
                 for sorted_type in sorted_types:
                     t = copy_node(sorted_type)

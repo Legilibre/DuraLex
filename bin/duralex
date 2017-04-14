@@ -14,6 +14,7 @@ import duralex.alinea_parser
 import duralex.bill_parser
 from duralex.DeleteEmptyChildrenVisitor import DeleteEmptyChildrenVisitor
 from duralex.DeleteParentVisitor import DeleteParentVisitor
+from duralex.DeleteUUIDVisitor import DeleteUUIDVisitor
 from duralex.ForkReferenceVisitor import ForkReferenceVisitor
 from duralex.SortReferencesVisitor import SortReferencesVisitor
 from duralex.ResolveFullyQualifiedReferencesVisitor import ResolveFullyQualifiedReferencesVisitor
@@ -35,6 +36,7 @@ def handle_data(data, diff, url):
     SortReferencesVisitor().visit(ast)
     DeleteParentVisitor().visit(ast)
     DeleteEmptyChildrenVisitor().visit(ast)
+    DeleteUUIDVisitor().visit(ast)
 
     if diff:
         AddArcheoLexFilenameVisitor().visit(ast)
