@@ -228,11 +228,11 @@ def parse_bill(string, url):
                 texte["id"] += m.group(1)
             texte["id"] += "%03d" % numero
 
-    is_html = string.find('<html>') >= 0
-    lines = soup.find_all("p") if is_html else string.split(u'\n')
+    is_html = string.find('<html>') == 0 or string.find('<?xml version="1.0" encoding="UTF-8"?>') == 0
+    lines = soup.body.find_all('p') if is_html else string.split(u'\n')
 
     for line in lines:
-        line = clean_html(str(line.encode('utf8')))
+        line = clean_html(str(line.text.encode('utf8')))
 
         if re_stars.match(line):
             continue
