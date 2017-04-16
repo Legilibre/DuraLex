@@ -1572,7 +1572,7 @@ def parse_bill_header2(tokens, i, parent):
     debug(parent, tokens, i, 'parse_bill_header2')
 
     i = alinea_lexer.skip_spaces(tokens, i)
-    if re.compile(u'\d+°').match(tokens[i]):
+    if i < len(tokens) and re.compile(u'\d+°').match(tokens[i]):
         debug(parent, tokens, i, 'parse_bill_header2 found article header-2')
 
         node['order'] = parse_int(tokens[i])
