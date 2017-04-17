@@ -160,6 +160,19 @@ def parse_law_reference(tokens, i, parent):
     # la loi
     elif i + 4 < len(tokens) and ((tokens[i] == u'la' and tokens[i + 2] == u'loi') or (tokens[i] == u'de' and tokens[i + 4] == u'loi')):
         i = alinea_lexer.skip_to_token(tokens, i, u'loi') + 2
+    # de la même loi
+    elif tokens[i].lower() == u'de' and tokens[i + 2] == u'la' and tokens[i + 4] == u'même' and tokens[i + 6] == u'loi':
+        i += 8
+        law_refs = filter_nodes(
+            get_root(parent),
+            lambda n: 'type' in n and n['type'] == 'law-reference'
+        )
+        # the last one in order of traversal is the previous one in order of syntax
+        # don't forget the current node is in the list too => -2 instead of -1
+        law_ref = copy_node(law_refs[-2])
+        push_node(parent, law_ref)
+        remove_node(parent, node)
+        return i
     else:
         remove_node(parent, node)
         return i
