@@ -74,6 +74,41 @@ class ParseEditTest(DuralexTestCase):
             ]}
         )
 
+    def test_edit_article_law_with_quote(self):
+        self.assertEqualAST(
+            self.call_parse_func(
+                parser.parse_edit,
+                u"l'article 42 de la loi n° 77‑729 est ainsi rédigé :\n\"ceci est un test\""
+            ),
+            {'children':[
+                {
+                    'type': u'edit',
+                    'editType': u'edit',
+                    'children': [
+                        {
+                            'type': u'article-reference',
+                            'id': u'42',
+                            'children': [
+                                {
+                                    'type': u'law-reference',
+                                    'lawId': u'77‑729'
+                                }
+                            ]
+                        },
+                        {
+                            'type': u'words',
+                            'children': [
+                                {
+                                    'type': u'quote',
+                                    'words': u'ceci est un test'
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]}
+        )
+
     def test_edit_article_with_quotes(self):
         self.assertEqualAST(
             self.call_parse_func(
