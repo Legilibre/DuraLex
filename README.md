@@ -24,14 +24,23 @@ This original data is expected to be a Git repositories created using  [Archeo-L
 ## Usage
 
 ```bash
-usage: duralex [-h] [--file FILE] [--url URL] [--diff]
+usage: duralex [-h] [--file FILE] [--url URL] [--quiet] [--diff] [--uuid]
+               [--commit-message] [--git-commit] [--github-token GITHUB_TOKEN]
+               [--github-repository GITHUB_REPOSITORY]
 
 optional arguments:
-  -h, --help   show this help message and exit
-  --file FILE  the path of the bill to process
-  --url URL    the URL of the bill to process
-  --diff       compute a diff for each edit
-  --uuid       add a unique ID on each node
+  -h, --help            show this help message and exit
+  --file FILE           the path of the bill to process
+  --url URL             the URL of the bill to process
+  --quiet               no stdout output
+  --diff                compute a diff for each edit
+  --uuid                add a unique ID on each node
+  --commit-message      generate a commit message for each edit
+  --git-commit          git commit each edit
+  --github-token GITHUB_TOKEN
+                        the GitHub API token
+  --github-repository GITHUB_REPOSITORY
+                        the target GitHub repository
 ```
 
 Examples:
