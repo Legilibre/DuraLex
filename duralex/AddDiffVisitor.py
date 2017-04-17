@@ -66,7 +66,7 @@ class AddDiffVisitor(AbstractVisitor):
             else:
                 self.content[self.filename] = ''
         self.begin = 0;
-        self.end = len(self.content[self.filename]) - 1
+        self.end = len(self.content[self.filename])
 
     def visit_edit_node(self, node, post):
         if not post:
@@ -83,20 +83,14 @@ class AddDiffVisitor(AbstractVisitor):
             new_content = old_content[0:self.begin] + def_node['children'][0]['words'] + old_content[self.end:]
         elif node['editType'] == 'delete':
             ref_node = parser.filter_nodes(node, lambda x: node_type.is_reference(x))[-1]
-            # delete an article (1 article => 1 file in ArcheoLex)
-            if ref_node['type'] == 'article-reference':
-                if os.path.isfile(self.filename):
-                    os.remove(self.filename)
-            # or delete any kind of text content
-            else:
-                new_content = old_content[0:self.begin] + old_content[self.end:]
+            new_content = old_content[0:self.begin] + old_content[self.end:]
         elif node['editType'] == 'edit':
             def_node = parser.filter_nodes(node, lambda x: x['type'] == 'words')[-1]
             new_content = old_content[0:self.begin] + def_node['children'][0]['words'] + old_content[self.end:]
 
         diff = difflib.unified_diff(
             old_content.splitlines(),
-            new_content.splitlines(),
+            new_content.splitlines() if new_content != '' else [],
             tofile='\"' + self.filename + '\"',
             fromfile='\"' + self.filename + '\"'
         )
