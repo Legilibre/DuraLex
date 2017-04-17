@@ -21,6 +21,10 @@ from duralex.ResolveFullyQualifiedReferencesVisitor import ResolveFullyQualified
 from duralex.ResolveFullyQualifiedDefinitionsVisitor import ResolveFullyQualifiedDefinitionsVisitor
 from duralex.AddArcheoLexFilenameVisitor import AddArcheoLexFilenameVisitor
 from duralex.AddDiffVisitor import AddDiffVisitor
+from duralex.RemoveQuotePrefixVisitor import RemoveQuotePrefixVisitor
+from duralex.AddCommitMessageVisitor import AddCommitMessageVisitor
+from duralex.GitCommitVisitor import GitCommitVisitor
+from duralex.AddGitHubIssueVisitor import AddGitHubIssueVisitor
 
 def handle_data(data, args):
     if data[0] == u'{':
@@ -33,6 +37,11 @@ def handle_data(data, args):
     ResolveFullyQualifiedDefinitionsVisitor().visit(ast)
     ResolveFullyQualifiedReferencesVisitor().visit(ast)
     SortReferencesVisitor().visit(ast)
+    RemoveQuotePrefixVisitor().visit(ast)
+
+    if args.commit_message:
+        AddCommitMessageVisitor().visit(ast)
+
     DeleteParentVisitor().visit(ast)
     DeleteEmptyChildrenVisitor().visit(ast)
 
@@ -43,15 +52,27 @@ def handle_data(data, args):
         AddArcheoLexFilenameVisitor().visit(ast)
         AddDiffVisitor().visit(ast)
 
-    json_data = json.dumps(ast, sort_keys=True, indent=2, ensure_ascii=False).encode('utf-8')
-    sys.stdout.write(json_data)
+    if args.github_token and args.github_repository:
+        AddGitHubIssueVisitor(args).visit(ast)
+
+    if args.git_commit:
+        GitCommitVisitor().visit(ast)
+
+    if not args.quiet:
+        json_data = json.dumps(ast, sort_keys=True, indent=2, ensure_ascii=False).encode('utf-8')
+        sys.stdout.write(json_data)
 
 def main(argv=None):
     parser = argparse.ArgumentParser(prog='duralex')
     parser.add_argument('--file', help='the path of the bill to process', type=argparse.FileType('r'), default='-')
     parser.add_argument('--url', help='the URL of the bill to process')
+    parser.add_argument('--quiet', action='store_true', help='no stdout output')
     parser.add_argument('--diff', action='store_true', help='compute a diff for each edit')
     parser.add_argument('--uuid', action='store_true', help='add a unique ID on each node')
+    parser.add_argument('--commit-message', action='store_true', help='generate a commit message for each edit')
+    parser.add_argument('--git-commit', action='store_true', help='git commit each edit')
+    parser.add_argument('--github-token', help='the GitHub API token')
+    parser.add_argument('--github-repository', help='the target GitHub repository')
 
     args = parser.parse_args()
 
