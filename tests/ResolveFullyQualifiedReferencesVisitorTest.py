@@ -284,3 +284,89 @@ class ResolveFullyQualifiedReferencesVisitorTest(DuralexTestCase):
                 }
             ]}
         )
+
+    def test_do_nothing_when_no_nested_edits(self):
+        self.assertEqualAST(
+            self.call_visitor(ResolveFullyQualifiedReferencesVisitor, self.make_ast({'children': [
+                {
+                    'children': [
+                        {
+                            'children': [
+                                {
+                                    'children': [
+                                        {
+                                            'children': [
+                                                {
+                                                    'type': u'quote',
+                                                    'words': u'Art. 4. - Le territoire de la République forme une circonscription unique.'
+                                                }
+                                            ],
+                                            'type': u'words'
+                                        },
+                                        {
+                                            'children': [
+                                                {
+                                                    'id': u'4',
+                                                    'type': u'article-reference'
+                                                }
+                                            ],
+                                            'lawDate': u'1977-7-7',
+                                            'lawId': u'77-729',
+                                            'type': u'law-reference'
+                                        }
+                                    ],
+                                    'editType': u'edit',
+                                    'type': u'edit'
+                                }
+                            ],
+                            'order': 1,
+                            'type': u'bill-header1'
+                        }
+                    ],
+                    'isNew': False,
+                    'order': 2,
+                    'type': u'article'
+                }
+            ]})),
+            {'children': [
+                {
+                    'children': [
+                        {
+                            'children': [
+                                {
+                                    'children': [
+                                        {
+                                            'children': [
+                                                {
+                                                    'type': u'quote',
+                                                    'words': u'Art. 4. - Le territoire de la République forme une circonscription unique.'
+                                                }
+                                            ],
+                                            'type': u'words'
+                                        },
+                                        {
+                                            'children': [
+                                                {
+                                                    'id': u'4',
+                                                    'type': u'article-reference'
+                                                }
+                                            ],
+                                            'lawDate': u'1977-7-7',
+                                            'lawId': u'77-729',
+                                            'type': u'law-reference'
+                                        }
+                                    ],
+                                    'editType': u'edit',
+                                    'type': u'edit'
+                                }
+                            ],
+                            'order': 1,
+                            'type': u'bill-header1'
+                        }
+                    ],
+                    'isNew': False,
+                    'order': 2,
+                    'type': u'article'
+                }
+            ]}
+        )
