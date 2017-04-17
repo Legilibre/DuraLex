@@ -18,7 +18,7 @@ class AddArcheoLexFilenameVisitor(AbstractVisitor):
         if post:
             return
 
-        self.path = os.path.join(self.path, node['id'] + '.md')
+        self.path = os.path.join(self.path, 'Article_' + node['id'] + '.md')
         node['filename'] = self.path
 
     def visit_code_reference_node(self, node, post):
@@ -26,6 +26,14 @@ class AddArcheoLexFilenameVisitor(AbstractVisitor):
             return
 
         self.path = os.path.join(self.path, node['codeName'])
+        node['repository'] = self.path
+
+    def visit_law_reference_node(self, node, post):
+        if post:
+            return
+
+        self.path = os.path.join(self.path, 'loi_' + node['lawId'])
+        node['repository'] = self.path
 
     def visit_node(self, node):
         if 'type' in node and node['type'] == 'edit':
