@@ -14,6 +14,7 @@ class AbstractVisitor(object):
             'sentence-reference': self.visit_sentence_reference_node,
             'words-reference': self.visit_words_reference_node,
             'words': self.visit_words_definition_node,
+            'quote': self.visit_quote_node
         }
 
     def visit_code_reference_node(self, node, post):
@@ -53,6 +54,9 @@ class AbstractVisitor(object):
         pass
 
     def visit_words_definition_node(self, node, post):
+        pass
+
+    def visit_quote_node(self, node, post):
         pass
 
     def visit_node(self, node):
