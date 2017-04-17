@@ -232,7 +232,7 @@ def parse_bill(string, url):
     lines = soup.body.find_all('p') if is_html else string.split(u'\n')
 
     for line in lines:
-        line = clean_html(str(line.text.encode('utf8')))
+        line = clean_html(str(line.text.encode('utf8') if is_html else line.encode('utf8')))
 
         if re_stars.match(line):
             continue
