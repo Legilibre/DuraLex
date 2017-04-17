@@ -3,19 +3,22 @@
 import codecs
 import re
 import difflib
-import parser
 import sys
+import os
+
+import alinea_parser as parser
+import node_type
 
 from AbstractVisitor import AbstractVisitor
 
 class AddDiffVisitor(AbstractVisitor):
     REGEXP = {
-        'header1-reference': r'(?=((\n|^)#\w(.|\n)*?)(\n#\w|$))',
-        'header2-reference': r'(?=((\n|^)##\w(.|\n)*?)(\n#{1,2}\w|$))',
-        'header3-reference': r'(?=((\n|^)###\w(.|\n)*?\n)(\n#{1,3}\w|$))',
-        'alinea-reference' : r'(?=(\n\n[^#].*?(\n\n|$)))',
-        'sentence-reference' : r'([A-ZÀÀÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏ].*?\.)',
-        'words-reference' : r'(\b\w.*?\b)'
+        'header1-reference'     : re.compile(r'(?=((\n|^)#\w(.|\n)*?)(\n#\w|$))', re.UNICODE),
+        'header2-reference'     : re.compile(r'(?=((\n|^)##\w(.|\n)*?)(\n#{1,2}\w|$))', re.UNICODE),
+        'header3-reference'     : re.compile(r'(?=((\n|^)###\w(.|\n)*?\n)(\n#{1,3}\w|$))', re.UNICODE),
+        'alinea-reference'      : re.compile(r'^(.+)$', re.UNICODE | re.MULTILINE),
+        'sentence-reference'    : re.compile(r'([A-ZÀÀÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏ].*?\.)', re.UNICODE),
+        'words-reference'       : re.compile(r'(\b\w.*?\b)', re.UNICODE)
     }
 
     def __init__(self):
@@ -25,11 +28,20 @@ class AddDiffVisitor(AbstractVisitor):
         self.end = -1;
         super(AddDiffVisitor, self).__init__()
 
+    def visit_alinea_reference_node(self, node, post):
+        if post:
+            return
+
+        match = re.finditer(AddDiffVisitor.REGEXP['alinea-reference'], self.content[self.filename][self.begin:self.end])
+        match = list(match)[node['order'] - 1]
+        self.begin = match.start()
+        self.end = match.start() + len(match.group(1))
+
     def visit_sentence_reference_node(self, node, post):
         if post:
             return
 
-        match = re.finditer(re.compile(AddDiffVisitor.REGEXP['sentence-reference'], re.UNICODE), self.content[self.filename][self.begin:self.end])
+        match = re.finditer(AddDiffVisitor.REGEXP['sentence-reference'], self.content[self.filename][self.begin:self.end])
         match = list(match)[node['order'] - 1]
         self.begin = match.start()
         self.end = match.start() + len(match.group(1))
@@ -48,8 +60,11 @@ class AddDiffVisitor(AbstractVisitor):
 
         self.filename = node['filename'].encode('utf-8')
         if self.filename not in self.content:
-            input_file = codecs.open(self.filename, mode="r", encoding="utf-8")
-            self.content[self.filename] = input_file.read()
+            if os.path.isfile(self.filename):
+                input_file = codecs.open(self.filename, mode="r", encoding="utf-8")
+                self.content[self.filename] = input_file.read()
+            else:
+                self.content[self.filename] = ''
         self.begin = 0;
         self.end = len(self.content[self.filename]) - 1
 
@@ -63,12 +78,21 @@ class AddDiffVisitor(AbstractVisitor):
         new_content = old_content
 
         if node['editType'] == 'replace':
-            # FIXME: properly detect we're supposed to replace words
+            # FIXME: properly detect we're supposed to replace words?
             def_node = parser.filter_nodes(node, lambda x: x['type'] == 'words')[-1]
             new_content = old_content[0:self.begin] + def_node['children'][0]['words'] + old_content[self.end:]
-        elif node['editType'] == 'add':
-            def_node = parser.filter_nodes(node, lambda x: x['type'] == 'words' or x['type'] == 'mention')[-1]
-            new_content = old_content[0:self.begin] + def_node['children'][0]['words'] + old_content[self.begin:]
+        elif node['editType'] == 'delete':
+            ref_node = parser.filter_nodes(node, lambda x: node_type.is_reference(x))[-1]
+            # delete an article (1 article => 1 file in ArcheoLex)
+            if ref_node['type'] == 'article-reference':
+                if os.path.isfile(self.filename):
+                    os.remove(self.filename)
+            # or delete any kind of text content
+            else:
+                new_content = old_content[0:self.begin] + old_content[self.end:]
+        elif node['editType'] == 'edit':
+            def_node = parser.filter_nodes(node, lambda x: x['type'] == 'words')[-1]
+            new_content = old_content[0:self.begin] + def_node['children'][0]['words'] + old_content[self.end:]
 
         diff = difflib.unified_diff(
             old_content.splitlines(),
@@ -77,6 +101,7 @@ class AddDiffVisitor(AbstractVisitor):
             fromfile='\"' + self.filename + '\"'
         )
         diff = [unicode(d[0:-1], 'utf-8') if isinstance(d, str) else d for d in diff]
-        node['diff'] = "\n".join(diff)
+        if len(diff) > 0:
+            node['diff'] = "\n".join(diff)
 
         self.content[self.filename] = new_content
