@@ -33,7 +33,7 @@ class AddGitHubIssueVisitor(AbstractVisitor):
             for issue in self.issues:
                 if issue.title == title:
                     found = True
-                    node['githubIssue'] = issue.number
+                    node['githubIssue'] = issue.html_url
                     self.current_issue = issue.number
                     if issue.body != body:
                         issue.edit(title=title, body=body)
