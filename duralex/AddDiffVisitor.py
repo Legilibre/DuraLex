@@ -8,6 +8,7 @@ import os
 
 import alinea_parser as parser
 import node_type
+import diff
 
 from AbstractVisitor import AbstractVisitor
 
@@ -88,14 +89,15 @@ class AddDiffVisitor(AbstractVisitor):
             def_node = parser.filter_nodes(node, lambda x: x['type'] == 'words')[-1]
             new_content = old_content[0:self.begin] + def_node['children'][0]['words'] + old_content[self.end:]
 
-        diff = difflib.unified_diff(
+        unified_diff = difflib.unified_diff(
             old_content.splitlines(),
             new_content.splitlines() if new_content != '' else [],
             tofile='\"' + self.filename + '\"',
             fromfile='\"' + self.filename + '\"'
         )
-        diff = [unicode(d[0:-1], 'utf-8') if isinstance(d, str) else d for d in diff]
-        if len(diff) > 0:
-            node['diff'] = "\n".join(diff)
+        unified_diff = [unicode(d[0:-1], 'utf-8') if isinstance(d, str) else d for d in unified_diff]
+        if len(unified_diff) > 0:
+            node['diff'] = '\n'.join(unified_diff)
+            node['htmlDiff'] = diff.make_html_rich_diff(old_content, new_content, self.filename)
 
         self.content[self.filename] = new_content
