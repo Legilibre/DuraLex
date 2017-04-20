@@ -22,7 +22,7 @@ class AddGitHubIssueVisitor(AbstractVisitor):
         if 'commitMessage' not in node:
             node['commitMessage'] = '(#' + str(self.current_issue) + ')'
         else:
-            node['commitMessage'] = node['commitMessage'] + ' (#' + str(self.current_issue) + ')'
+            node['commitMessage'] = node['commitMessage'] + '\nGitHub: #' + str(self.current_issue)
 
 
     def visit_node(self, node):
