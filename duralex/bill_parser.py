@@ -8,6 +8,8 @@ import sys, re, html5lib
 import simplejson as json
 from bs4 import BeautifulSoup
 
+from alinea_parser import word_to_number
+
 bister = '(un|duo|tre|bis|qua|quin[tqu]*|sex|sept|octo?|novo?|non|dec|vic|ter|ies)+'
 
 ORDER = ''
@@ -78,7 +80,7 @@ re_clean_bister = re.compile(r'([IXV\d]+e?r?)\s+(%s)' % bister, re.I)
 re_clean_subsec_space = re.compile(r'^("?[IVX0-9]{1,4}(\s+[a-z]+)?(\s+[A-Z]{1,4})?)\s*([\.°\-]+)\s*([^\s\)])', re.I)
 re_clean_subsec_space2 = re.compile(r'^("?[IVX0-9]{1,4})\s*([a-z]*)\s*([A-H]{1,4})([\.°\-])', re.I)
 re_clean_punc_space = re.compile(u'([°«»:;,\.!\?\]\)%€&\$])([^\s\)\.,\d"])')
-re_clean_spaces = re.compile(r'\s+')
+re_clean_spaces = re.compile(r'(\s|\xc2\xa0)+')
 re_clean_coord = re.compile(r'^["\(]*(pour)?\s*coordination[\)\s\.]*$', re.I)
 # Clean html and special chars
 lower_inner_title = lambda x: x.group(1)+lower_but_first(x.group(3))+" "
@@ -199,9 +201,13 @@ def parse_bill(string, url):
     definitif = re_definitif.search(string) is not None
     soup = BeautifulSoup(string, "html5lib")
 
-    texte = {"definitif": definitif, "articles": []}
-    texte["titre"] = re_clean_title_legif.sub('', soup.title.string.strip()) if soup.title else ""
-    texte["expose"] = ""
+    texte = {
+        "type": "projet de loi",
+        "definitive": definitif,
+        "articles": [],
+        "url": url,
+        "expose": ""
+    }
     expose = False
 
     if url:
@@ -231,11 +237,26 @@ def parse_bill(string, url):
     is_html = string.find('<html>') == 0 or string.find('<?xml version="1.0" encoding="UTF-8"?>') == 0
     lines = soup.body.find_all('p') if is_html else string.split(u'\n')
 
+    if is_html:
+        texte["type"] = (re_clean_title_legif.sub('', soup.title.string.strip()) if soup.title else "").lower()
+
     for line in lines:
         line = clean_html(str(line.text.encode('utf8') if is_html else line.encode('utf8')))
 
         if re_stars.match(line):
             continue
+
+        match = re.compile(r'^N°\D+(\d+)$', re.MULTILINE).search(line)
+        if match:
+            texte['id'] = int(match.group(1))
+
+        match = re.compile(r'^(.*) LÉGISLATURE$', re.MULTILINE).search(line)
+        if match:
+            texte['legislature'] = word_to_number(match.group(1).decode('utf-8'))
+
+        if line == 'PROPOSITION DE LOI':
+            texte['type'] = line.lower()
+
         if line == "<b>RAPPORT</b>" or line == "Mesdames, Messieurs,":
             read = -1
         if (srclst or indextext != -1) and re_sep_text.match(line):

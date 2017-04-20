@@ -1745,57 +1745,28 @@ def parse_data(data):
 def parse_json_data(data):
     node = {'children': []}
 
+    if 'id' in data:
+        node['id'] = data['id']
+    if 'type' in data:
+        node['type'] = data['type']
+    if 'legislature' in data:
+        node['legislature'] = data['legislature']
+    if 'url' in data:
+        node['url'] = data['url']
+
     parse_json_articles(data, node)
     parse_json_amendements(data, node)
 
     return node
 
-def resolve_fully_qualified_definitions(node):
-    if 'type' in node and node['type'] == 'edit':
-        def_nodes = filter_nodes(node, lambda x : node_type.is_definition(x))
-        # if we have more than 1 definition in a single edit, we assume:
-        # - they have different types
-        # - the final type of definition is the combination of all those types
-        if len(def_nodes) > 1:
-            content_nodes = filter(lambda x : len(x['children']) > 0, def_nodes)
-            type_nodes = filter(lambda x : len(x['children']) == 0, def_nodes)
-            types = []
-            for type_node in type_nodes:
-                remove_node(node, type_node)
-                types.append(type_node)
-                del type_node['count']
-                # if 'count' in type_node and type_node['count'] == len(content_nodes):
-                # FIXME: else we should issue a warning because the count doesn't match and the type qualifier cannot
-                # apply
-            for content_node in content_nodes:
-                children = []
-                for child in content_node['children']:
-                    children.append(child)
-                    remove_node(content_node, child)
-                remove_node(node, content_node)
-                sorted_types = sorted(types + [content_node], key=lambda x : node_type.DEFINITION.index(x['type']))
-                type_node = node
-                for sorted_type in sorted_types:
-                    t = copy_node(sorted_type)
-                    push_node(type_node, t)
-                    type_node = t
-                for child in children:
-                    push_node(type_node, child)
-    elif 'children' in node and node['children'] > 0:
-        for child in node['children']:
-            resolve_fully_qualified_definitions(child)
-
 def get_node_ancestors(node):
     a = []
+
+    if 'parent' not in node:
+        return a
+
     node = node['parent']
     while node and 'type' in node:
         a.append(node)
-        node = node['parent']
+        node = node['parent'] if 'parent' in node else None
     return a
-
-def get_ancestors(node, fn = None):
-    ancestors = []
-    while node and fn(node):
-        ancestors.append(node)
-        node = node['parent']
-    return ancestors
