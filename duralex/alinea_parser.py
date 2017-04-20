@@ -1254,6 +1254,7 @@ def parse_quote(tokens, i, parent):
     while i < len(tokens) and tokens[i] != alinea_lexer.TOKEN_DOUBLE_QUOTE_CLOSE and tokens[i] != alinea_lexer.TOKEN_NEW_LINE:
         node['words'] += tokens[i]
         i += 1
+    node['words'] = node['words'].strip()
 
     # skipalinea_lexer.TOKEN_DOUBLE_QUOTE_CLOSE
     i += 1
