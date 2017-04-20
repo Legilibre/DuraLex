@@ -50,8 +50,18 @@ def word_to_number(word):
         [u'six', u'sixième'],
         [u'sept', u'septième'],
         [u'huit', u'huitième'],
-        [u'neuf', u'neuvième']
+        [u'neuf', u'neuvième'],
+        [u'dix', u'dixième'],
+        [u'onze', u'onzième'],
+        [u'douze', u'douzième'],
+        [u'treize', u'treizième'],
+        [u'quatorze', u'quatorzième'],
+        [u'quinze', u'quinzième'],
+        [u'seize', u'seizième'],
     ]
+
+    word = word.lower()
+    word = word.replace(u'È', u'è')
 
     for i in range(0, len(words)):
         if word in words[i]:
