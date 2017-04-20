@@ -16,7 +16,17 @@ class GitCommitVisitor(AbstractVisitor):
             self.commitMessage = node['commitMessage']
         else:
             self.commitMessage = ''
-    
+
+        if 'diff' in node:
+            process = subprocess.Popen(
+                'patch -p0 --remove-empty-files --ignore-whitespace',
+                shell=True,
+                stdout=subprocess.PIPE,
+                stdin=subprocess.PIPE,
+                stderr=subprocess.PIPE
+            )
+            out, err = process.communicate(input=node['diff'].encode('utf-8') + '\n')
+
     def visit_article_reference_node(self, node, post):
         if self.commitMessage and self.repository:
             process = subprocess.Popen(
