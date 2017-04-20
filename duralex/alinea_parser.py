@@ -1560,11 +1560,13 @@ def parse_bill_header1(tokens, i, parent):
 
     debug(parent, tokens, i, 'parse_bill_header1')
 
-    # skip'{romanNumber}.'
+    # skip '{romanNumber}.'
     if is_roman_number(tokens[i]) and tokens[i + 1] == u'.':
         debug(parent, tokens, i, 'parse_bill_header1 found article header-1')
         node['order'] = parse_roman_number(tokens[i])
         i = alinea_lexer.skip_to_next_word(tokens, i + 2)
+    else:
+        node['implicit'] = True
 
     j = i
     i = parse_edit(tokens, i, node)
