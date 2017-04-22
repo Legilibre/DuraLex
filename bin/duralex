@@ -19,13 +19,7 @@ from duralex.ForkReferenceVisitor import ForkReferenceVisitor
 from duralex.SortReferencesVisitor import SortReferencesVisitor
 from duralex.ResolveFullyQualifiedReferencesVisitor import ResolveFullyQualifiedReferencesVisitor
 from duralex.ResolveFullyQualifiedDefinitionsVisitor import ResolveFullyQualifiedDefinitionsVisitor
-from duralex.AddArcheoLexFilenameVisitor import AddArcheoLexFilenameVisitor
-from duralex.AddDiffVisitor import AddDiffVisitor
 from duralex.RemoveQuotePrefixVisitor import RemoveQuotePrefixVisitor
-from duralex.AddCommitMessageVisitor import AddCommitMessageVisitor
-from duralex.GitCommitVisitor import GitCommitVisitor
-from duralex.AddGitHubIssueVisitor import AddGitHubIssueVisitor
-from duralex.ApplyPatchVisitor import ApplyPatchVisitor
 
 def handle_data(data, args):
     if data[0] == u'{':
@@ -40,27 +34,11 @@ def handle_data(data, args):
     SortReferencesVisitor().visit(ast)
     RemoveQuotePrefixVisitor().visit(ast)
 
-    if args.commit_message:
-        AddCommitMessageVisitor().visit(ast)
-
-    DeleteParentVisitor().visit(ast)
-    DeleteEmptyChildrenVisitor().visit(ast)
-
     if not args.uuid:
         DeleteUUIDVisitor().visit(ast)
 
-    if args.diff:
-        AddArcheoLexFilenameVisitor().visit(ast)
-        AddDiffVisitor().visit(ast)
-
-    if args.github_token and args.github_repository:
-        AddGitHubIssueVisitor(args).visit(ast)
-
-    if args.patch:
-        ApplyPatchVisitor().visit(ast)
-
-    if args.git_commit:
-        GitCommitVisitor().visit(ast)
+    DeleteParentVisitor().visit(ast)
+    DeleteEmptyChildrenVisitor().visit(ast)
 
     if not args.quiet:
         json_data = json.dumps(ast, sort_keys=True, indent=2, ensure_ascii=False).encode('utf-8')
@@ -72,12 +50,6 @@ def main(argv=None):
     parser.add_argument('--url', help='the URL of the bill to process')
     parser.add_argument('--quiet', action='store_true', help='no stdout output')
     parser.add_argument('--uuid', action='store_true', help='add a unique ID on each node')
-    parser.add_argument('--diff', action='store_true', help='compute a diff for each edit')
-    parser.add_argument('--patch', action='store_true', help='patch the original files according to the generated diff')
-    parser.add_argument('--git-commit', action='store_true', help='git commit each edit')
-    parser.add_argument('--commit-message', action='store_true', help='generate a commit message for each edit')
-    parser.add_argument('--github-token', help='the GitHub API token')
-    parser.add_argument('--github-repository', help='the target GitHub repository')
 
     args = parser.parse_args()
 
@@ -85,9 +57,6 @@ def main(argv=None):
         data = urllib.urlopen(args.url).read()
     elif args.file:
         data = args.file.read()
-
-    # For some reason, the &nbsp; HTML entity will break the decoding.
-    data = data.replace('&nbsp;', ' ')
 
     try:
         data = data.decode('utf8')

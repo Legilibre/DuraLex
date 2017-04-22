@@ -5,7 +5,6 @@ Original code by RegardsCitoyen (https://github.com/RegardsCitoyens) for the-law
 """
 
 import sys, re, html5lib
-import simplejson as json
 from bs4 import BeautifulSoup
 
 from alinea_parser import word_to_number
