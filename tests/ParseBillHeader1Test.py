@@ -36,6 +36,7 @@ class ParseBillHeader1Test(DuralexTestCase):
                 {
                     'type': u'bill-header1',
                     'order': 1,
+                    'implicit': True,
                     'children': [
                         {
                             'editType': u'edit',
@@ -106,6 +107,7 @@ class ParseBillHeader1Test(DuralexTestCase):
                 {
                     'type': u'bill-header1',
                     'order': 1,
+                    'implicit': True,
                     'children': [
                         {
                             'editType': u'edit',
