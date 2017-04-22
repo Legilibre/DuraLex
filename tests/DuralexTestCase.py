@@ -7,7 +7,7 @@ import json
 import difflib
 import uuid
 
-sys.path.append(os.path.join(os.path.realpath(os.path.dirname(__file__)), '..'))
+sys.path.insert(0, os.path.join(os.path.realpath(os.path.dirname(__file__)), '..'))
 
 import duralex.alinea_parser as parser
 import duralex.alinea_lexer as lexer
@@ -15,6 +15,7 @@ import duralex.alinea_lexer as lexer
 from duralex.DeleteEmptyChildrenVisitor import DeleteEmptyChildrenVisitor
 from duralex.DeleteParentVisitor import DeleteParentVisitor
 from duralex.DeleteUUIDVisitor import DeleteUUIDVisitor
+from duralex.AddParentVisitor import AddParentVisitor
 
 from colorama import init, Fore
 
@@ -43,11 +44,7 @@ class DuralexTestCase(unittest.TestCase):
         return ast
 
     def add_parent(self, ast):
-        if 'children' in ast:
-            for child in ast['children']:
-                if 'parent' not in child:
-                    child['parent'] = ast
-                self.add_parent(child)
+        AddParentVisitor().visit(ast)
         return ast
 
     def add_children(self, ast):
