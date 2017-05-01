@@ -257,6 +257,40 @@ def parse_paragraph_reference(tokens, i, parent):
 
     return i
 
+def parse_subparagraph_definition(tokens, i, parent):
+    if i >= len(tokens):
+        return i
+
+    debug(parent, tokens, i, 'parse_subparagraph_definition')
+
+    node = create_node(parent, {
+        'type': 'subparagraph',
+        'children': [],
+    })
+
+    j = i
+
+    # un sous-paragraphe[s] [{order}] [ainsi rédigé]
+    if is_number_word(tokens[i]) and tokens[i + 2].startswith(u'sous-paragraphe'):
+        count = word_to_number(tokens[i])
+        i += 4
+        # [{order}]
+        if is_number(tokens[i]):
+            node['order'] = parse_int(tokens[i])
+        # ainsi rédigé
+        if (i + 2 < len(tokens) and tokens[i + 2].startswith(u'rédigé')
+            or (i + 4 < len(tokens) and tokens[i + 4].startswith(u'rédigé'))):
+            i = alinea_lexer.skip_to_quote_start(tokens, i)
+            i = parse_for_each(parse_quote, tokens, i, node)
+    else:
+        remove_node(parent, node)
+        debug(parent, tokens, i, 'parse_subparagraph_definition none')
+        return j
+
+    debug(parent, tokens, i, 'parse_subparagraph_definition end')
+
+    return i
+
 def parse_law_reference(tokens, i, parent):
     if i >= len(tokens):
         return i
@@ -346,52 +380,23 @@ def parse_definition(tokens, i, parent):
     if i >= len(tokens):
         return i
 
-    debug(parent, tokens, i, 'parse_definition')
-
-    j = parse_article_definition(tokens, i, parent)
-    if j != i:
-        return j
-    i = j
-
-    j = parse_alinea_definition(tokens, i, parent)
-    if j != i:
-        return j
-    i = j
-
-    j = parse_mention_definition(tokens, i, parent)
-    if j != i:
-        return j
-    i = j
-
-    j = parse_header1_definition(tokens, i, parent)
-    if j != i:
-        return j
-    i = j
-
-    j = parse_header2_definition(tokens, i, parent)
-    if j != i:
-        return j
-    i = j
-
-    j = parse_header3_definition(tokens, i, parent)
-    if j != i:
-        return j
-    i = j
-
-    j = parse_sentence_definition(tokens, i, parent)
-    if j != i:
-        return j
-    i = j
-
-    j = parse_words_definition(tokens, i, parent)
-    if j != i:
-        return j
-    i = j
-
-    j = parse_title_definition(tokens, i, parent)
-    if j != i:
-        return j
-    i = j
+    i = parse_one_of(
+        [
+            parse_article_definition,
+            parse_alinea_definition,
+            parse_mention_definition,
+            parse_header1_definition,
+            parse_header2_definition,
+            parse_header3_definition,
+            parse_sentence_definition,
+            parse_words_definition,
+            parse_title_definition,
+            parse_subparagraph_definition
+        ],
+        tokens,
+        i,
+        parent
+    )
 
     return i
 
