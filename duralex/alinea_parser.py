@@ -171,6 +171,8 @@ def parse_section_reference(tokens, i, parent):
         remove_node(parent, node)
         return i
 
+    i = parse_reference(tokens, i, node)
+
     debug(parent, tokens, i, 'parse_section_reference end')
 
     return i
