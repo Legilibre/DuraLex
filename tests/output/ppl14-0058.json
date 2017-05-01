@@ -1,0 +1,284 @@
+{
+  "children": [
+    {
+      "children": [
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "children": [
+                        {
+                          "type": "quote", 
+                          "words": "Toutefois, sous réserve des dispositions du troisième alinéa, la première infraction constatée est punie de l'amende prévue pour les contraventions de la troisième classe."
+                        }
+                      ], 
+                      "type": "sentence"
+                    }, 
+                    {
+                      "children": [
+                        {
+                          "children": [
+                            {
+                              "order": 1, 
+                              "type": "alinea-reference"
+                            }
+                          ], 
+                          "id": "L. 3421-1", 
+                          "type": "article-reference"
+                        }
+                      ], 
+                      "codeName": "code de la santé publique", 
+                      "type": "code-reference"
+                    }
+                  ], 
+                  "editType": "add", 
+                  "type": "edit"
+                }
+              ], 
+              "order": 1, 
+              "type": "bill-header2"
+            }, 
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "children": [
+                        {
+                          "type": "quote", 
+                          "words": "du délit prévu au premier alinéa"
+                        }
+                      ], 
+                      "type": "words"
+                    }, 
+                    {
+                      "children": [
+                        {
+                          "children": [
+                            {
+                              "children": [
+                                {
+                                  "children": [
+                                    {
+                                      "type": "quote", 
+                                      "words": "de ce délit"
+                                    }
+                                  ], 
+                                  "type": "words-reference"
+                                }
+                              ], 
+                              "order": 2, 
+                              "type": "alinea-reference"
+                            }
+                          ], 
+                          "id": "L. 3421-1", 
+                          "type": "article-reference"
+                        }
+                      ], 
+                      "codeName": "code de la santé publique", 
+                      "type": "code-reference"
+                    }
+                  ], 
+                  "editType": "replace", 
+                  "type": "edit"
+                }
+              ], 
+              "order": 2, 
+              "type": "bill-header2"
+            }
+          ], 
+          "implicit": true, 
+          "order": 1, 
+          "type": "bill-header1"
+        }
+      ], 
+      "content": "L'article L. 3421-1 du code de la santé publique est ainsi modifié :\n1° Le premier alinéa est complété par une phrase ainsi rédigée :\n\"Toutefois, sous réserve des dispositions du troisième alinéa, la première infraction constatée est punie de l'amende prévue pour les contraventions de la troisième classe. \" ;\n2° Au deuxième alinéa, les mots : \" de ce délit \" sont remplacés par les mots : \" du délit prévu au premier alinéa \".", 
+      "isNew": false, 
+      "order": 1, 
+      "type": "article"
+    }, 
+    {
+      "children": [
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "type": "quote", 
+                      "words": "Dans le cas prévu à la seconde phrase du premier alinéa de l'article L. 3421-1, la contravention est accompagnée des coordonnées des centres spécialisés de soins aux toxicomanes les plus proches."
+                    }
+                  ], 
+                  "id": "L. 3421-1-1", 
+                  "type": "article"
+                }, 
+                {
+                  "children": [
+                    {
+                      "id": "L. 3421-1", 
+                      "position": "after", 
+                      "type": "article-reference"
+                    }
+                  ], 
+                  "codeName": "code de la santé publique", 
+                  "type": "code-reference"
+                }
+              ], 
+              "editType": "add", 
+              "type": "edit"
+            }
+          ], 
+          "implicit": true, 
+          "order": 1, 
+          "type": "bill-header1"
+        }
+      ], 
+      "content": "Après l'article L. 3421-1 du code de la santé publique, il est inséré un article L. 3421-1-1 ainsi rédigé :\n\"Art. L. 3421-1-1. - Dans le cas prévu à la seconde phrase du premier alinéa de l'article L. 3421-1, la contravention est accompagnée des coordonnées des centres spécialisés de soins aux toxicomanes les plus proches. \"", 
+      "isNew": false, 
+      "order": 2, 
+      "type": "article"
+    }, 
+    {
+      "children": [
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "type": "quote", 
+                      "words": "lorsque l'infraction a été constatée"
+                    }
+                  ], 
+                  "type": "words"
+                }, 
+                {
+                  "children": [
+                    {
+                      "children": [
+                        {
+                          "children": [
+                            {
+                              "children": [
+                                {
+                                  "type": "quote", 
+                                  "words": "lorsque le délit a été constaté"
+                                }
+                              ], 
+                              "type": "words-reference"
+                            }
+                          ], 
+                          "order": 2, 
+                          "type": "alinea-reference"
+                        }
+                      ], 
+                      "id": "L. 3421-2", 
+                      "type": "article-reference"
+                    }
+                  ], 
+                  "codeName": "code de la santé publique", 
+                  "type": "code-reference"
+                }
+              ], 
+              "editType": "replace", 
+              "type": "edit"
+            }
+          ], 
+          "implicit": true, 
+          "order": 1, 
+          "type": "bill-header1"
+        }
+      ], 
+      "content": "Au second alinéa de l'article L. 3421-2 du code de la santé publique, les mots : \" lorsque le délit a été constaté \" sont remplacés par les mots : \" lorsque l'infraction a été constatée \".", 
+      "isNew": false, 
+      "order": 3, 
+      "type": "article"
+    }, 
+    {
+      "children": [
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "type": "quote", 
+                      "words": "La provocation à l'infraction prévue"
+                    }
+                  ], 
+                  "type": "words"
+                }, 
+                {
+                  "children": [
+                    {
+                      "children": [
+                        {
+                          "children": [
+                            {
+                              "children": [
+                                {
+                                  "type": "quote", 
+                                  "words": "La provocation au délit prévu"
+                                }
+                              ], 
+                              "type": "words-reference"
+                            }
+                          ], 
+                          "order": 1, 
+                          "position": "beginning", 
+                          "type": "alinea-reference"
+                        }
+                      ], 
+                      "id": "L. 3421-4", 
+                      "type": "article-reference"
+                    }
+                  ], 
+                  "codeName": "code de la santé publique", 
+                  "type": "code-reference"
+                }
+              ], 
+              "editType": "replace", 
+              "type": "edit"
+            }
+          ], 
+          "implicit": true, 
+          "order": 1, 
+          "type": "bill-header1"
+        }
+      ], 
+      "content": "Au début du premier alinéa de l'article L. 3421-4 du code de la santé publique, les mots : \" La provocation au délit prévu \" sont remplacés par les mots : \" La provocation à l'infraction prévue \".", 
+      "isNew": false, 
+      "order": 4, 
+      "type": "article"
+    }, 
+    {
+      "children": [
+        {
+          "children": [
+            {
+              "content": "Le conseil communal ou intercommunal de sécurité et de prévention de la délinquance est informé du nombre d'infractions constatées pour le premier usage de stupéfiants.", 
+              "type": "raw-content"
+            }
+          ], 
+          "implicit": true, 
+          "order": 1, 
+          "type": "bill-header1"
+        }
+      ], 
+      "content": "Le conseil communal ou intercommunal de sécurité et de prévention de la délinquance est informé du nombre d'infractions constatées pour le premier usage de stupéfiants.", 
+      "isNew": false, 
+      "order": 5, 
+      "type": "article"
+    }
+  ], 
+  "id": 58, 
+  "legislature": 14, 
+  "type": "proposition de loi", 
+  "url": "http://www.assemblee-nationale.fr/14/propositions/pion0058.asp"
+}

@@ -1,0 +1,59 @@
+{
+  "articles": [
+    {
+      "alineas": {
+        "001": "L'article L. 3421-1 du code de la santé publique est ainsi modifié :",
+        "002": "1° Le premier alinéa est complété par une phrase ainsi rédigée :",
+        "003": "\"Toutefois, sous réserve des dispositions du troisième alinéa, la première infraction constatée est punie de l'amende prévue pour les contraventions de la troisième classe. \" ;",
+        "004": "2° Au deuxième alinéa, les mots : \" de ce délit \" sont remplacés par les mots : \" du délit prévu au premier alinéa \"."
+      },
+      "order": 1,
+      "statut": "none",
+      "titre": "1er",
+      "type": "article"
+    },
+    {
+      "alineas": {
+        "001": "Après l'article L. 3421-1 du code de la santé publique, il est inséré un article L. 3421-1-1 ainsi rédigé :",
+        "002": "\"Art. L. 3421-1-1. - Dans le cas prévu à la seconde phrase du premier alinéa de l'article L. 3421-1, la contravention est accompagnée des coordonnées des centres spécialisés de soins aux toxicomanes les plus proches. \""
+      },
+      "order": 2,
+      "statut": "nouveau",
+      "titre": "1er bis",
+      "type": "article"
+    },
+    {
+      "alineas": {
+        "001": "Au second alinéa de l'article L. 3421-2 du code de la santé publique, les mots : \" lorsque le délit a été constaté \" sont remplacés par les mots : \" lorsque l'infraction a été constatée \"."
+      },
+      "order": 3,
+      "statut": "none",
+      "titre": "2",
+      "type": "article"
+    },
+    {
+      "alineas": {
+        "001": "Au début du premier alinéa de l'article L. 3421-4 du code de la santé publique, les mots : \" La provocation au délit prévu \" sont remplacés par les mots : \" La provocation à l'infraction prévue \"."
+      },
+      "order": 4,
+      "statut": "none",
+      "titre": "3",
+      "type": "article"
+    },
+    {
+      "alineas": {
+        "001": "Le conseil communal ou intercommunal de sécurité et de prévention de la délinquance est informé du nombre d'infractions constatées pour le premier usage de stupéfiants."
+      },
+      "order": 5,
+      "statut": "nouveau",
+      "titre": "4",
+      "type": "article"
+    }
+  ],
+  "definitive": false,
+  "expose": "",
+  "id": 58,
+  "legislature": 14,
+  "type": "proposition de loi",
+  "url": "http://www.assemblee-nationale.fr/14/propositions/pion0058.asp"
+}
