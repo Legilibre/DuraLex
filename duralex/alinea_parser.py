@@ -1705,7 +1705,7 @@ def parse_json_article(data, parent):
 
 def parse_json_alineas(data, parent):
     text = alinea_lexer.TOKEN_NEW_LINE.join(value for key, value in list(iter(sorted(data.iteritems()))))
-    parent['content'] = text.decode('utf-8') if type(text) == 'unicode' else text
+    parent['content'] = text.decode('utf-8')
     return parse_alineas(text, parent)
 
 def parse_alineas(data, parent):
