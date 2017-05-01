@@ -153,7 +153,6 @@ def parse_section_reference(tokens, i, parent):
 
     node = create_node(parent, {
         'type': 'section-reference',
-        'order': '',
         'children': [],
     })
 
@@ -183,7 +182,6 @@ def parse_subsection_reference(tokens, i, parent):
 
     node = create_node(parent, {
         'type': 'subsection-reference',
-        'order': '',
         'children': [],
     })
 
