@@ -22,10 +22,7 @@ from duralex.ResolveFullyQualifiedDefinitionsVisitor import ResolveFullyQualifie
 from duralex.RemoveQuotePrefixVisitor import RemoveQuotePrefixVisitor
 
 def handle_data(data, args):
-    if data[0] == u'{':
-        data = json.loads(data)
-    else:
-        data = duralex.bill_parser.parse_bill(data, args.url)
+    data = duralex.bill_parser.parse_bill(data, args.url)
     ast = duralex.alinea_parser.parse_json_data(data)
 
     ForkReferenceVisitor().visit(ast)
