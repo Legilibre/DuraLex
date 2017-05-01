@@ -147,6 +147,62 @@ def filter_nodes_rec(root, fn, results):
 
     return results
 
+def parse_section_reference(tokens, i, parent):
+    if i >= len(tokens):
+        return i
+
+    node = create_node(parent, {
+        'type': 'section-reference',
+        'order': '',
+        'children': [],
+    })
+
+    debug(parent, tokens, i, 'parse_section_reference')
+
+    # la section {order}
+    if tokens[i].lower() == u'la' and tokens[i + 2] == u'section':
+        node['order'] = parse_int(tokens[i + 4]);
+        i += 6
+    # de la section {order}
+    elif tokens[i] == u'de' and tokens[i + 2] == u'la' and tokens[i + 4] == u'section':
+        node['order'] = parse_int(tokens[i + 6]);
+        i += 8
+    else:
+        remove_node(parent, node)
+        return i
+
+    debug(parent, tokens, i, 'parse_section_reference end')
+
+    return i
+
+def parse_subsection_reference(tokens, i, parent):
+    if i >= len(tokens):
+        return i
+
+    node = create_node(parent, {
+        'type': 'subsection-reference',
+        'order': '',
+        'children': [],
+    })
+
+    debug(parent, tokens, i, 'parse_subsection_reference')
+
+    # de la sous-section {order}
+    if tokens[i].lower() == u'la' and tokens[i + 2] == u'sous-section':
+        node['order'] = parse_int(tokens[i + 4]);
+        i += 6
+    # de la sous-section {order}
+    elif tokens[i] == u'de' and tokens[i + 2] == u'la' and tokens[i + 4] == u'sous-section':
+        node['order'] = parse_int(tokens[i + 6]);
+        i += 8
+    else:
+        remove_node(parent, node)
+        return i
+
+    debug(parent, tokens, i, 'parse_subsection_reference end')
+
+    return i
+
 def parse_law_reference(tokens, i, parent):
     if i >= len(tokens):
         return i
@@ -558,7 +614,7 @@ def parse_header3_definition(tokens, i, parent):
     debug(parent, tokens, i, 'parse_header3_definition')
 
     # un {orderLetter}
-    if tokens[i].lower() == u'un' and re.compile(u'[a-z]').match(tokens[i + 2]):
+    if tokens[i].lower() == u'un' and re.compile(u'^[a-z]$').match(tokens[i + 2]):
         node = create_node(parent, {
             'type': 'header3',
             'order': ord(str(tokens[i + 2])) - ord('a') + 1,
@@ -570,8 +626,8 @@ def parse_header3_definition(tokens, i, parent):
             i = alinea_lexer.skip_to_quote_start(tokens, i + 4)
             i = parse_quote(tokens, i, node)
     # des {orderLetter} à {orderLetter}
-    elif (tokens[i].lower() == u'des' and re.compile(u'[a-z]').match(tokens[i + 2])
-        and tokens[i + 4] == u'à' and re.compile(u'[a-z]').match(tokens[i + 6])):
+    elif (tokens[i].lower() == u'des' and re.compile(u'^[a-z]$').match(tokens[i + 2])
+        and tokens[i + 4] == u'à' and re.compile(u'^[a-z]$').match(tokens[i + 6])):
         start = ord(str(tokens[i + 2])) - ord('a') + 1
         end = ord(str(tokens[i + 6])) - ord('a') + 1
         i += 8
@@ -1134,7 +1190,7 @@ def parse_header3_reference(tokens, i, parent):
     # le {orderLetter} ({articlePartRef})
     # du {orderLetter} ({articlePartRef})
     # au {orderLetter} ({articlePartRef})
-    if tokens[i].lower() in [u'le', u'du', u'au'] and re.compile(u'[a-z]').match(tokens[i + 2]):
+    if tokens[i].lower() in [u'le', u'du', u'au'] and re.compile(u'^[a-z]$').match(tokens[i + 2]):
         node['order'] = ord(str(tokens[i + 2])) - ord('a') + 1
         i += 4
         i = parse_multiplicative_adverb(tokens, i, node)
@@ -1142,7 +1198,7 @@ def parse_header3_reference(tokens, i, parent):
     # le même {orderLetter} ({articlePartRef})
     # du même {orderLetter} ({articlePartRef})
     # au même {orderLetter} ({articlePartRef})
-    elif tokens[i].lower() in [u'le', u'du', u'au'] and tokens[i + 2] == u'même' and re.compile(u'[a-z]').match(tokens[i + 4]):
+    elif tokens[i].lower() in [u'le', u'du', u'au'] and tokens[i + 2] == u'même' and re.compile(u'^[a-z]$').match(tokens[i + 4]):
         node['order'] = ord(str(tokens[i + 4])) - ord('a') + 1
         i += 6
         i = parse_multiplicative_adverb(tokens, i, node)
