@@ -205,6 +205,32 @@ def parse_subsection_reference(tokens, i, parent):
 
     return i
 
+def parse_chapter_reference(tokens, i, parent):
+    if i >= len(tokens):
+        return i
+
+    node = create_node(parent, {
+        'type': 'chapter-reference',
+        'children': [],
+    })
+
+    debug(parent, tokens, i, 'parse_chapter_reference')
+
+    # du chapitre {order}
+    # le chapitre {order}
+    if tokens[i].lower() in [u'du', u'le'] and tokens[i + 2] == u'chapitre' and is_roman_number(tokens[i + 4]):
+        node['order'] = parse_roman_number(tokens[i + 4]);
+        i += 6
+    else:
+        remove_node(parent, node)
+        return i
+
+    i = parse_reference(tokens, i, node)
+
+    debug(parent, tokens, i, 'parse_chapter_reference end')
+
+    return i
+
 def parse_law_reference(tokens, i, parent):
     if i >= len(tokens):
         return i

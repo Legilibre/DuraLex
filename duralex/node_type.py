@@ -13,6 +13,7 @@ REFERENCE = [
     'book-reference',
     'law-reference',
     'title-reference',
+    'chapter-reference',
     'article-reference',
     'header1-reference',
     'header2-reference',
