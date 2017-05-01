@@ -10,6 +10,7 @@ DEFINITION = [
 
 REFERENCE = [
     'code-reference',
+    'code-part-reference',
     'book-reference',
     'law-reference',
     'title-reference',

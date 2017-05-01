@@ -766,6 +766,39 @@ def parse_title_definition(tokens, i, parent):
 
     return i
 
+def parse_code_part_reference(tokens, i, parent):
+    if i >= len(tokens):
+        return i
+
+    node = create_node(parent, {
+        'type': 'code-part-reference',
+        'children': [],
+    })
+
+    debug(parent, tokens, i, 'parse_code_part_reference')
+
+    j = i
+    i = parse_position(tokens, i, node)
+
+    # la {order} partie [{codeReference}]
+    if tokens[i] == u'la' and is_number_word(tokens[i + 2]) and tokens[i + 4] == u'partie':
+        node['order'] = word_to_number(tokens[i + 2])
+        i += 6
+        i = parse_code_reference(tokens, i, node)
+    # de la {order} partie [{codeReference}]
+    elif tokens[i] == u'de' and tokens[i + 2] == u'la' and is_number_word(tokens[i + 4]) and tokens[i + 6] == u'partie':
+        node['order'] = word_to_number(tokens[i + 4])
+        i += 8
+        i = parse_code_reference(tokens, i, node)
+    else:
+        debug(parent, tokens, i, 'parse_code_part_reference none')
+        remove_node(parent, node)
+        return j
+
+    debug(parent, tokens, i, 'parse_code_part_reference end')
+
+    return i
+
 def parse_book_reference(tokens, i, parent):
     if i >= len(tokens):
         return i
@@ -1613,6 +1646,7 @@ def parse_reference(tokens, i, parent):
         [
             parse_law_reference,
             parse_code_reference,
+            parse_code_part_reference,
             parse_title_reference,
             parse_book_reference,
             parse_article_reference,
