@@ -1161,7 +1161,8 @@ def parse_words_reference(tokens, i, parent):
         i = alinea_lexer.skip_to_quote_start(tokens, i)
         i = parse_quote(tokens, i, node)
     # la référence
-    elif tokens[i].lower() in [u'la'] and tokens[i + 2] == u'référence':
+    # les références
+    elif tokens[i].lower() in [u'la', u'les'] and tokens[i + 2].startswith(u'référence'):
         i = alinea_lexer.skip_to_quote_start(tokens, i)
         i = parse_quote(tokens, i, node)
     else:
