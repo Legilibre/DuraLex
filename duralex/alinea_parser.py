@@ -199,6 +199,8 @@ def parse_subsection_reference(tokens, i, parent):
         remove_node(parent, node)
         return i
 
+    i = parse_reference(tokens, i, node)
+
     debug(parent, tokens, i, 'parse_subsection_reference end')
 
     return i
