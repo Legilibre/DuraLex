@@ -720,7 +720,8 @@ def parse_title_reference(tokens, i, parent):
     i = parse_position(tokens, i, node)
 
     # le titre {order}
-    if tokens[i].lower() == u'le' and tokens[i + 2] == u'titre' and is_roman_number(tokens[i + 4]):
+    # du titre {order}
+    if tokens[i].lower() in [u'le', u'du'] and tokens[i + 2] == u'titre' and is_roman_number(tokens[i + 4]):
         node['order'] = parse_roman_number(tokens[i + 4])
         i += 6
         i = parse_multiplicative_adverb(tokens, i, node)
