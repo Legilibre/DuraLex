@@ -557,7 +557,7 @@ def parse_header3_definition(tokens, i, parent):
     debug(parent, tokens, i, 'parse_header3_definition')
 
     # un {orderLetter}
-    if tokens[i].lower() == u'un' and re.compile(u'[a-z]').match(tokens[i + 2]):
+    if tokens[i].lower() == u'un' and re.compile(u'[a-z]$').match(tokens[i + 2]):
         node = create_node(parent, {
             'type': 'header3',
             'order': ord(str(tokens[i + 2])) - ord('a') + 1,
@@ -569,8 +569,8 @@ def parse_header3_definition(tokens, i, parent):
             i = alinea_lexer.skip_to_quote_start(tokens, i + 4)
             i = parse_quote(tokens, i, node)
     # des {orderLetter} à {orderLetter}
-    elif (tokens[i].lower() == u'des' and re.compile(u'[a-z]').match(tokens[i + 2])
-        and tokens[i + 4] == u'à' and re.compile(u'[a-z]').match(tokens[i + 6])):
+    elif (tokens[i].lower() == u'des' and re.compile(u'[a-z]$').match(tokens[i + 2])
+        and tokens[i + 4] == u'à' and re.compile(u'[a-z]$').match(tokens[i + 6])):
         start = ord(str(tokens[i + 2])) - ord('a') + 1
         end = ord(str(tokens[i + 6])) - ord('a') + 1
         i += 8
@@ -1133,7 +1133,7 @@ def parse_header3_reference(tokens, i, parent):
     # le {orderLetter} ({articlePartRef})
     # du {orderLetter} ({articlePartRef})
     # au {orderLetter} ({articlePartRef})
-    if tokens[i].lower() in [u'le', u'du', u'au'] and re.compile(u'[a-z]').match(tokens[i + 2]):
+    if tokens[i].lower() in [u'le', u'du', u'au'] and re.compile(u'[a-z]$').match(tokens[i + 2]):
         node['order'] = ord(str(tokens[i + 2])) - ord('a') + 1
         i += 4
         i = parse_multiplicative_adverb(tokens, i, node)
@@ -1705,7 +1705,13 @@ def parse_json_article(data, parent):
 
 def parse_json_alineas(data, parent):
     text = alinea_lexer.TOKEN_NEW_LINE.join(value for key, value in list(iter(sorted(data.iteritems()))))
-    parent['content'] = text.decode('utf-8')
+    try:
+        parent['content'] = text.decode('utf-8')
+    except:
+        try:
+            parent['content'] = text.decode('iso-8859-1')
+        except:
+            parent['content'] = text
     return parse_alineas(text, parent)
 
 def parse_alineas(data, parent):
