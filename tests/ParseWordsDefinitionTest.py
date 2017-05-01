@@ -99,3 +99,22 @@ class ParseWordsDefinitionTest(DuralexTestCase):
                 }
             ]}
         )
+
+    def test_the_references(self):
+        self.assertEqualAST(
+            self.call_parse_func(
+                parser.parse_words_definition,
+                ("la références \"ceci est une référence\"")
+            ),
+            {'children':[
+                {
+                    'type': u'words',
+                    'children': [
+                        {
+                            'type': u'quote',
+                            'words': u'ceci est une référence'
+                        }
+                    ]
+                }
+            ]}
+        )

@@ -351,7 +351,8 @@ def parse_words_definition(tokens, i, parent):
         i = parse_for_each(parse_quote, tokens, i, node)
         i = alinea_lexer.skip_spaces(tokens, i)
     # la référence
-    elif tokens[i] == u'la' and tokens[i + 2] == u'référence':
+    # les références
+    elif tokens[i].lower() in [u'la', u'les'] and tokens[i + 2].startswith(u'référence'):
         i = alinea_lexer.skip_to_quote_start(tokens, i)
         i = parse_quote(tokens, i, node)
     else:
