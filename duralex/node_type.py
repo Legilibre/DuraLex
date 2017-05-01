@@ -15,6 +15,8 @@ REFERENCE = [
     'law-reference',
     'title-reference',
     'chapter-reference',
+    'section-reference',
+    'subsection-reference',
     'paragraph-reference',
     'article-reference',
     'header1-reference',

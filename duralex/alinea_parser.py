@@ -1678,6 +1678,9 @@ def parse_reference(tokens, i, parent):
             parse_law_reference,
             parse_code_reference,
             parse_code_part_reference,
+            parse_section_reference,
+            parse_subsection_reference,
+            parse_chapter_reference,
             parse_title_reference,
             parse_book_reference,
             parse_article_reference,
@@ -1685,7 +1688,7 @@ def parse_reference(tokens, i, parent):
             parse_paragraph_reference,
             parse_back_reference,
             parse_incomplete_reference,
-            parse_alinea_reference
+            parse_alinea_reference,
         ],
         tokens,
         i,
