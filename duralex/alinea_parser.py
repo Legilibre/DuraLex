@@ -231,6 +231,32 @@ def parse_chapter_reference(tokens, i, parent):
 
     return i
 
+def parse_paragraph_reference(tokens, i, parent):
+    if i >= len(tokens):
+        return i
+
+    node = create_node(parent, {
+        'type': 'paragraph-reference',
+        'children': [],
+    })
+
+    debug(parent, tokens, i, 'parse_paragraph_reference')
+
+    # du paragraphe {order}
+    # le paragraphe {order}
+    if tokens[i].lower() in [u'du', u'le'] and tokens[i + 2] == u'paragraphe':
+        node['order'] = parse_int(tokens[i + 4]);
+        i += 6
+    else:
+        remove_node(parent, node)
+        return i
+
+    i = parse_reference(tokens, i, node)
+
+    debug(parent, tokens, i, 'parse_paragraph_reference end')
+
+    return i
+
 def parse_law_reference(tokens, i, parent):
     if i >= len(tokens):
         return i
@@ -1651,6 +1677,7 @@ def parse_reference(tokens, i, parent):
             parse_book_reference,
             parse_article_reference,
             parse_article_part_reference,
+            parse_paragraph_reference,
             parse_back_reference,
             parse_incomplete_reference,
             parse_alinea_reference
