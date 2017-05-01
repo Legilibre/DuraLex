@@ -780,8 +780,9 @@ def parse_book_reference(tokens, i, parent):
     j = i
     i = parse_position(tokens, i, node)
 
-    # le titre {order}
-    if tokens[i].lower() == u'du' and tokens[i + 2] == u'livre' and is_roman_number(tokens[i + 4]):
+    # le livre {order}
+    # du livre {order}
+    if tokens[i].lower() in [u'le', u'du'] and tokens[i + 2] == u'livre' and is_roman_number(tokens[i + 4]):
         node['order'] = parse_roman_number(tokens[i + 4])
         i += 6
     else:
