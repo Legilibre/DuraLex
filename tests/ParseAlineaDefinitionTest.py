@@ -5,7 +5,7 @@ from DuralexTestCase import DuralexTestCase
 import duralex.alinea_parser as parser
 
 class ParseAlineaDefinitionTest(DuralexTestCase):
-    def test_one_alinea_with_n_quote(self):
+    def test_one_alinea_with_quote(self):
         self.assertEqualAST(
             self.call_parse_func(
                 parser.parse_alinea_definition,

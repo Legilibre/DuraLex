@@ -64,3 +64,79 @@ class SortReferencesVisitorTest(DuralexTestCase):
                 }
             ]}
         )
+
+    def test_paragraph_subsection_section_chapter_title_book(self):
+        self.assertEqualAST(
+            self.call_visitor(SortReferencesVisitor, {'children': [
+                {
+                    'children': [
+                        {
+                            'children': [
+                                {
+                                    'children': [
+                                        {
+                                            'children': [
+                                                {
+                                                    'children': [
+                                                        {
+                                                            'order': 1,
+                                                            'type': u'book-reference'
+                                                        }
+                                                    ],
+                                                    'order': 3,
+                                                    'type': u'title-reference'
+                                                }
+                                            ],
+                                            'order': 2,
+                                            'type': u'chapter-reference'
+                                        }
+                                    ],
+                                    'order': 2,
+                                    'type': u'section-reference'
+                                }
+                            ],
+                            'order': 2,
+                            'type': u'subsection-reference'
+                        }
+                    ],
+                    'order': 3,
+                    'type': u'paragraph-reference'
+                }
+            ]}),
+            {'children': [
+                {
+                    'children': [
+                        {
+                            'children': [
+                                {
+                                    'children': [
+                                        {
+                                            'children': [
+                                                {
+                                                    'children': [
+                                                        {
+                                                            'order': 3,
+                                                            'type': u'paragraph-reference'
+                                                        }
+                                                    ],
+                                                    'order': 2,
+                                                    'type': u'subsection-reference'
+                                                }
+                                            ],
+                                            'order': 2,
+                                            'type': u'section-reference'
+                                        }
+                                    ],
+                                    'order': 2,
+                                    'type': u'chapter-reference'
+                                }
+                            ],
+                            'order': 3,
+                            'type': u'title-reference'
+                        }
+                    ],
+                    'order': 1,
+                    'type': u'book-reference'
+                }
+            ]}
+        )
