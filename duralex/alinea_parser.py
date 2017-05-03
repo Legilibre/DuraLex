@@ -1910,6 +1910,8 @@ def parse_json_data(data):
         node['legislature'] = data['legislature']
     if 'url' in data:
         node['url'] = data['url']
+    if 'description' in data:
+        node['description'] = data['description']
 
     parse_json_articles(data, node)
     parse_json_amendements(data, node)

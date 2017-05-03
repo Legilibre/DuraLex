@@ -187,6 +187,7 @@ re_clean_footer_notes = re.compile(r"[\.\s]*\(*\d*\([\d\*]+[\)\d\*\.\s]*$")
 re_sep_text = re.compile(r'\s*<b>\s*(article|%s)\s*(I|uniqu|pr..?limina|1|prem)[ier]*\s*</b>\s*$' % section_titles, re.I)
 re_stars = re.compile(r'^[\s*_]+$')
 re_art_uni = re.compile(r'\s*article\s*unique\s*$', re.I)
+re_all_caps = re.compile(r'[A-Z' + upcase_accents +' ]+')
 section = {"type": "section", "id": ""}
 
 def parse_bill(string, url):
@@ -254,7 +255,22 @@ def parse_bill(string, url):
             texte['legislature'] = word_to_number(match.group(1).decode('utf-8'))
 
         if line == 'PROPOSITION DE LOI':
-            texte['type'] = line.lower()
+            texte['type'] = line.lower().decode('utf-8')
+
+        if line.endswith('DE LOI'):
+            texte['description'] = line.lower().decode('utf-8')
+            read = 3
+            continue
+        if read == 3:
+            if line == 'TRANSMISE PAR':
+                read = 0
+                continue
+            else:
+                if re_all_caps.match(line):
+                    line = real_lower(line)
+                line = line.replace(',', '')
+                texte['description'] += ' ' + line.decode('utf-8')
+            continue
 
         if line == "<b>RAPPORT</b>" or line == "Mesdames, Messieurs,":
             read = -1
