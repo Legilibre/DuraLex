@@ -33,3 +33,6 @@ def is_definition(node):
 
 def is_reference(node):
     return 'type' in node and node['type'] in REFERENCE
+
+def is_root(node):
+    return 'parent' not in node
