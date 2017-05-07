@@ -7,7 +7,7 @@ Original code by RegardsCitoyen (https://github.com/RegardsCitoyens) for the-law
 import sys, re, html5lib
 from bs4 import BeautifulSoup
 
-from alinea_parser import word_to_number
+from alinea_parser import word_to_number, month_to_number
 
 bister = '(un|duo|tre|bis|qua|quin[tqu]*|sex|sept|octo?|novo?|non|dec|vic|ter|ies)+'
 
@@ -253,6 +253,11 @@ def parse_bill(string, url):
         match = re.compile(r'^(.*) LÉGISLATURE$', re.MULTILINE).search(line)
         if match:
             texte['legislature'] = word_to_number(match.group(1).decode('utf-8'))
+
+        match = re.compile(ur'Enregistré à la Présidence (du |de l\')(.*) le (\d+) (\w+) (\d{4})').search(line)
+        if match:
+            texte['date'] = match.group(5) + '-' + str(month_to_number(match.group(4))) + '-' + match.group(3)
+            texte['place'] = match.group(2).lower()
 
         if line == 'PROPOSITION DE LOI':
             texte['type'] = line.lower().decode('utf-8')
