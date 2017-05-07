@@ -9,37 +9,37 @@ from bs4 import BeautifulSoup
 
 from alinea_parser import word_to_number, month_to_number
 
-bister = '(un|duo|tre|bis|qua|quin[tqu]*|sex|sept|octo?|novo?|non|dec|vic|ter|ies)+'
+bister = u'(un|duo|tre|bis|qua|quin[tqu]*|sex|sept|octo?|novo?|non|dec|vic|ter|ies)+'
 
 ORDER = ''
 
 # Warning changing parenthesis in this regexp has multiple consequences throughout the code
-section_titles = "((chap|t)itre|volume|livre|tome|(sous-)?section)"
+section_titles = u"((chap|t)itre|volume|livre|tome|(sous-)?section)"
 
 re_definitif = re.compile(ur'<p[^>]*align[=:\s\-]*center"?>\(?<(b|strong)>\(?texte d[^f]*finitif\)?</(b|strong)>\)?</p>', re.I)
 
 clean_texte_regexps = [
-    (re.compile(r'[\n\t\r\s]+'), ' '),
-    (re.compile(r'(<t[rdh][^>]*>) ?<p [^>]*> ?'), r'\1'),
-    (re.compile(r' ?</p> ?(</t[rdh]>)'), r'\1'),
-    (re.compile(r'(>%s\s*[\dIVXLCDM]+(<sup>[eE][rR]?</sup>)?)\s+-\s+([^<]*?)\s*</p>' % section_titles.upper()), r'\1</p><p><b>\6</b></p>'),
+    (re.compile(ur'[\n\t\r\s]+'), ' '),
+    (re.compile(ur'(<t[rdh][^>]*>) ?<p [^>]*> ?'), r'\1'),
+    (re.compile(ur' ?</p> ?(</t[rdh]>)'), r'\1'),
+    (re.compile(ur'(>%s\s*[\dIVXLCDM]+(<sup>[eE][rR]?</sup>)?)\s+-\s+([^<]*?)\s*</p>' % section_titles.upper()), r'\1</p><p><b>\6</b></p>'),
 ]
 
 re_clean_title_legif = re.compile("[\s|]*l[eé]gifrance(.gouv.fr)?$", re.I)
 clean_legifrance_regexps = [
-    (re.compile(r'[\n\t\r\s]+'), ' '),
-    (re.compile(r'<a[^>]*>\s*En savoir plus sur ce[^<]*</a>', re.I), ''),
-    (re.compile(r'<a/?[^>]*>', re.I), ''),
-    (re.compile(r'\s*<br/>\s*', re.I), '</p><p>'),
-    (re.compile(r'<div[^>]*class="titreSection[^>]*>\s*(%s\s+[\dIVXLCDM]+e?r?)\s*:\s*([^<]*?)\s*</div>' % section_titles, re.I), r'<p>\1</p><p><b>\5</b></p>'),
-    (re.compile(r'<div[^>]*class="titreArt[^>]*>(.*?)\s*</div>', re.I), r'<p><b>\1</b></p>'),
+    (re.compile(ur'[\n\t\r\s]+'), ' '),
+    (re.compile(ur'<a[^>]*>\s*En savoir plus sur ce[^<]*</a>', re.I), ''),
+    (re.compile(ur'<a/?[^>]*>', re.I), ''),
+    (re.compile(ur'\s*<br/>\s*', re.I), '</p><p>'),
+    (re.compile(ur'<div[^>]*class="titreSection[^>]*>\s*(%s\s+[\dIVXLCDM]+e?r?)\s*:\s*([^<]*?)\s*</div>' % section_titles, re.I), r'<p>\1</p><p><b>\5</b></p>'),
+    (re.compile(ur'<div[^>]*class="titreArt[^>]*>(.*?)\s*</div>', re.I), r'<p><b>\1</b></p>'),
 ]
 
 # Convert from roman numbers
-re_mat_romans = re.compile(r"[IVXCLDM]+", re.I)
+re_mat_romans = re.compile(ur"[IVXCLDM]+", re.I)
 romans_map = zip(
     (1000,  900, 500, 400 , 100,  90 , 50 ,  40 , 10 ,   9 ,  5 ,  4  ,  1),
-    ( 'M', 'CM', 'D', 'CD', 'C', 'XC', 'L', 'XL', 'X', 'IX', 'V', 'IV', 'I')
+    ( u'M', u'CM', u'D', u'CD', u'C', u'XC', u'L', u'XL', u'X', u'IX', u'V', u'IV', u'I')
 )
 
 def romans(n):
@@ -51,8 +51,8 @@ def romans(n):
             i += len(r)
     return res
 
-upcase_accents = "ÇÀÂÄÉÈÊËÎÏÔÖÙÛÜ"
-locase_accents = "çàâäéèêëîïôöùûü"
+upcase_accents = u"ÇÀÂÄÉÈÊËÎÏÔÖÙÛÜ"
+locase_accents = u"çàâäéèêëîïôöùûü"
 
 
 def real_lower(text):
@@ -65,7 +65,7 @@ def lower_but_first(text):
     return text[0].upper() + real_lower(text[1:])
 
 
-re_fullupcase = re.compile("^([\W0-9]*)([A-Z%s][\W0-9A-Z%s]*)$" % (upcase_accents, upcase_accents), re.U)
+re_fullupcase = re.compile(ur"^([\W0-9]*)([A-Z%s][\W0-9A-Z%s]*)$" % (upcase_accents, upcase_accents), re.U)
 
 
 def clean_full_upcase(text):
@@ -74,45 +74,45 @@ def clean_full_upcase(text):
         text = mat.group(1) + lower_but_first(mat.group(2))
     return text
 
-re_clean_premier = re.compile(r'((PREM)?)(1|I)ER?')
-re_clean_bister = re.compile(r'([IXV\d]+e?r?)\s+(%s)' % bister, re.I)
-re_clean_subsec_space = re.compile(r'^("?[IVX0-9]{1,4}(\s+[a-z]+)?(\s+[A-Z]{1,4})?)\s*([\.°\-]+)\s*([^\s\)])', re.I)
-re_clean_subsec_space2 = re.compile(r'^("?[IVX0-9]{1,4})\s*([a-z]*)\s*([A-H]{1,4})([\.°\-])', re.I)
+re_clean_premier = re.compile(ur'((PREM)?)(1|I)ER?')
+re_clean_bister = re.compile(ur'([IXV\d]+e?r?)\s+(%s)' % bister, re.I)
+re_clean_subsec_space = re.compile(ur'^("?[IVX0-9]{1,4}(\s+[a-z]+)?(\s+[A-Z]{1,4})?)\s*([\.°\-]+)\s*([^\s\)])', re.I)
+re_clean_subsec_space2 = re.compile(ur'^("?[IVX0-9]{1,4})\s*([a-z]*)\s*([A-H]{1,4})([\.°\-])', re.I)
 re_clean_punc_space = re.compile(u'([°«»:;,\.!\?\]\)%€&\$])([^\s\)\.,\d"])')
-re_clean_spaces = re.compile(r'(\s|\xc2\xa0)+')
-re_clean_coord = re.compile(r'^["\(]*(pour)?\s*coordination[\)\s\.]*$', re.I)
+re_clean_spaces = re.compile(ur'(\s|\xc2\xa0|\xa0)+')
+re_clean_coord = re.compile(ur'^["\(]*(pour)?\s*coordination[\)\s\.]*$', re.I)
 # Clean html and special chars
 lower_inner_title = lambda x: x.group(1)+lower_but_first(x.group(3))+" "
 html_replace = [
-    (re.compile(r"−"), "-"),
-    (re.compile(r" "), " "),
-    (re.compile(r"<!--.*?-->", re.I), ""),
-    # (re.compile(r"</?br/?>[«\"\s]+", re.I), " "),
-    (re.compile(r'(«\s+|\s+»)'), '"'),
-    (re.compile(r'(«|»|“|”|„|‟|❝|❞|＂|〟|〞|〝)'), '"'),
-    (re.compile(r"(’|＇|’|ߴ|՚|ʼ|❛|❜)"), "'"),
-    (re.compile(r"(‒|–|—|―|⁓|‑|‐|⁃|⏤)"), "-"),
-    (re.compile(r"(</?\w+)[^>]*>"), r"\1>"),
-    (re.compile(r"(</?)em>", re.I), r"\1i>"),
-    (re.compile(r"(</?)strong>", re.I), r"\1b>"),
-    (re.compile(r"<(![^>]*|/?(p|span))>", re.I), ""),
-    (re.compile(r"\s*\n+\s*"), " "),
-    (re.compile(r"<[^>]*></[^>]*>"), ""),
-    (re.compile(r"^<b><i>", re.I), "<i><b>"),
-    (re.compile(r"</b>(\s*)<b>", re.I), r"\1"),
-    (re.compile(r"</?sup>", re.I), ""),
-    (re.compile(r"^((<[bi]>)*)\((S|AN)[12]\)\s*", re.I), r"\1"),
-    (re.compile(r"^(<b>Article\s*)\d+\s*<s>\s*", re.I), r"\1"),
-    (re.compile(r"<s>(.*)</s>", re.I), ""),
-    (re.compile(r"</?s>", re.I), ""),
-    (re.compile(r"\s*</?img>\s*", re.I), ""),
-    (re.compile(r"œ([A-Z])"), r"OE\1"),
-    (re.compile(r"œ\s*", re.I), "oe"),
-    (re.compile(r'^((<[^>]*>)*")%s ' % section_titles, re.I), lower_inner_title),
-    (re.compile(r' pr..?liminaire', re.I), ' préliminaire'),
-    (re.compile(r'<strike>[^<]*</strike>', re.I), ''),
-    (re.compile(r'^<a>(\w)', re.I), r"\1"),
-    (re_clean_spaces, " ")
+    (re_clean_spaces, " "),
+    (re.compile(ur"−"), "-"),
+    (re.compile(ur" "), " "),
+    (re.compile(ur"<!--.*?-->", re.I), ""),
+    # (re.compile(ur"</?br/?>[«\"\s]+", re.I), " "),
+    (re.compile(ur'(«\s+|\s+»)'), '"'),
+    (re.compile(ur'(«|»|“|”|„|‟|❝|❞|＂|〟|〞|〝)'), '"'),
+    (re.compile(ur"(’|＇|’|ߴ|՚|ʼ|❛|❜)"), "'"),
+    (re.compile(ur"(‒|–|—|―|⁓|‑|‐|⁃|⏤)"), "-"),
+    (re.compile(ur"(</?\w+)[^>]*>"), r"\1>"),
+    (re.compile(ur"(</?)em>", re.I), r"\1i>"),
+    (re.compile(ur"(</?)strong>", re.I), r"\1b>"),
+    (re.compile(ur"<(![^>]*|/?(p|span))>", re.I), ""),
+    (re.compile(ur"\s*\n+\s*"), " "),
+    (re.compile(ur"<[^>]*></[^>]*>"), ""),
+    (re.compile(ur"^<b><i>", re.I), "<i><b>"),
+    (re.compile(ur"</b>(\s*)<b>", re.I), r"\1"),
+    (re.compile(ur"</?sup>", re.I), ""),
+    (re.compile(ur"^((<[bi]>)*)\((S|AN)[12]\)\s*", re.I), r"\1"),
+    (re.compile(ur"^(<b>Article\s*)\d+\s*<s>\s*", re.I), r"\1"),
+    (re.compile(ur"<s>(.*)</s>", re.I), ""),
+    (re.compile(ur"</?s>", re.I), ""),
+    (re.compile(ur"\s*</?img>\s*", re.I), ""),
+    (re.compile(ur"œ([A-Z])"), r"OE\1"),
+    (re.compile(ur"œ\s*", re.I), "oe"),
+    (re.compile(ur'^((<[^>]*>)*")%s ' % section_titles, re.I), lower_inner_title),
+    (re.compile(ur' pr..?liminaire', re.I), ' préliminaire'),
+    (re.compile(ur'<strike>[^<]*</strike>', re.I), ''),
+    (re.compile(ur'^<a>(\w)', re.I), r"\1"),
 ]
 
 
@@ -121,8 +121,7 @@ def clean_html(t):
         t = regex.sub(repl, t)
     return t.strip()
 
-re_clean_et = re.compile(r'(,|\s+et)\s+', re.I)
-
+re_clean_et = re.compile(ur'(,|\s+et)\s+', re.I)
 
 def cleanup(dic):
     # Clean empty articles with only "Supprimé" as text
@@ -150,44 +149,44 @@ def save_text(txt):
     return txt
 
 blank_none = lambda x: x if x else ""
-re_cl_html = re.compile(r"<[^>]+>")
-re_cl_html_except_tables = re.compile(r"</?[^t/][^>]*>", re.I)
-re_fix_missing_table = re.compile(r'(<td>\W*)$', re.I)
+re_cl_html = re.compile(ur"<[^>]+>")
+re_cl_html_except_tables = re.compile(ur"</?[^t/][^>]*>", re.I)
+re_fix_missing_table = re.compile(ur'(<td>\W*)$', re.I)
 cl_html_except_tables = lambda x: re_fix_missing_table.sub(r'\1</td></tr></tbody></table>', re_cl_html_except_tables.sub('', x)).strip().replace('> ', '>').replace(' <', '<').replace('<td><tr>', '<td></td></tr><tr>')
-re_cl_par  = re.compile(r"[()]")
-re_cl_uno  = re.compile(r"(premie?r?|unique?)", re.I)
-re_cl_sec_uno = re.compile(r"^[Ii1][eE][rR]?")
-re_mat_sec = re.compile(r"%s(\s+(.+)e?r?)" % section_titles, re.I)
-re_mat_n = re.compile(r"((pr..?)?limin|unique|premier|[IVX\d]+)", re.I)
-re_mat_art = re.compile(r"articles?\s*([^(]*)(\([^)]*\))?$", re.I)
-re_mat_ppl = re.compile(r"(<b>)?pro.* loi", re.I)
-re_mat_tco = re.compile(r"\s*<b>\s*(ANNEXE[^:]*:\s*|\d+\)\s+)?TEXTES?\s*(ADOPTÉS?\s*PAR|DE)\s*LA\s*COMMISSION.*</b>\s*$")
-re_mat_exp = re.compile(r"(<b>)?expos[eéÉ]", re.I)
-re_mat_end = re.compile(r"((<i>)?Délibéré en|(<i>)?NB[\s:<]+|(<b>)?RAPPORT ANNEX|Fait à .*, le|\s*©|\s*N.?B.?\s*:|(</?i>)*<a>[1*]</a>\s*(</?i>)*\(\)(</?i>)*|<i>\(1\)\s*Nota[\s:]+|<a>\*</a>\s*(<i>)?1)", re.I)
-re_mat_ann = re.compile(r"\s*<b>\s*ANNEXES?[\s<]+")
-re_mat_dots = re.compile(r"^(<i>)?[.…]+(</i>)?$")
-re_mat_st = re.compile(r"(<i>|\()+\s*(conform|non[\s\-]*modif|suppr|nouveau).{0,10}$", re.I)
-re_mat_new = re.compile(r"\s*\(\s*nouveau\s*\)\s*", re.I)
-re_mat_texte = re.compile(r'\(texte (modifié|élaboré|d(u|e l))', re.I)
-re_mat_single_char = re.compile(r'^\s*[LMN]\s*$')
-re_clean_idx_spaces = re.compile(r'^([IVXLCDM0-9]+)\s*\.\s*')
-re_clean_art_spaces = re.compile(r'^\s*("?)\s+')
-re_clean_art_spaces2 = re.compile(r'\s+\.\s*-\s+')
-re_clean_conf = re.compile(r"\((conforme|non[\s-]*modifi..?)s?\)", re.I)
-re_clean_supr = re.compile(r'\((dispositions?\s*d..?clar..?es?\s*irrecevable.*article 4.*Constitution.*|(maintien de la )?suppr(ession|im..?s?)(\s*(conforme|maintenue|par la commission mixte paritaire))*)\)["\s]*$', re.I)
-re_echec_hemi = re.compile(r"L('Assemblée nationale|e Sénat) (a rejeté|n'a pas adopté)[, ]+", re.I)
-re_echec_hemi2 = re.compile(r"de loi a été rejetée par l('Assemblée nationale|e Sénat)\.$", re.I)
-re_echec_com = re.compile(r" la commission .*(effet est d'entraîner le rejet|demande de rejeter|a rejeté|n'a pas adopté)[dleau\s]*(projet|proposition|texte)[.\s]", re.I)
-re_echec_cmp = re.compile(r" (a conclu à l'échec de ses travaux|(ne|pas) .*parven(u[es]?|ir) à (élaborer )?un texte commun)", re.I)
-re_rap_mult = re.compile(r'[\s<>/ai]*N[°\s]*\d+\s*(,|et)\s*[N°\s]*\d+', re.I)
-re_src_mult = re.compile(r'^- L(?:A PROPOSITION|E PROJET) DE LOI n°\s*(\d+)\D')
-re_clean_mult_1 = re.compile(r'\s*et\s*', re.I)
-re_clean_mult_2 = re.compile(r'[^,\d]', re.I)
-re_clean_footer_notes = re.compile(r"[\.\s]*\(*\d*\([\d\*]+[\)\d\*\.\s]*$")
-re_sep_text = re.compile(r'\s*<b>\s*(article|%s)\s*(I|uniqu|pr..?limina|1|prem)[ier]*\s*</b>\s*$' % section_titles, re.I)
-re_stars = re.compile(r'^[\s*_]+$')
-re_art_uni = re.compile(r'\s*article\s*unique\s*$', re.I)
-re_all_caps = re.compile(r'[A-Z' + upcase_accents +' ]+')
+re_cl_par  = re.compile(ur"[()]")
+re_cl_uno  = re.compile(ur"(premie?r?|unique?)", re.I)
+re_cl_sec_uno = re.compile(ur"^[Ii1][eE][rR]?")
+re_mat_sec = re.compile(ur"%s(\s+(.+)e?r?)" % section_titles, re.I)
+re_mat_n = re.compile(ur"((pr..?)?limin|unique|premier|[IVX\d]+)", re.I)
+re_mat_art = re.compile(ur"articles?\s*([^(]*)(\([^)]*\))?$", re.I)
+re_mat_ppl = re.compile(ur"(<b>)?pro.* loi", re.I)
+re_mat_tco = re.compile(ur"\s*<b>\s*(ANNEXE[^:]*:\s*|\d+\)\s+)?TEXTES?\s*(ADOPTÉS?\s*PAR|DE)\s*LA\s*COMMISSION.*</b>\s*$")
+re_mat_exp = re.compile(ur"(<b>)?expos[eéÉ]", re.I)
+re_mat_end = re.compile(ur"((<i>)?Délibéré en|(<i>)?NB[\s:<]+|(<b>)?RAPPORT ANNEX|Fait à .*, le|\s*©|\s*N.?B.?\s*:|(</?i>)*<a>[1*]</a>\s*(</?i>)*\(\)(</?i>)*|<i>\(1\)\s*Nota[\s:]+|<a>\*</a>\s*(<i>)?1)", re.I)
+re_mat_ann = re.compile(ur"\s*<b>\s*ANNEXES?[\s<]+")
+re_mat_dots = re.compile(ur"^(<i>)?[.…]+(</i>)?$")
+re_mat_st = re.compile(ur"(<i>|\()+\s*(conform|non[\s\-]*modif|suppr|nouveau).{0,10}$", re.I)
+re_mat_new = re.compile(ur"\s*\(\s*nouveau\s*\)\s*", re.I)
+re_mat_texte = re.compile(ur'\(texte (modifié|élaboré|d(u|e l))', re.I)
+re_mat_single_char = re.compile(ur'^\s*[LMN]\s*$')
+re_clean_idx_spaces = re.compile(ur'^([IVXLCDM0-9]+)\s*\.\s*')
+re_clean_art_spaces = re.compile(ur'^\s*("?)\s+')
+re_clean_art_spaces2 = re.compile(ur'\s+\.\s*-\s+')
+re_clean_conf = re.compile(ur"\((conforme|non[\s-]*modifi..?)s?\)", re.I)
+re_clean_supr = re.compile(ur'\((dispositions?\s*d..?clar..?es?\s*irrecevable.*article 4.*Constitution.*|(maintien de la )?suppr(ession|im..?s?)(\s*(conforme|maintenue|par la commission mixte paritaire))*)\)["\s]*$', re.I)
+re_echec_hemi = re.compile(ur"L('Assemblée nationale|e Sénat) (a rejeté|n'a pas adopté)[, ]+", re.I)
+re_echec_hemi2 = re.compile(ur"de loi a été rejetée par l('Assemblée nationale|e Sénat)\.$", re.I)
+re_echec_com = re.compile(ur" la commission .*(effet est d'entraîner le rejet|demande de rejeter|a rejeté|n'a pas adopté)[dleau\s]*(projet|proposition|texte)[.\s]", re.I)
+re_echec_cmp = re.compile(ur" (a conclu à l'échec de ses travaux|(ne|pas) .*parven(u[es]?|ir) à (élaborer )?un texte commun)", re.I)
+re_rap_mult = re.compile(ur'[\s<>/ai]*N[°\s]*\d+\s*(,|et)\s*[N°\s]*\d+', re.I)
+re_src_mult = re.compile(ur'^- L(?:A PROPOSITION|E PROJET) DE LOI n°\s*(\d+)\D')
+re_clean_mult_1 = re.compile(ur'\s*et\s*', re.I)
+re_clean_mult_2 = re.compile(ur'[^,\d]', re.I)
+re_clean_footer_notes = re.compile(ur"[\.\s]*\(*\d*\([\d\*]+[\)\d\*\.\s]*$")
+re_sep_text = re.compile(ur'\s*<b>\s*(article|%s)\s*(I|uniqu|pr..?limina|1|prem)[ier]*\s*</b>\s*$' % section_titles, re.I)
+re_stars = re.compile(ur'^[\s*_]+$')
+re_art_uni = re.compile(ur'\s*article\s*unique\s*$', re.I)
+re_all_caps = re.compile(ur'[A-Z' + upcase_accents + ur' ]+')
 section = {"type": "section", "id": ""}
 
 def parse_bill(string, url):
@@ -241,18 +240,18 @@ def parse_bill(string, url):
         texte["type"] = (re_clean_title_legif.sub('', soup.title.string.strip()) if soup.title else "").lower()
 
     for line in lines:
-        line = clean_html(str(line.text.encode('utf8') if is_html else line.encode('utf8')))
+        line = clean_html(line.text if is_html else line)
 
         if re_stars.match(line):
             continue
 
-        match = re.compile(r'^N°\D+(\d+)$', re.MULTILINE).search(line)
+        match = re.compile(ur'^N°\D+(\d+)$', re.MULTILINE).search(line)
         if match:
             texte['id'] = int(match.group(1))
 
-        match = re.compile(r'^(.*) LÉGISLATURE$', re.MULTILINE).search(line)
+        match = re.compile(ur'^(.*) LÉGISLATURE$', re.MULTILINE).search(line)
         if match:
-            texte['legislature'] = word_to_number(match.group(1).decode('utf-8'))
+            texte['legislature'] = word_to_number(match.group(1))
 
         match = re.compile(ur'Enregistré à la Présidence (du |de l\')(.*) le (\d+) (\w+) (\d{4})').search(line)
         if match:
@@ -260,10 +259,10 @@ def parse_bill(string, url):
             texte['place'] = match.group(2).lower()
 
         if line == 'PROPOSITION DE LOI':
-            texte['type'] = line.lower().decode('utf-8')
+            texte['type'] = line.lower()
 
         if line.endswith('DE LOI'):
-            texte['description'] = line.lower().decode('utf-8')
+            texte['description'] = line.lower()
             read = 3
             continue
         if read == 3:
@@ -274,7 +273,7 @@ def parse_bill(string, url):
                 if re_all_caps.match(line):
                     line = real_lower(line)
                 line = line.replace(',', '')
-                texte['description'] += ' ' + line.decode('utf-8')
+                texte['description'] += ' ' + line
             continue
 
         if line == "<b>RAPPORT</b>" or line == "Mesdames, Messieurs,":
@@ -401,7 +400,7 @@ def parse_bill(string, url):
             if line:
                 ali_num += 1
                 # match alinea numbering in the form of "(ali_num) actual alinea content goes here..."
-                m = re.compile(r"^\((\d)\) (.*)$", re.MULTILINE).match(line)
+                m = re.compile(ur"^\((\d)\) (.*)$", re.MULTILINE).match(line)
                 if m:
                     ali_num = int(m.group(1))
                     line = m.group(2)

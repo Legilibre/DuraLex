@@ -55,8 +55,7 @@ def tokenize(text):
         text = text.decode('utf-8')
     except:
         pass
-    
-    text = text.replace(u'\xa0', u' ')
+
     tokens = TOKEN_DELIMITERS.split(text)
     # remove empty strings
     tokens = filter(lambda s: s != '', tokens)
