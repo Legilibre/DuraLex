@@ -2,10 +2,11 @@
 
 import re
 import sys
-import uuid
 
 import alinea_lexer
 import node_type
+
+from ast import *
 
 def debug(node, tokens, i, msg):
     if '-v' in sys.argv:
@@ -71,81 +72,6 @@ def word_to_number(word):
 
 def month_to_number(month):
     return alinea_lexer.TOKEN_MONTH_NAMES.index(month) + 1
-
-def unshift_node(parent, node):
-    node['parent'] = parent
-    if 'children' not in parent:
-        parent['children'] = []
-    parent['children'] = [node] + parent['children']
-
-def push_node(parent, node):
-    if 'parent' in node:
-        remove_node(node['parent'], node)
-    node['parent'] = parent
-    if 'children' not in parent:
-        parent['children'] = []
-    parent['children'].append(node)
-
-def create_node(parent, node):
-    if parent:
-        push_node(parent, node)
-    node['children'] = []
-    node['uuid'] = str(uuid.uuid4())
-
-    return node
-
-def compare_nodes(a, b):
-    return a['uuid'] == b['uuid'] if 'uuid' in a and 'uuid' in b else a == b
-
-def remove_node(parent, node):
-    if not parent:
-        raise Exception('invalid parent')
-    if 'parent' not in node or node['parent'] != parent:
-        raise Exception('parent node does not match')
-
-    for i in range(0, len(parent['children'])):
-        if compare_nodes(node, parent['children'][i]):
-            del parent['children'][i]
-            del node['parent']
-            return True
-
-    return False
-
-def copy_node(node, recursive=True):
-    c = node.copy()
-    if 'uuid' in c:
-        c['uuid'] = str(uuid.uuid4())
-    if 'parent' in c:
-        del c['parent']
-    c['children'] = []
-    if 'children' in node and recursive:
-        for child in node['children']:
-            push_node(c, copy_node(child))
-    return c
-
-def get_node_depth(node):
-    if not 'parent' in node:
-        return 0
-    return 1 + get_node_depth(node['parent'])
-
-def get_root(node):
-    while 'parent' in node:
-        node = node['parent']
-
-    return node
-
-def filter_nodes(root, fn):
-    return filter_nodes_rec(root, fn, [])
-
-def filter_nodes_rec(root, fn, results):
-    if fn(root):
-        results.append(root)
-
-    if 'children' in root:
-        for child in root['children']:
-            filter_nodes_rec(child, fn, results)
-
-    return results
 
 def parse_section_reference(tokens, i, parent):
     if i >= len(tokens):
@@ -458,7 +384,8 @@ def parse_words_definition(tokens, i, parent):
         # i = alinea_lexer.skip_spaces(tokens, i)
     # le nombre
     # le chiffre
-    elif tokens[i].lower() in [u'le'] and tokens[i + 2] in [u'nombre', u'chiffre']:
+    # le taux
+    elif tokens[i].lower() == u'le' and tokens[i + 2] in [u'nombre', u'chiffre', u'taux']:
         i = alinea_lexer.skip_to_quote_start(tokens, i)
         i = parse_quote(tokens, i, node)
     # "
@@ -1221,7 +1148,9 @@ def parse_words_reference(tokens, i, parent):
         i = parse_reference(tokens, i, node)
     # le nombre
     # le chiffre
-    elif tokens[i].lower() in [u'le'] and tokens[i + 2] in [u'nombre', u'chiffre']:
+    # le taux
+    elif tokens[i].lower() == u'le' and tokens[i + 2] in [u'nombre', u'chiffre', u'taux']:
+        print('foooooo')
         i = alinea_lexer.skip_to_quote_start(tokens, i)
         i = parse_quote(tokens, i, node)
     # la référence
@@ -1689,6 +1618,7 @@ def parse_reference(tokens, i, parent):
             parse_back_reference,
             parse_incomplete_reference,
             parse_alinea_reference,
+            parse_words_reference
         ],
         tokens,
         i,
@@ -1862,7 +1792,7 @@ def parse_json_article(data, parent):
 
 def parse_json_alineas(data, parent):
     text = alinea_lexer.TOKEN_NEW_LINE.join(value for key, value in list(iter(sorted(data.iteritems()))))
-    parent['content'] = text.decode('utf-8')
+    parent['content'] = text#.decode('utf-8')
     return parse_alineas(text, parent)
 
 def parse_alineas(data, parent):
@@ -1872,51 +1802,12 @@ def parse_alineas(data, parent):
     if len(parent['children']) == 0:
         parse_raw_article_content(tokens, 0, parent)
 
-def parse_json_amendement(data, node):
-    node = create_node(node, {
-        'type': 'amendement',
-        'order': 1,
-        'isNew': False
-    })
+def parse(data, ast):
+    # ast = create_node(ast, {'type': 'articles'})
 
-    text = data['texte']
-    text = text.replace(u'</p><p>', u'\n')
-    text = re.sub(r'<[^>]*?>', ' ', text)
-    text = data['sujet'] + ' '  + text
+    parse_json_articles(data, ast)
 
-    tokens = alinea_lexer.tokenize(text)
-    parse_for_each(parse_bill_header1, tokens, 0, node)
-
-def parse_json_amendements(data, node):
-    if 'amendements' in data:
-        for amendement_data in data['amendements']:
-            parse_json_amendement(amendement_data['amendement'], node)
-
-def parse_data(data):
-    node = {'children': []}
-
-    parse_alineas(data, node)
-
-    return node
-
-def parse_json_data(data):
-    node = {'children': []}
-
-    if 'id' in data:
-        node['id'] = data['id']
-    if 'type' in data:
-        node['type'] = data['type']
-    if 'legislature' in data:
-        node['legislature'] = data['legislature']
-    if 'url' in data:
-        node['url'] = data['url']
-    if 'description' in data:
-        node['description'] = data['description']
-
-    parse_json_articles(data, node)
-    parse_json_amendements(data, node)
-
-    return node
+    return ast
 
 def get_node_ancestors(node):
     a = []

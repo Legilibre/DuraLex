@@ -6,12 +6,14 @@ import os
 import json
 import sys
 import argparse
-import urllib
+import urllib2
 
 sys.path.insert(0, os.path.join(os.path.realpath(os.path.dirname(__file__)), '..'))
 
 import duralex.alinea_parser
 import duralex.bill_parser
+import duralex.amendment_parser
+import duralex.ast
 from duralex.DeleteEmptyChildrenVisitor import DeleteEmptyChildrenVisitor
 from duralex.DeleteParentVisitor import DeleteParentVisitor
 from duralex.DeleteUUIDVisitor import DeleteUUIDVisitor
@@ -21,9 +23,38 @@ from duralex.ResolveFullyQualifiedReferencesVisitor import ResolveFullyQualified
 from duralex.ResolveFullyQualifiedDefinitionsVisitor import ResolveFullyQualifiedDefinitionsVisitor
 from duralex.RemoveQuotePrefixVisitor import RemoveQuotePrefixVisitor
 
+def decode(data):
+    try:
+        data = data.decode('utf-8')
+    except:
+        try:
+            data = data.decode('iso-8859-1')
+        except:
+            pass
+
+    return data
+
 def handle_data(data, args):
-    data = duralex.bill_parser.parse_bill(data, args.url)
-    ast = duralex.alinea_parser.parse_json_data(data)
+    bill_data = duralex.bill_parser.parse_bill(data, args.url)
+    ast = duralex.ast.create_node(None, {})
+    for field in ['id', 'type', 'legislature', 'url', 'description', 'date', 'place']:
+        if field in bill_data:
+            ast[field] = bill_data[field]
+
+    duralex.alinea_parser.parse(bill_data, ast)
+
+    if args.amendments:
+        amendement_url = (
+            'https://www.nosdeputes.fr/'
+            + str(bill_data['legislature'])
+            + '/amendements/'
+            + str(bill_data['id'])
+            + '/json'
+        )
+        amendements = urllib2.urlopen(amendement_url).read()
+        amendements = decode(amendements)
+        amendements = json.loads(amendements)
+        duralex.amendment_parser.parse(amendements, ast);
 
     ForkReferenceVisitor().visit(ast)
     ResolveFullyQualifiedDefinitionsVisitor().visit(ast)
@@ -47,21 +78,16 @@ def main(argv=None):
     parser.add_argument('--url', help='the URL of the bill to process')
     parser.add_argument('--quiet', action='store_true', help='no stdout output')
     parser.add_argument('--uuid', action='store_true', help='add a unique ID on each node')
+    parser.add_argument('--amendments', action='store_true', help='fetch and parse amendements')
 
     args = parser.parse_args()
 
     if args.url:
-        data = urllib.urlopen(args.url).read()
+        data = urllib2.urlopen(args.url).read()
     elif args.file:
         data = args.file.read()
 
-    try:
-        data = data.decode('utf8')
-    except:
-        try:
-            data = data.decode('iso-8859-1')
-        except:
-            pass
+    data = decode(data)
 
     handle_data(data, args)
 
