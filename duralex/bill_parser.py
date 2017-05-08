@@ -261,14 +261,13 @@ def parse_bill(string, url):
         if line == 'PROPOSITION DE LOI':
             texte['type'] = line.lower()
 
-        if line.endswith('DE LOI'):
+        if 'description' not in texte and line in [u'PROPOSITION DE LOI', u'PROJET DE LOI']:
             texte['description'] = line.lower()
             read = 3
             continue
         if read == 3:
-            if line == 'TRANSMISE PAR':
+            if real_lower(line).startswith(u'transmise par') or real_lower(line).startswith(u'présentée par'):
                 read = 0
-                continue
             else:
                 if re_all_caps.match(line):
                     line = real_lower(line)
