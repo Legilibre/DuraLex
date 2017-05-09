@@ -2,7 +2,7 @@ from AbstractVisitor import AbstractVisitor
 
 from duralex.alinea_parser import *
 
-import duralex.node_type
+import duralex.tree
 
 class ForkReferenceVisitor(AbstractVisitor):
     def visit_node(self, node):
