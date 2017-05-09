@@ -1,7 +1,7 @@
 # DuraLex
 
-[![Build Status](https://img.shields.io/travis/Legilibre/duralex.svg)](https://travis-ci.org/Legilibre/duralex)
-[![Gitter](https://img.shields.io/gitter/room/nwjs/nw.js.svg)](https://gitter.im/Legilibre/duralex)
+[![Build Status](https://img.shields.io/travis/Legilibre/DuraLex.svg)](https://travis-ci.org/Legilibre/DuraLex)
+[![Gitter](https://img.shields.io/gitter/room/nwjs/nw.js.svg)](https://gitter.im/Legilibre/DuraLex)
 
 DuraLex is a French bill compiler. It takes an official bill document written in plain natural French and transforms
 it into an automatable semantic data structure. This data structure describes the content of the bill, including but
