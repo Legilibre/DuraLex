@@ -4,16 +4,16 @@ from DuralexTestCase import DuralexTestCase
 
 import duralex.alinea_parser as parser
 
-class ParseWordsReferenceTest(DuralexTestCase):
+class ParseWordReferenceTest(DuralexTestCase):
     def test_single_word(self):
         self.assertEqualAST(
             self.call_parse_func(
-                parser.parse_words_reference,
+                parser.parse_word_reference,
                 u"le mot : \"test\""
             ),
             {'children':[
                 {
-                    'type': u'words-reference',
+                    'type': u'word-reference',
                     'children': [
                         {
                             'type': u'quote',
@@ -27,12 +27,12 @@ class ParseWordsReferenceTest(DuralexTestCase):
     def test_words(self):
         self.assertEqualAST(
             self.call_parse_func(
-                parser.parse_words_reference,
+                parser.parse_word_reference,
                 u"les mots : \"ceci est un test\""
             ),
             {'children':[
                 {
-                    'type': u'words-reference',
+                    'type': u'word-reference',
                     'children': [
                         {
                             'type': u'quote',
@@ -46,12 +46,12 @@ class ParseWordsReferenceTest(DuralexTestCase):
     def test_reference(self):
         self.assertEqualAST(
             self.call_parse_func(
-                parser.parse_words_reference,
+                parser.parse_word_reference,
                 u"la référence : \"L. 321-5\""
             ),
             {'children':[
                 {
-                    'type': u'words-reference',
+                    'type': u'word-reference',
                     'children': [
                         {
                             'type': u'quote',
@@ -65,12 +65,12 @@ class ParseWordsReferenceTest(DuralexTestCase):
     def test_references(self):
         self.assertEqualAST(
             self.call_parse_func(
-                parser.parse_words_reference,
+                parser.parse_word_reference,
                 u"les références : \"ceci est un test\""
             ),
             {'children':[
                 {
-                    'type': u'words-reference',
+                    'type': u'word-reference',
                     'children': [
                         {
                             'type': u'quote',
@@ -84,12 +84,12 @@ class ParseWordsReferenceTest(DuralexTestCase):
     def test_after_words(self):
         self.assertEqualAST(
             self.call_parse_func(
-                parser.parse_words_reference,
+                parser.parse_word_reference,
                 u"après les mots : \"ceci est un test\""
             ),
             {'children':[
                 {
-                    'type': u'words-reference',
+                    'type': u'word-reference',
                     'position': u'after',
                     'children': [
                         {
@@ -104,12 +104,12 @@ class ParseWordsReferenceTest(DuralexTestCase):
     def test_words_reference_position_in_article(self):
         self.assertEqualAST(
             self.call_parse_func(
-                parser.parse_words_reference,
+                parser.parse_word_reference,
                 u"après les mots : \"aux dispositions de l'article L. 123-5\", la fin de l'article L. 112-3 du code de la recherche"
             ),
             {'children':[
                 {
-                    'type': u'words-reference',
+                    'type': u'word-reference',
                     'position': u'after',
                     'children': [
                         {
@@ -131,3 +131,22 @@ class ParseWordsReferenceTest(DuralexTestCase):
                 }
             ]}
         )
+
+    # def test_alinea_ref_artice_ref_law_ref_words_ref(self):
+    #     self.assertEqualAST(
+    #         self.call_parse_func(
+    #             parser.parse_reference,
+    #             u"au deuxième alinéa de l'article 18 de la loi n° 77-729, le mot : \"test\""
+    #         ),
+    #         {'children':[
+    #             {
+    #                 'type': u'word-reference',
+    #                 'children': [
+    #                     {
+    #                         'type': u'quote',
+    #                         'words': u'test'
+    #                     }
+    #                 ]
+    #             }
+    #         ]}
+    #     )

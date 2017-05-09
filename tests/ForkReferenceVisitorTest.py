@@ -7,7 +7,7 @@ from duralex.ForkReferenceVisitor import ForkReferenceVisitor
 class ForkReferenceVisitorTest(DuralexTestCase):
     def test(self):
         self.assertEqualAST(
-            self.call_visitor(ForkReferenceVisitor, self.make_ast({'children': [
+            self.call_visitor(ForkReferenceVisitor, self.make_tree({'children': [
                 {
                     'type': u'alinea-reference',
                     'order': 3,

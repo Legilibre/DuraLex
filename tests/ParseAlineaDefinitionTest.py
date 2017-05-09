@@ -14,7 +14,7 @@ class ParseAlineaDefinitionTest(DuralexTestCase):
             ),
             {'children': [
                 {
-                    'type': u'alinea',
+                    'type': u'alinea-definition',
                     'children': [
                         {
                             'type': u'quote',
@@ -37,7 +37,7 @@ class ParseAlineaDefinitionTest(DuralexTestCase):
             ),
             {'children': [
                 {
-                    'type': u'alinea',
+                    'type': u'alinea-definition',
                     'children': [
                         {
                             'type': u'quote',
@@ -46,7 +46,7 @@ class ParseAlineaDefinitionTest(DuralexTestCase):
                     ],
                 },
                 {
-                    'type': u'alinea',
+                    'type': u'alinea-definition',
                     'children': [
                         {
                             'type': u'quote',
@@ -55,7 +55,7 @@ class ParseAlineaDefinitionTest(DuralexTestCase):
                     ],
                 },
                 {
-                    'type': u'alinea',
+                    'type': u'alinea-definition',
                     'children': [
                         {
                             'type': u'quote',
@@ -64,7 +64,7 @@ class ParseAlineaDefinitionTest(DuralexTestCase):
                     ],
                 },
                 {
-                    'type': u'alinea',
+                    'type': u'alinea-definition',
                     'children': [
                         {
                             'type': u'quote',

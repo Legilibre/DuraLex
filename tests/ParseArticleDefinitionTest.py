@@ -13,7 +13,7 @@ class ParseArticleDefinitionTest(DuralexTestCase):
             ),
             {'children':[
                 {
-                    'type': u'article'
+                    'type': u'article-definition'
                 }
             ]}
         )
@@ -26,7 +26,7 @@ class ParseArticleDefinitionTest(DuralexTestCase):
             ),
             {'children':[
                 {
-                    'type': u'article'
+                    'type': u'article-definition'
                 }
             ]}
         )
@@ -39,7 +39,7 @@ class ParseArticleDefinitionTest(DuralexTestCase):
             ),
             {'children':[
                 {
-                    'type': u'article',
+                    'type': u'article-definition',
                     'id': u'42'
                 }
             ]}
@@ -53,7 +53,7 @@ class ParseArticleDefinitionTest(DuralexTestCase):
             ),
             {'children':[
                 {
-                    'type': u'article',
+                    'type': u'article-definition',
                     'id': u'42'
                 }
             ]}

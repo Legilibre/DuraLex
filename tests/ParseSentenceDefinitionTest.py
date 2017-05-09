@@ -14,13 +14,13 @@ class ParseSentenceDefinitionTest(DuralexTestCase):
             ),
             {'children':[
                 {
-                    "children": [
+                    'children': [
                         {
-                            "type": "quote",
-                            "words": "phrase 1"
+                            'type': 'quote',
+                            'words': 'phrase 1'
                         }
                     ],
-                    "type": "sentence"
+                    'type': 'sentence-definition'
                 }
             ]}
         )
@@ -36,31 +36,31 @@ class ParseSentenceDefinitionTest(DuralexTestCase):
             ),
             {'children':[
                 {
-                    "children": [
+                    'children': [
                         {
-                            "type": "quote",
-                            "words": "phrase 1"
+                            'type': 'quote',
+                            'words': 'phrase 1'
                         }
                     ],
-                    "type": "sentence"
+                    'type': 'sentence-definition'
                 },
                 {
-                    "children": [
+                    'children': [
                         {
-                            "type": "quote",
-                            "words": "phrase 2"
+                            'type': 'quote',
+                            'words': 'phrase 2'
                         }
                     ],
-                    "type": "sentence"
+                    'type': 'sentence-definition'
                 },
                 {
-                    "children": [
+                    'children': [
                         {
-                            "type": "quote",
-                            "words": "phrase 3"
+                            'type': 'quote',
+                            'words': 'phrase 3'
                         }
                     ],
-                    "type": "sentence"
+                    'type': 'sentence-definition'
                 }
             ]}
         )

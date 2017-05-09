@@ -4,9 +4,9 @@ import re
 import sys
 
 import alinea_lexer
-import node_type
+import duralex.tree
 
-from ast import *
+from duralex.tree import *
 
 def debug(node, tokens, i, msg):
     if '-v' in sys.argv:
@@ -78,7 +78,7 @@ def parse_section_reference(tokens, i, parent):
         return i
 
     node = create_node(parent, {
-        'type': 'section-reference',
+        'type': TYPE_SECTION_REFERENCE,
         'children': [],
     })
 
@@ -107,7 +107,7 @@ def parse_subsection_reference(tokens, i, parent):
         return i
 
     node = create_node(parent, {
-        'type': 'subsection-reference',
+        'type': TYPE_SUBSECTION_REFERENCE,
         'children': [],
     })
 
@@ -136,7 +136,7 @@ def parse_chapter_reference(tokens, i, parent):
         return i
 
     node = create_node(parent, {
-        'type': 'chapter-reference',
+        'type': TYPE_CHAPTER_REFERENCE,
         'children': [],
     })
 
@@ -162,7 +162,7 @@ def parse_paragraph_reference(tokens, i, parent):
         return i
 
     node = create_node(parent, {
-        'type': 'paragraph-reference',
+        'type': TYPE_PARAGRAPH_REFERENCE,
         'children': [],
     })
 
@@ -190,7 +190,7 @@ def parse_subparagraph_definition(tokens, i, parent):
     debug(parent, tokens, i, 'parse_subparagraph_definition')
 
     node = create_node(parent, {
-        'type': 'subparagraph',
+        'type': TYPE_SUBPARAGRAPH_DEFINITION,
         'children': [],
     })
 
@@ -224,7 +224,7 @@ def parse_law_reference(tokens, i, parent):
     j = i
 
     node = create_node(parent, {
-        'type': 'law-reference',
+        'type': TYPE_LAW_REFERENCE,
         'lawId': '',
         'children': [],
     })
@@ -245,9 +245,9 @@ def parse_law_reference(tokens, i, parent):
         i += 8
         law_refs = filter_nodes(
             get_root(parent),
-            lambda n: 'type' in n and n['type'] == 'law-reference'
+            lambda n: 'type' in n and n['type'] == TYPE_LAW_REFERENCE
         )
-        # the last one in order of traversal is the previous one in order of syntax
+        # the lduralex.tree.one in order of traversal is the previous one in order of syntax
         # don't forget the current node is in the list too => -2 instead of -1
         law_ref = copy_node(law_refs[-2])
         push_node(parent, law_ref)
@@ -315,7 +315,7 @@ def parse_definition(tokens, i, parent):
             parse_header2_definition,
             parse_header3_definition,
             parse_sentence_definition,
-            parse_words_definition,
+            parse_word_definition,
             parse_title_definition,
             parse_subparagraph_definition
         ],
@@ -351,10 +351,10 @@ def parse_sentence_definition(tokens, i, parent):
                 parse_quote,
                 tokens,
                 i,
-                lambda : create_node(parent, {'type': 'sentence', 'children': []})
+                lambda : create_node(parent, {'type': TYPE_SENTENCE_DEFINITION, 'children': []})
             )
         else:
-            create_node(parent, {'type': 'sentence', 'count': count})
+            create_node(parent, {'type': TYPE_SENTENCE_DEFINITION, 'count': count})
     else:
         debug(parent, tokens, i, 'parse_sentence_definition none')
         return j
@@ -363,15 +363,14 @@ def parse_sentence_definition(tokens, i, parent):
 
     return i
 
-def parse_words_definition(tokens, i, parent):
+def parse_word_definition(tokens, i, parent):
     if i >= len(tokens):
         return i
 
     node = create_node(parent, {
-        'type': 'words',
-        'children': []
+        'type': TYPE_WORD_DEFINITION,
     })
-    debug(parent, tokens, i, 'parse_words_definition')
+    debug(parent, tokens, i, 'parse_word_definition')
 
     j = i
     i = parse_position(tokens, i, node)
@@ -398,10 +397,10 @@ def parse_words_definition(tokens, i, parent):
         i = alinea_lexer.skip_to_quote_start(tokens, i)
         i = parse_quote(tokens, i, node)
     else:
-        debug(parent, tokens, i, 'parse_words_definition none')
+        debug(parent, tokens, i, 'parse_word_definition none')
         remove_node(parent, node)
         return j
-    debug(parent, tokens, i, 'parse_words_definition end')
+    debug(parent, tokens, i, 'parse_word_definition end')
     return i
 
 def parse_article_definition(tokens, i, parent):
@@ -409,7 +408,7 @@ def parse_article_definition(tokens, i, parent):
         return i
 
     node = create_node(parent, {
-        'type': 'article',
+        'type': TYPE_ARTICLE_DEFINITION,
         'children': [],
     })
     debug(parent, tokens, i, 'parse_article_definition')
@@ -460,10 +459,10 @@ def parse_alinea_definition(tokens, i, parent):
                 parse_quote,
                 tokens,
                 i,
-                lambda: create_node(parent, {'type': 'alinea', 'children': []})
+                lambda: create_node(parent, {'type': TYPE_ALINEA_DEFINITION, 'children': []})
             )
         else:
-            node = create_node(parent, {'type': 'alinea', 'count': count})
+            node = create_node(parent, {'type': TYPE_ALINEA_DEFINITION, 'count': count})
     else:
         debug(parent, tokens, i, 'parse_alinea_definition none')
         return i
@@ -476,8 +475,7 @@ def parse_mention_definition(tokens, i, parent):
     if i >= len(tokens):
         return i
     node = create_node(parent, {
-        'type': 'mention',
-        'children': []
+        'type': TYPE_MENTION_DEFINITION,
     })
     debug(parent, tokens, i, 'parse_mention_definition')
     # la mention
@@ -504,10 +502,9 @@ def parse_header1_definition(tokens, i, parent):
     # un {romanPartNumber}
     if tokens[i].lower() == u'un' and is_roman_number(tokens[i + 2]):
         node = create_node(parent, {
-            'type': 'header1',
+            'type': TYPE_HEADER1_DEFINITION,
             'order': parse_roman_number(tokens[i + 2]),
-            'children': []
-        })
+            })
         i += 4
         i = alinea_lexer.skip_spaces(tokens, i)
         if i + 2 < len(tokens) and tokens[i] == u'ainsi' and tokens[i + 2] == u'rédigé':
@@ -527,7 +524,7 @@ def parse_header1_definition(tokens, i, parent):
                 parse_quote,
                 tokens,
                 i,
-                lambda : create_node(parent, {'type': 'header1', 'order': start + len(parent['children']), 'children': []})
+                lambda : create_node(parent, {'type': TYPE_HEADER1_DEFINITION, 'order': start + len(parent['children']), 'children': []})
             )
     else:
         debug(parent, tokens, i, 'parse_header1_definition end')
@@ -544,9 +541,8 @@ def parse_header2_definition(tokens, i, parent):
     # un ... ° ({articlePartRef})
     if tokens[i].lower() == u'un' and ''.join(tokens[i + 2:i + 5]) == u'...' and tokens[i + 6] == u'°':
         node = create_node(parent, {
-            'type': 'header2',
-            'children': []
-        })
+            'type': TYPE_HEADER2_DEFINITION,
+            })
         # FIXME: should we simply ignore the 'order' field all together?
         node['order'] = '...'
         i += 8
@@ -557,9 +553,8 @@ def parse_header2_definition(tokens, i, parent):
     # un {order}° ({orderLetter}) ({multiplicativeAdverb}) ({articlePartRef})
     elif tokens[i].lower() == u'un' and re.compile(u'\d+°').match(tokens[i + 2]):
         node = create_node(parent, {
-            'type': 'header2',
-            'children': []
-        })
+            'type': TYPE_HEADER2_DEFINITION,
+            })
         node['order'] = parse_int(tokens[i + 2])
         i += 4
         if re.compile(u'[A-Z]').match(tokens[i]):
@@ -585,7 +580,7 @@ def parse_header2_definition(tokens, i, parent):
                 parse_quote,
                 tokens,
                 i,
-                lambda : create_node(parent, {'type': 'header2', 'order': start + len(parent['children']), 'children': []})
+                lambda : create_node(parent, {'type': TYPE_HEADER2_DEFINITION, 'order': start + len(parent['children']), 'children': []})
             )
     else:
         debug(parent, tokens, i, 'parse_header2_definition end')
@@ -602,10 +597,9 @@ def parse_header3_definition(tokens, i, parent):
     # un {orderLetter}
     if tokens[i].lower() == u'un' and re.compile(u'^[a-z]$').match(tokens[i + 2]):
         node = create_node(parent, {
-            'type': 'header3',
+            'type': TYPE_HEADER3_DEFINITION,
             'order': ord(str(tokens[i + 2])) - ord('a') + 1,
-            'children': []
-        })
+            })
         i += 4
         i = alinea_lexer.skip_spaces(tokens, i)
         if i < len(tokens) and tokens[i] == u'ainsi' and tokens[i + 2] == u'rédigé':
@@ -625,7 +619,7 @@ def parse_header3_definition(tokens, i, parent):
                 parse_quote,
                 tokens,
                 i,
-                lambda : create_node(parent, {'type': 'header3', 'order': start + len(parent['children']), 'children': []})
+                lambda : create_node(parent, {'type': TYPE_HEADER3_DEFINITION, 'order': start + len(parent['children']), 'children': []})
             )
     else:
         debug(parent, tokens, i, 'parse_header3_definition end')
@@ -668,7 +662,7 @@ def parse_title_reference(tokens, i, parent):
         return i
 
     node = create_node(parent, {
-        'type': 'title-reference',
+        'type': TYPE_TITLE_REFERENCE,
         'children': [],
     })
 
@@ -699,7 +693,7 @@ def parse_title_definition(tokens, i, parent):
         return i
 
     node = create_node(parent, {
-        'type': 'title',
+        'type': TYPE_TITLE_DEFINITION,
         'children': [],
     })
 
@@ -729,7 +723,7 @@ def parse_code_part_reference(tokens, i, parent):
         return i
 
     node = create_node(parent, {
-        'type': 'code-part-reference',
+        'type': TYPE_CODE_PART_REFERENCE,
         'children': [],
     })
 
@@ -762,7 +756,7 @@ def parse_book_reference(tokens, i, parent):
         return i
 
     node = create_node(parent, {
-        'type': 'book-reference',
+        'type': TYPE_BOOK_REFERENCE,
         'children': [],
     })
 
@@ -792,7 +786,7 @@ def parse_article_reference(tokens, i, parent):
         return i
 
     node = create_node(parent, {
-        'type': 'article-reference',
+        'type': TYPE_ARTICLE_REFERENCE,
     })
 
     debug(parent, tokens, i, 'parse_article_reference')
@@ -820,12 +814,12 @@ def parse_article_reference(tokens, i, parent):
         nodes = []
         while tokens[i] == u',':
             i += 2
-            nodes.append(create_node(parent, {'type':'article-reference'}))
+            nodes.append(create_node(parent, {'type':TYPE_ARTICLE_REFERENCE}))
             i = parse_article_id(tokens, i, nodes[-1])
             i = alinea_lexer.skip_spaces(tokens, i)
         if tokens[i] == u'et':
             i += 2
-            nodes.append(create_node(parent, {'type':'article-reference'}))
+            nodes.append(create_node(parent, {'type':TYPE_ARTICLE_REFERENCE}))
             i = parse_article_id(tokens, i, nodes[-1])
         # i = parse_article_part_reference(tokens, i, node)
         # de la loi
@@ -837,7 +831,7 @@ def parse_article_reference(tokens, i, parent):
             [
                 parse_law_reference,
                 parse_code_reference,
-                parse_words_reference,
+                parse_word_reference,
                 parse_alinea_reference
             ],
             tokens,
@@ -865,9 +859,9 @@ def parse_article_reference(tokens, i, parent):
         i += 6
         article_refs = filter_nodes(
             get_root(parent),
-            lambda n: 'type' in n and n['type'] == 'article-reference'
+            lambda n: 'type' in n and n['type'] == TYPE_ARTICLE_REFERENCE
         )
-        # the last one in order of traversal is the previous one in order of syntax
+        # the lduralex.tree.one in order of traversal is the previous one in order of syntax
         # don't forget the current node is in the list too => -2 instead of -1
         article_ref = copy_node(article_refs[-2])
         push_node(parent, article_ref)
@@ -886,7 +880,7 @@ def parse_article_reference(tokens, i, parent):
         [
             parse_law_reference,
             parse_code_reference,
-            parse_words_reference,
+            parse_word_reference,
             parse_alinea_reference
         ],
         tokens,
@@ -937,8 +931,7 @@ def parse_alinea_reference(tokens, i, parent):
         return i
 
     node = create_node(parent, {
-        'type': 'alinea-reference',
-        'children': []
+        'type': TYPE_ALINEA_REFERENCE,
     })
     debug(parent, tokens, i, 'parse_alinea_reference')
 
@@ -968,9 +961,9 @@ def parse_alinea_reference(tokens, i, parent):
         i += 6
         alinea_refs = filter_nodes(
             get_root(parent),
-            lambda n: 'type' in n and n['type'] == 'alinea-reference'
+            lambda n: 'type' in n and n['type'] == TYPE_ALINEA_REFERENCE
         )
-        # the last one in order of traversal is the previous one in order of syntax
+        # the lduralex.tree.one in order of traversal is the previous one in order of syntax
         # don't forget the current node is in the list too => -2 instead of -1
         alinea_ref = copy_node(alinea_refs[-2])
         push_node(parent, alinea_ref)
@@ -1006,7 +999,7 @@ def parse_alinea_reference(tokens, i, parent):
         nodes = []
         while tokens[i] == u',':
             nodes.append(create_node(parent, {
-                'type':'alinea-reference',
+                'type': TYPE_ALINEA_REFERENCE,
                 'order': parse_int(tokens[i + 2])
             }))
             i += 3
@@ -1014,7 +1007,7 @@ def parse_alinea_reference(tokens, i, parent):
         if tokens[i] == u'et':
             i += 2
             nodes.append(create_node(parent, {
-                'type':'alinea-reference',
+                'type': TYPE_ALINEA_REFERENCE,
                 'order': parse_int(tokens[i])
             }))
             i += 2
@@ -1041,8 +1034,7 @@ def parse_sentence_reference(tokens, i, parent):
         return i
 
     node = create_node(parent, {
-        'type': 'sentence-reference',
-        'children': []
+        'type': TYPE_SENTENCE_REFERENCE,
     })
     debug(parent, tokens, i, 'parse_sentence_reference')
 
@@ -1085,7 +1077,7 @@ def parse_sentence_reference(tokens, i, parent):
 def fix_incomplete_references(parent, node):
     if len(parent['children']) >= 2:
         for child in parent['children']:
-            if child['type'] == 'incomplete-reference':
+            if child['type'] == TYPE_INCOMPLETE_REFERENCE:
                 # set the actual reference type
                 child['type'] = node['type']
                 # copy all the child of the fully qualified reference node
@@ -1098,7 +1090,7 @@ def parse_back_reference(tokens, i, parent):
     if tokens[i] == u'Il':
         refs = filter_nodes(
             get_root(parent),
-            lambda n: 'type' in n and n['type'].endswith('-reference')
+            lambda n: is_reference(n)
         )
         for j in reversed(range(0, len(refs))):
             if get_node_depth(refs[j]) <= get_node_depth(parent):
@@ -1111,8 +1103,7 @@ def parse_incomplete_reference(tokens, i, parent):
     if i >= len(tokens):
         return i
     node = create_node(parent, {
-        'type': 'incomplete-reference',
-        'children': []
+        'type': TYPE_INCOMPLETE_REFERENCE,
     })
     j = i
     i = parse_position(tokens, i, node)
@@ -1128,13 +1119,13 @@ def parse_incomplete_reference(tokens, i, parent):
 
     return i
 
-def parse_words_reference(tokens, i, parent):
+def parse_word_reference(tokens, i, parent):
     if i >= len(tokens):
         return i
     node = create_node(parent, {
-        'type': 'words-reference'
+        'type': TYPE_WORD_REFERENCE
     })
-    debug(parent, tokens, i, 'parse_words_reference')
+    debug(parent, tokens, i, 'parse_word_reference')
     j = i
     i = alinea_lexer.skip_to_next_word(tokens, i)
     i = parse_position(tokens, i, node)
@@ -1150,7 +1141,6 @@ def parse_words_reference(tokens, i, parent):
     # le chiffre
     # le taux
     elif tokens[i].lower() == u'le' and tokens[i + 2] in [u'nombre', u'chiffre', u'taux']:
-        print('foooooo')
         i = alinea_lexer.skip_to_quote_start(tokens, i)
         i = parse_quote(tokens, i, node)
     # la référence
@@ -1159,10 +1149,10 @@ def parse_words_reference(tokens, i, parent):
         i = alinea_lexer.skip_to_quote_start(tokens, i)
         i = parse_quote(tokens, i, node)
     else:
-        debug(parent, tokens, i, 'parse_words_reference none')
+        debug(parent, tokens, i, 'parse_word_reference none')
         remove_node(parent, node)
         return j
-    debug(parent, tokens, i, 'parse_words_reference end')
+    debug(parent, tokens, i, 'parse_word_reference end')
     return i
 
 def parse_header2_reference(tokens, i, parent):
@@ -1170,7 +1160,7 @@ def parse_header2_reference(tokens, i, parent):
         return i
 
     node = create_node(parent, {
-        'type': 'header2-reference'
+        'type': TYPE_HEADER2_REFERENCE
     })
     debug(parent, tokens, i, 'parse_header2_reference')
     j = i
@@ -1205,7 +1195,7 @@ def parse_header3_reference(tokens, i, parent):
         return i
 
     node = create_node(parent, {
-        'type': 'header3-reference'
+        'type': TYPE_HEADER3_REFERENCE
     })
     debug(parent, tokens, i, 'parse_header3_reference')
     j = i
@@ -1239,8 +1229,7 @@ def parse_header1_reference(tokens, i, parent):
     if i >= len(tokens):
         return i
     node = create_node(parent, {
-        'type': 'header1-reference',
-        'children': []
+        'type': TYPE_HEADER1_REFERENCE,
     })
     debug(parent, tokens, i, 'parse_header1_reference')
     j = i
@@ -1269,40 +1258,20 @@ def parse_article_part_reference(tokens, i, parent):
 
     # i = alinea_lexer.skip_to_next_word(tokens, i)
 
-    j = parse_alinea_reference(tokens, i, parent)
-    if j != i:
-        return j
-    i = j
-
-    j = parse_sentence_reference(tokens, i, parent)
-    if j != i:
-        return j
-    i = j
-
-    j = parse_words_reference(tokens, i, parent)
-    if j != i:
-        return j
-    i = j
-
-    j = parse_article_reference(tokens, i, parent)
-    if j != i:
-        return j
-    i = j
-
-    j = parse_header1_reference(tokens, i, parent)
-    if j != i:
-        return j
-    i = j
-
-    j = parse_header2_reference(tokens, i, parent)
-    if j != i:
-        return j
-    i = j
-
-    j = parse_header3_reference(tokens, i, parent)
-    if j != i:
-        return j
-    i = j
+    i = parse_one_of(
+        [
+            parse_alinea_reference,
+            parse_sentence_reference,
+            parse_word_reference,
+            parse_article_reference,
+            parse_header1_reference,
+            parse_header2_reference,
+            parse_header3_reference,
+        ],
+        tokens,
+        i,
+        parent
+    )
 
     return i
 
@@ -1311,8 +1280,8 @@ def parse_quote(tokens, i, parent):
         return i
 
     node = create_node(parent, {
-        'type': 'quote',
-        'words': ''
+        'type': TYPE_QUOTE,
+        'words': '',
     })
 
     debug(parent, tokens, i, 'parse_quote')
@@ -1351,7 +1320,7 @@ def parse_edit(tokens, i, parent):
         return i
 
     node = create_node(parent, {
-        'type': 'edit'
+        'type': TYPE_EDIT
     })
 
     debug(parent, tokens, i, 'parse_edit')
@@ -1504,9 +1473,8 @@ def parse_code_reference(tokens, i, parent):
         return i
 
     node = create_node(parent, {
-        'type': 'code-reference',
+        'type': TYPE_CODE_REFERENCE,
         'codeName': '',
-        'children': []
     })
 
     debug(parent, tokens, i, 'parse_code_reference')
@@ -1524,9 +1492,9 @@ def parse_code_reference(tokens, i, parent):
         remove_node(parent, node)
         codeRefs = filter_nodes(
             get_root(parent),
-            lambda n: 'type' in n and n['type'] == 'code-reference'
+            lambda n: 'type' in n and n['type'] == TYPE_CODE_REFERENCE
         )
-        # the last one in order of traversal is the previous one in order of syntax
+        # the lduralex.tree.one in order of traversal is the previous one in order of syntax
         node = copy_node(codeRefs[-1])
         node['children'] = []
         push_node(parent, node)
@@ -1559,7 +1527,7 @@ def parse_definition_list(tokens, i, parent):
     if (i + 2 < len(tokens) and tokens[i + 2].startswith(u'rédigé')
         or (i + 4 < len(tokens) and tokens[i + 4].startswith(u'rédigé'))):
         i += 6
-        def_nodes = filter_nodes(parent, lambda x: node_type.is_definition(x))
+        def_nodes = filter_nodes(parent, lambda x: duralex.tree.is_definition(x))
         for def_node in def_nodes:
             i = alinea_lexer.skip_to_quote_start(tokens, i)
             i = parse_quote(tokens, i, def_node)
@@ -1618,7 +1586,7 @@ def parse_reference(tokens, i, parent):
             parse_back_reference,
             parse_incomplete_reference,
             parse_alinea_reference,
-            parse_words_reference
+            parse_word_reference
         ],
         tokens,
         i,
@@ -1633,60 +1601,56 @@ def parse_reference(tokens, i, parent):
 
 # {romanNumber}.
 # u'ex': I., II.
-def parse_bill_header1(tokens, i, parent):
+def parse_header1(tokens, i, parent):
     if i >= len(tokens):
         return i
 
     i = alinea_lexer.skip_spaces(tokens, i)
 
     node = create_node(parent, {
-        'type': 'bill-header1',
-        'order': 0,
-        'children': [],
+        'type': TYPE_HEADER1,
     })
 
-    debug(parent, tokens, i, 'parse_bill_header1')
+    debug(parent, tokens, i, 'parse_header1')
 
     # skip '{romanNumber}.'
     if is_roman_number(tokens[i]) and tokens[i + 1] == u'.':
-        debug(parent, tokens, i, 'parse_bill_header1 found article header-1')
+        debug(parent, tokens, i, 'parse_header1 found article header-1')
         node['order'] = parse_roman_number(tokens[i])
         i = alinea_lexer.skip_to_next_word(tokens, i + 2)
     else:
-        node['implicit'] = True
+        remove_node(parent, node)
+        node = parent
 
     j = i
     i = parse_edit(tokens, i, node)
-    i = parse_for_each(parse_bill_header2, tokens, i, node)
+    i = parse_for_each(parse_header2, tokens, i, node)
     if len(node['children']) == 0:
         i = parse_raw_article_content(tokens, i, node)
-        i = parse_for_each(parse_bill_header2, tokens, i, node)
+        i = parse_for_each(parse_header2, tokens, i, node)
 
-    if len(node['children']) == 0:
+    if len(node['children']) == 0 and parent != node:
         remove_node(parent, node)
-    else:
-        node['order'] = len(filter(lambda x: x['type'] == node['type'], parent['children']))
 
-    debug(parent, tokens, i, 'parse_bill_header1 end')
+    debug(parent, tokens, i, 'parse_header1 end')
 
     return i
 
 # {number}°
 # u'ex': 1°, 2°
-def parse_bill_header2(tokens, i, parent):
+def parse_header2(tokens, i, parent):
     if i >= len(tokens):
         return i
 
     node = create_node(parent, {
-        'type': 'bill-header2',
-        'children': [],
+        'type': TYPE_HEADER2,
     })
 
-    debug(parent, tokens, i, 'parse_bill_header2')
+    debug(parent, tokens, i, 'parse_header2')
 
     i = alinea_lexer.skip_spaces(tokens, i)
     if i < len(tokens) and re.compile(u'\d+°').match(tokens[i]):
-        debug(parent, tokens, i, 'parse_bill_header2 found article header-2')
+        debug(parent, tokens, i, 'parse_header2 found article header-2')
 
         node['order'] = parse_int(tokens[i])
         # skip {number}°
@@ -1698,30 +1662,29 @@ def parse_bill_header2(tokens, i, parent):
 
     j = i
     i = parse_edit(tokens, i, node)
-    i = parse_for_each(parse_bill_header3, tokens, i, node)
+    i = parse_for_each(parse_header3, tokens, i, node)
     if len(node['children']) == 0 and 'order' in node:
         i = parse_raw_article_content(tokens, i, node)
-        i = parse_for_each(parse_bill_header3, tokens, i, node)
+        i = parse_for_each(parse_header3, tokens, i, node)
 
     if node != parent and len(node['children']) == 0:
         remove_node(parent, node)
 
-    debug(parent, tokens, i, 'parse_bill_header2 end')
+    debug(parent, tokens, i, 'parse_header2 end')
 
     return i
 
 # {number})
 # u'ex': a), b), a (nouveau))
-def parse_bill_header3(tokens, i, parent):
+def parse_header3(tokens, i, parent):
     if i >= len(tokens):
         return i
 
     node = create_node(parent, {
-        'type': 'bill-header3',
-        'children': [],
+        'type': TYPE_HEADER3,
     })
 
-    debug(parent, tokens, i, 'parse_bill_header3')
+    debug(parent, tokens, i, 'parse_header3')
 
     i = alinea_lexer.skip_spaces(tokens, i)
     if i >= len(tokens):
@@ -1749,7 +1712,7 @@ def parse_bill_header3(tokens, i, parent):
     if node != parent and len(node['children']) == 0:
         remove_node(parent, node)
 
-    debug(parent, tokens, i, 'parse_bill_header3 end')
+    debug(parent, tokens, i, 'parse_header3 end')
 
     return i
 
@@ -1768,19 +1731,18 @@ def parse_for_each(fn, tokens, i, parent):
 
     return i
 
-def parse_json_articles(data, parent):
+def parse_bill_articles(data, parent):
     if 'articles' in data:
         for article_data in data['articles']:
-            parse_json_article(article_data, parent)
+            parse_bill_article(article_data, parent)
     elif 'alineas' in data:
-        parse_json_article(data, parent)
+        parse_bill_article(data, parent)
 
     return data
 
-def parse_json_article(data, parent):
+def parse_bill_article(data, parent):
     node = create_node(parent, {
-        'type': 'article',
-        'children': [],
+        'type': TYPE_ARTICLE,
         'order': 1,
         'isNew': False
     })
@@ -1797,17 +1759,15 @@ def parse_json_alineas(data, parent):
 
 def parse_alineas(data, parent):
     tokens = alinea_lexer.tokenize(data.strip())
-    parse_for_each(parse_bill_header1, tokens, 0, parent)
+    parse_for_each(parse_header1, tokens, 0, parent)
 
     if len(parent['children']) == 0:
         parse_raw_article_content(tokens, 0, parent)
 
-def parse(data, ast):
-    # ast = create_node(ast, {'type': 'articles'})
-
-    parse_json_articles(data, ast)
-
-    return ast
+def parse(data, tree):
+    # tree = create_node(tree, {'type': 'articles'})
+    parse_bill_articles(data, tree)
+    return tree
 
 def get_node_ancestors(node):
     a = []

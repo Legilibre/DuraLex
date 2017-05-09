@@ -14,7 +14,7 @@ class ParseSubParagraphDefinitionTest(DuralexTestCase):
             ),
             {'children': [
                 {
-                    'type': u'subparagraph',
+                    'type': u'subparagraph-definition',
                     'children': [
                         {
                             'type': u'quote',
@@ -34,7 +34,7 @@ class ParseSubParagraphDefinitionTest(DuralexTestCase):
             ),
             {'children': [
                 {
-                    'type': u'subparagraph',
+                    'type': u'subparagraph-definition',
                     'order': 3,
                     'children': [
                         {

@@ -36,12 +36,12 @@ def decode(data):
 
 def handle_data(data, args):
     bill_data = duralex.bill_parser.parse_bill(data, args.url)
-    ast = duralex.ast.create_node(None, {})
+    tree = duralex.tree.create_node(None, {})
     for field in ['id', 'type', 'legislature', 'url', 'description', 'date', 'place']:
         if field in bill_data:
-            ast[field] = bill_data[field]
+            tree[field] = bill_data[field]
 
-    duralex.alinea_parser.parse(bill_data, ast)
+    duralex.alinea_parser.parse(bill_data, tree)
 
     if args.amendments:
         amendement_url = (
@@ -54,22 +54,22 @@ def handle_data(data, args):
         amendements = urllib2.urlopen(amendement_url).read()
         amendements = decode(amendements)
         amendements = json.loads(amendements)
-        duralex.amendment_parser.parse(amendements, ast);
+        duralex.amendment_parser.parse(amendements, tree);
 
-    ForkReferenceVisitor().visit(ast)
-    ResolveFullyQualifiedDefinitionsVisitor().visit(ast)
-    ResolveFullyQualifiedReferencesVisitor().visit(ast)
-    SortReferencesVisitor().visit(ast)
-    RemoveQuotePrefixVisitor().visit(ast)
+    ForkReferenceVisitor().visit(tree)
+    ResolveFullyQualifiedDefinitionsVisitor().visit(tree)
+    ResolveFullyQualifiedReferencesVisitor().visit(tree)
+    SortReferencesVisitor().visit(tree)
+    RemoveQuotePrefixVisitor().visit(tree)
 
     if not args.uuid:
-        DeleteUUIDVisitor().visit(ast)
+        DeleteUUIDVisitor().visit(tree)
 
-    DeleteParentVisitor().visit(ast)
-    DeleteEmptyChildrenVisitor().visit(ast)
+    DeleteParentVisitor().visit(tree)
+    DeleteEmptyChildrenVisitor().visit(tree)
 
     if not args.quiet:
-        json_data = json.dumps(ast, sort_keys=True, indent=2, ensure_ascii=False).encode('utf-8')
+        json_data = json.dumps(tree, sort_keys=True, indent=2, ensure_ascii=False).encode('utf-8')
         sys.stdout.write(json_data)
 
 def main(argv=None):

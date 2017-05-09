@@ -13,7 +13,7 @@ class ParseHeader2DefinitionTest(DuralexTestCase):
             ),
             {'children': [
                 {
-                    'type': u'header2',
+                    'type': u'header2-definition',
                     'order': 1,
                     'children': [
                         {
@@ -33,7 +33,7 @@ class ParseHeader2DefinitionTest(DuralexTestCase):
             ),
             {'children': [
                 {
-                    'type': u'header2',
+                    'type': u'header2-definition',
                     'order': '...',
                     'children': [
                         {
@@ -53,7 +53,7 @@ class ParseHeader2DefinitionTest(DuralexTestCase):
             ),
             {'children': [
                 {
-                    'type': u'header2',
+                    'type': u'header2-definition',
                     'order': 1,
                     'isBis': True,
                     'subOrder': 'A'
@@ -73,7 +73,7 @@ class ParseHeader2DefinitionTest(DuralexTestCase):
             ),
             {'children': [
                 {
-                    'type': u'header2',
+                    'type': u'header2-definition',
                     'order': 5,
                     'children': [
                         {
@@ -83,7 +83,7 @@ class ParseHeader2DefinitionTest(DuralexTestCase):
                     ],
                 },
                 {
-                    'type': u'header2',
+                    'type': u'header2-definition',
                     'order': 6,
                     'children': [
                         {
@@ -93,7 +93,7 @@ class ParseHeader2DefinitionTest(DuralexTestCase):
                     ],
                 },
                 {
-                    'type': u'header2',
+                    'type': u'header2-definition',
                     'order': 7,
                     'children': [
                         {
@@ -103,7 +103,7 @@ class ParseHeader2DefinitionTest(DuralexTestCase):
                     ],
                 },
                 {
-                    'type': u'header2',
+                    'type': u'header2-definition',
                     'order': 8,
                     'children': [
                         {

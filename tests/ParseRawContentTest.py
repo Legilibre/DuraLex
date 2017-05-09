@@ -8,21 +8,21 @@ class ParseRawContentTest(DuralexTestCase):
     def test_header1_raw_content_header2_raw_content(self):
         self.assertEqualAST(
             self.call_parse_func(
-                lambda tokens, i, parent: parser.parse_for_each(parser.parse_bill_header1, tokens, 0, parent),
+                lambda tokens, i, parent: parser.parse_for_each(parser.parse_header1, tokens, 0, parent),
                 (u"I. - Contenu du header1 :\n"
                 u"1° Contenu du header2.")
             ),
             {'children':[
                 {
                     'order': 1,
-                    'type': u'bill-header1',
+                    'type': u'header1',
                     'children': [
                         {
                             'content': u'Contenu du header1 :',
                             'type': u'raw-content'
                         },
                         {
-                            'type': u'bill-header2',
+                            'type': u'header2',
                             'order': 1,
                             'children': [
                                 {
@@ -39,7 +39,7 @@ class ParseRawContentTest(DuralexTestCase):
     def test_header1_raw_content_header2_raw_content_header3_raw_content(self):
         self.assertEqualAST(
             self.call_parse_func(
-                lambda tokens, i, parent: parser.parse_for_each(parser.parse_bill_header1, tokens, 0, parent),
+                lambda tokens, i, parent: parser.parse_for_each(parser.parse_header1, tokens, 0, parent),
                 (u"I. - Contenu du header1 :\n"
                 u"1° Contenu du header2 :\n"
                 u"a) Contenu du header3")
@@ -47,14 +47,14 @@ class ParseRawContentTest(DuralexTestCase):
             {'children':[
                 {
                     'order': 1,
-                    'type': u'bill-header1',
+                    'type': u'header1',
                     'children': [
                         {
                             'content': u'Contenu du header1 :',
                             'type': u'raw-content'
                         },
                         {
-                            'type': u'bill-header2',
+                            'type': u'header2',
                             'order': 1,
                             'children': [
                                 {
@@ -63,7 +63,7 @@ class ParseRawContentTest(DuralexTestCase):
                                 },
                                 {
                                     'order': 1,
-                                    'type': u'bill-header3',
+                                    'type': u'header3',
                                     'children': [
                                         {
                                             'content': u'Contenu du header3',
@@ -81,7 +81,7 @@ class ParseRawContentTest(DuralexTestCase):
     def test_n_header1_raw_content_n_header2_raw_content_n_header3_raw_content(self):
         self.assertEqualAST(
             self.call_parse_func(
-                lambda tokens, i, parent: parser.parse_for_each(parser.parse_bill_header1, tokens, 0, parent),
+                lambda tokens, i, parent: parser.parse_for_each(parser.parse_header1, tokens, 0, parent),
                 (u"I. - Contenu du grand 1 :\n"
                 u"1° Contenu du grand 1 petit 1 :\n"
                 u"a) Contenu du grand 1 petit 1 a\n"
@@ -96,7 +96,7 @@ class ParseRawContentTest(DuralexTestCase):
             {'children':[
                 {
                     'order': 1,
-                    'type': u'bill-header1',
+                    'type': u'header1',
                     'children': [
                         {
                             'content': u'Contenu du grand 1 :',
@@ -104,7 +104,7 @@ class ParseRawContentTest(DuralexTestCase):
                         },
                         {
                             'order': 1,
-                            'type': u'bill-header2',
+                            'type': u'header2',
                             'children': [
                                 {
                                     'content': u'Contenu du grand 1 petit 1 :',
@@ -112,7 +112,7 @@ class ParseRawContentTest(DuralexTestCase):
                                 },
                                 {
                                     'order': 1,
-                                    'type': u'bill-header3',
+                                    'type': u'header3',
                                     'children': [
                                         {
                                             'content': u'Contenu du grand 1 petit 1 a',
@@ -122,7 +122,7 @@ class ParseRawContentTest(DuralexTestCase):
                                 },
                                 {
                                     'order': 2,
-                                    'type': u'bill-header3',
+                                    'type': u'header3',
                                     'children': [
                                         {
                                             'content': u'Contenu du grand 1 petit 1 b',
@@ -134,7 +134,7 @@ class ParseRawContentTest(DuralexTestCase):
                         },
                         {
                             'order': 2,
-                            'type': u'bill-header2',
+                            'type': u'header2',
                             'children': [
                                 {
                                     'content': u'Contenu du grand 1 petit 2.',
@@ -146,7 +146,7 @@ class ParseRawContentTest(DuralexTestCase):
                 },
                 {
                     'order': 2,
-                    'type': u'bill-header1',
+                    'type': u'header1',
                     'children': [
                         {
                             'content': u'Contenu du grand 2 :',
@@ -154,7 +154,7 @@ class ParseRawContentTest(DuralexTestCase):
                         },
                         {
                             'order': 1,
-                            'type': u'bill-header2',
+                            'type': u'header2',
                             'children': [
                                 {
                                     'content': u'Contenu du grand 2 petit 1.',
@@ -162,7 +162,7 @@ class ParseRawContentTest(DuralexTestCase):
                                 },
                                 {
                                     'order': 1,
-                                    'type': u'bill-header3',
+                                    'type': u'header3',
                                     'children': [
                                         {
                                             'content': u'Contenu du grand 2 petit 1 a',
@@ -172,7 +172,7 @@ class ParseRawContentTest(DuralexTestCase):
                                 },
                                 {
                                     'order': 2,
-                                    'type': u'bill-header3',
+                                    'type': u'header3',
                                     'children': [
                                         {
                                             'content': u'Contenu du grand 2 petit 1 b',
@@ -182,7 +182,7 @@ class ParseRawContentTest(DuralexTestCase):
                                 },
                                 {
                                     'order': 3,
-                                    'type': u'bill-header3',
+                                    'type': u'header3',
                                     'children': [
                                         {
                                             'content': u'Contenu du grand 2 petit 1 c',

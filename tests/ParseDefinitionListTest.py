@@ -19,7 +19,7 @@ class ParseDefinitionListTest(DuralexTestCase):
             {'children': [
                 {
                     'count': 5,
-                    'type': u'sentence'
+                    'type': u'sentence-definition'
                 },
                 {
                     'children': [
@@ -28,7 +28,7 @@ class ParseDefinitionListTest(DuralexTestCase):
                             'words': u'alinéa 1'
                         }
                     ],
-                    'type': u'alinea'
+                    'type': u'alinea-definition'
                 },
                 {
                     'children': [
@@ -37,7 +37,7 @@ class ParseDefinitionListTest(DuralexTestCase):
                             'words': u'alinéa 2'
                         }
                     ],
-                    'type': u'alinea'
+                    'type': u'alinea-definition'
                 },
                 {
                     'children': [
@@ -46,7 +46,7 @@ class ParseDefinitionListTest(DuralexTestCase):
                             'words': u'alinéa 3'
                         }
                     ],
-                    'type': u'alinea'
+                    'type': u'alinea-definition'
                 },
                 {
                     'children': [
@@ -55,7 +55,7 @@ class ParseDefinitionListTest(DuralexTestCase):
                             'words': u'alinéa 4'
                         }
                     ],
-                    'type': u'alinea'
+                    'type': u'alinea-definition'
                 },
                 {
                     'children': [
@@ -64,7 +64,7 @@ class ParseDefinitionListTest(DuralexTestCase):
                             'words': u'alinéa 5'
                         }
                     ],
-                    'type': u'alinea'
+                    'type': u'alinea-definition'
                 }
             ]}
         )
@@ -79,7 +79,7 @@ class ParseDefinitionListTest(DuralexTestCase):
             ),
             {'children': [
                 {
-                    'type': u'header1',
+                    'type': u'header1-definition',
                     'order': 3,
                     'children': [
                         {
@@ -89,7 +89,7 @@ class ParseDefinitionListTest(DuralexTestCase):
                     ],
                 },
                 {
-                    'type': u'header1',
+                    'type': u'header1-definition',
                     'order': 4,
                     'children': [
                         {
@@ -111,7 +111,7 @@ class ParseDefinitionListTest(DuralexTestCase):
             ),
             {'children': [
                 {
-                    'type': u'header2',
+                    'type': u'header2-definition',
                     'order': 2,
                     'children': [
                         {
@@ -121,7 +121,7 @@ class ParseDefinitionListTest(DuralexTestCase):
                     ],
                 },
                 {
-                    'type': u'header2',
+                    'type': u'header2-definition',
                     'order': 3,
                     'children': [
                         {
@@ -150,7 +150,7 @@ class ParseDefinitionListTest(DuralexTestCase):
                             'words': u'alinéa 1'
                         }
                     ],
-                    'type': u'alinea'
+                    'type': u'alinea-definition'
                 },
                 {
                     'children': [
@@ -159,7 +159,7 @@ class ParseDefinitionListTest(DuralexTestCase):
                             'words': u'alinéa 2'
                         }
                     ],
-                    'type': u'alinea'
+                    'type': u'alinea-definition'
                 },
                 {
                     'children': [
@@ -168,7 +168,7 @@ class ParseDefinitionListTest(DuralexTestCase):
                             'words': u'alinéa 3'
                         }
                     ],
-                    'type': u'alinea'
+                    'type': u'alinea-definition'
                 }
             ]}
         )

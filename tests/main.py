@@ -3,13 +3,13 @@
 
 import unittest
 
-from ParseBillHeader1Test import ParseBillHeader1Test
-from ParseBillHeader2Test import ParseBillHeader2Test
-from ParseBillHeader3Test import ParseBillHeader3Test
+from ParseHeader1Test import ParseHeader1Test
+from ParseHeader2Test import ParseHeader2Test
+from ParseHeader3Test import ParseHeader3Test
 from ParseRawContentTest import ParseRawContentTest
 from ParseArticleReferenceTest import ParseArticleReferenceTest
 from ParseEditTest import ParseEditTest
-from ParseWordsReferenceTest import ParseWordsReferenceTest
+from ParseWordReferenceTest import ParseWordReferenceTest
 from ParseAlineaReferenceTest import ParseAlineaReferenceTest
 from ParseAlineaDefinitionTest import ParseAlineaDefinitionTest
 from ParseHeader2ReferenceTest import ParseHeader2ReferenceTest
@@ -19,7 +19,7 @@ from ParseLawReferenceTest import ParseLawReferenceTest
 from ParseMultiplicativeAdverbTest import ParseMultiplicativeAdverbTest
 from ParseSentenceDefinitionTest import ParseSentenceDefinitionTest
 from ParseSentenceReferenceTest import ParseSentenceReferenceTest
-from ParseWordsDefinitionTest import ParseWordsDefinitionTest
+from ParseWordDefinitionTest import ParseWordDefinitionTest
 from ParseArticleDefinitionTest import ParseArticleDefinitionTest
 from ParseMentionDefinitionTest import ParseMentionDefinitionTest
 from ParseHeader1DefinitionTest import ParseHeader1DefinitionTest

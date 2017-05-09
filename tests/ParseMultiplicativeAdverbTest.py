@@ -13,7 +13,7 @@ class ParseMultiplicativeAdverbTest(DuralexTestCase):
             ),
             {'children':[
                 {
-                    'type': u'header2',
+                    'type': u'header2-definition',
                     'order': 3,
                     'isBis': True
                 }
@@ -28,7 +28,7 @@ class ParseMultiplicativeAdverbTest(DuralexTestCase):
             ),
             {'children':[
                 {
-                    'type': u'header2',
+                    'type': u'header2-definition',
                     'order': 3,
                     'isTer': True
                 }
@@ -43,7 +43,7 @@ class ParseMultiplicativeAdverbTest(DuralexTestCase):
             ),
             {'children':[
                 {
-                    'type': u'header2',
+                    'type': u'header2-definition',
                     'order': 3,
                     'isQuater': True
                 }

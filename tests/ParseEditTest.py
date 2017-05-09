@@ -61,7 +61,7 @@ class ParseEditTest(DuralexTestCase):
                             'id': u'42'
                         },
                         {
-                            'type': u'words',
+                            'type': u'word-definition',
                             'children': [
                                 {
                                     'type': u'quote',
@@ -96,7 +96,7 @@ class ParseEditTest(DuralexTestCase):
                             ]
                         },
                         {
-                            'type': u'words',
+                            'type': u'word-definition',
                             'children': [
                                 {
                                     'type': u'quote',
@@ -127,7 +127,7 @@ class ParseEditTest(DuralexTestCase):
                             'id': u'42'
                         },
                         {
-                            'type': u'words',
+                            'type': u'word-definition',
                             'children': [
                                 {
                                     'type': u'quote',
@@ -160,7 +160,7 @@ class ParseEditTest(DuralexTestCase):
                             'id': u'42'
                         },
                         {
-                            'type': u'alinea',
+                            'type': u'alinea-definition',
                             'children': [
                                 {
                                     'type': u'quote',
@@ -185,7 +185,7 @@ class ParseEditTest(DuralexTestCase):
                     'editType': u'replace',
                     'children': [
                         {
-                            'type': u'words-reference',
+                            'type': u'word-reference',
                             'children': [
                                 {
                                     'type': u'quote',
@@ -194,7 +194,7 @@ class ParseEditTest(DuralexTestCase):
                             ]
                         },
                         {
-                            'type': u'words',
+                            'type': u'word-definition',
                             'children': [
                                 {
                                     'type': u'quote',
@@ -219,7 +219,7 @@ class ParseEditTest(DuralexTestCase):
                     'editType': u'replace',
                     'children': [
                         {
-                            'type': u'words-reference',
+                            'type': u'word-reference',
                             'children': [
                                 {
                                     'type': u'quote',
@@ -228,7 +228,7 @@ class ParseEditTest(DuralexTestCase):
                             ]
                         },
                         {
-                            'type': u'words',
+                            'type': u'word-definition',
                             'children': [
                                 {
                                     'type': u'quote',
@@ -258,7 +258,7 @@ class ParseEditTest(DuralexTestCase):
                             'position': u'before'
                         },
                         {
-                            'type': u'header2',
+                            'type': u'header2-definition',
                             'order': 1,
                             'subOrder': u'A'
                         }
@@ -306,7 +306,7 @@ class ParseEditTest(DuralexTestCase):
                             'order': -1
                         },
                         {
-                            'type': u'alinea',
+                            'type': u'alinea-definition',
                             'children': [
                                 {
                                     'type': u'quote',
@@ -315,7 +315,7 @@ class ParseEditTest(DuralexTestCase):
                             ]
                         },
                         {
-                            'type': 'alinea',
+                            'type': u'alinea-definition',
                             'children': [
                                 {
                                     'type': u'quote',
@@ -346,7 +346,7 @@ class ParseEditTest(DuralexTestCase):
                             'id': u'42'
                         },
                         {
-                            'type': u'sentence',
+                            'type': u'sentence-definition',
                             'children': [
                                 {
                                     'type': u'quote',
@@ -355,7 +355,7 @@ class ParseEditTest(DuralexTestCase):
                             ]
                         },
                         {
-                            'type': 'sentence',
+                            'type': u'sentence-definition',
                             'children': [
                                 {
                                     'type': u'quote',
@@ -385,7 +385,7 @@ class ParseEditTest(DuralexTestCase):
                             'order': 2
                         },
                         {
-                            'type': u'words',
+                            'type': u'word-definition',
                             'children': [
                                 {
                                     'type': u'quote',
@@ -410,7 +410,7 @@ class ParseEditTest(DuralexTestCase):
                     'type': u'edit',
                     'children': [
                         {
-                            'type': u'sentence',
+                            'type': u'sentence-definition',
                             'count': 1
                         }
                     ]
@@ -431,7 +431,7 @@ class ParseEditTest(DuralexTestCase):
                     'type': u'edit',
                     'children': [
                         {
-                            'type': u'sentence',
+                            'type': u'sentence-definition',
                             'children': [
                                 {
                                     'type': u'quote',
@@ -476,7 +476,7 @@ class ParseEditTest(DuralexTestCase):
                     'editType': u'replace',
                     'children': [
                         {
-                            'type': u'words-reference',
+                            'type': u'word-reference',
                             'children': [
                                 {
                                     'type': u'quote',
@@ -485,7 +485,7 @@ class ParseEditTest(DuralexTestCase):
                             ]
                         },
                         {
-                            'type': u'words',
+                            'type': u'word-definition',
                             'children': [
                                 {
                                     'type': u'quote',
@@ -514,7 +514,7 @@ class ParseEditTest(DuralexTestCase):
                             'id': u'L. 123-4-1'
                         },
                         {
-                            'type': u'article',
+                            'type': u'article-definition',
                             'id': u'L. 123-4-2'
                         }
                     ]

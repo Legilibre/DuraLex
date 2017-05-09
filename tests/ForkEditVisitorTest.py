@@ -7,7 +7,7 @@ from duralex.ForkEditVisitor import ForkEditVisitor
 class ForkEditVisitorTest(DuralexTestCase):
     def test(self):
         self.assertEqualAST(
-            self.call_visitor(ForkEditVisitor, self.make_ast({'children': [
+            self.call_visitor(ForkEditVisitor, self.make_tree({'children': [
                 {
                     'type': 'edit',
                     'children': [
@@ -70,7 +70,7 @@ class ForkEditVisitorTest(DuralexTestCase):
 
     def test_2(self):
         self.assertEqualAST(
-            self.call_visitor(ForkEditVisitor, self.make_ast({'children': [
+            self.call_visitor(ForkEditVisitor, self.make_tree({'children': [
                 {
                     'type': 'edit',
                     'children': [
@@ -158,7 +158,7 @@ class ForkEditVisitorTest(DuralexTestCase):
 
     def test(self):
         self.assertEqualAST(
-            self.call_visitor(ForkEditVisitor, self.make_ast({'children': [
+            self.call_visitor(ForkEditVisitor, self.make_tree({'children': [
                 {
                     'type': 'edit',
                     'children': [
@@ -183,7 +183,7 @@ class ForkEditVisitorTest(DuralexTestCase):
                             ]
                         },
                         {
-                            'type': u'words',
+                            'type': u'word-definition',
                             'children': [
                                 {
                                     'type': u'quote',
@@ -209,7 +209,7 @@ class ForkEditVisitorTest(DuralexTestCase):
                             ],
                         },
                         {
-                            'type': u'words',
+                            'type': u'word-definition',
                             'children': [
                                 {
                                     'type': u'quote',
@@ -233,7 +233,7 @@ class ForkEditVisitorTest(DuralexTestCase):
                             ]
                         },
                         {
-                            'type': u'words',
+                            'type': u'word-definition',
                             'children': [
                                 {
                                     'type': u'quote',

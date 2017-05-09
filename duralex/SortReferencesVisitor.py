@@ -2,7 +2,7 @@ from duralex.alinea_parser import *
 
 from AbstractVisitor import AbstractVisitor
 
-import node_type
+import duralex.tree
 
 class SortReferencesVisitor(AbstractVisitor):
     def visit_node(self, node):
@@ -10,15 +10,15 @@ class SortReferencesVisitor(AbstractVisitor):
             super(SortReferencesVisitor, self).visit_node(node)
 
     def sort_references(self, node):
-        root_refs = filter_nodes(node, lambda n: node_type.is_reference(n) and 'parent' in n and (not node_type.is_reference(n['parent'])))
+        root_refs = filter_nodes(node, lambda n: duralex.tree.is_reference(n) and 'parent' in n and (not duralex.tree.is_reference(n['parent'])))
 
         if len(root_refs) == 0:
             return False
 
         for root_ref in root_refs:
             root_ref_parent = root_ref['parent']
-            refs = filter_nodes(root_ref, lambda n: node_type.is_reference(n))
-            sorted_refs = sorted(refs, key=lambda r: node_type.REFERENCE.index(r['type']))
+            refs = filter_nodes(root_ref, lambda n: duralex.tree.is_reference(n))
+            sorted_refs = sorted(refs, key=lambda r: duralex.tree.TYPE_REFERENCE.index(r['type']))
             filtered_refs = [sorted_refs[0]]
             for ref in sorted_refs:
                 if 'parent' in ref:

@@ -3,7 +3,7 @@
 import alinea_lexer as lexer
 
 from bill_parser import clean_html
-from ast import *
+from duralex.tree import *
 from alinea_parser import is_number_word, word_to_number, is_number, parse_int, parse_alineas
 
 AMENDMENT_STATUS = {
@@ -14,12 +14,12 @@ AMENDMENT_STATUS = {
     u'adopté': 'approved'
 }
 
-def parse(data, ast):
+def parse(data, tree):
     amendements = []
     # ast = create_node(ast, {'type': 'amendments'})
     for amendement in data['amendements']:
-        amendements.append(parse_amendment(amendement, ast))
-    return ast
+        amendements.append(parse_amendment(amendement['amendement'], tree))
+    return tree
 
 import re
 

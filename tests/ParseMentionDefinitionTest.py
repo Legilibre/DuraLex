@@ -13,7 +13,7 @@ class ParseMentionDefinitionTest(DuralexTestCase):
             ),
             {'children': [
                 {
-                    'type': u'mention',
+                    'type': u'mention-definition',
                     'children': [
                         {
                             'type': u'quote',
@@ -34,7 +34,7 @@ class ParseMentionDefinitionTest(DuralexTestCase):
             ),
             {'children': [
                 {
-                    'type': u'mention',
+                    'type': u'mention-definition',
                     'children': [
                         {
                             'type': u'quote',

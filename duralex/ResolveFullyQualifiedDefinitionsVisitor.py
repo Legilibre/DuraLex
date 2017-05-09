@@ -2,19 +2,16 @@ from duralex.alinea_parser import *
 
 from AbstractVisitor import AbstractVisitor
 
+import duralex.tree
+
 class ResolveFullyQualifiedDefinitionsVisitor(AbstractVisitor):
     def visit_node(self, node):
         self.resolve_fully_qualified_definitions(node)
         super(ResolveFullyQualifiedDefinitionsVisitor, self).visit_node(node)
 
     def resolve_fully_qualified_definitions(self, node):
-        def_types = [
-            'alinea',
-            'sentence'
-        ]
-
         if 'type' in node and node['type'] == 'edit':
-            def_nodes = filter_nodes(node, lambda x : x['type'] in def_types)
+            def_nodes = filter_nodes(node, lambda x : duralex.tree.is_definition(x))
             # if we have more than 1 definition in a single edit, we assume:
             # - they have different types
             # - the final type of definition is the combination of all those types
@@ -35,7 +32,7 @@ class ResolveFullyQualifiedDefinitionsVisitor(AbstractVisitor):
                         children.append(child)
                         remove_node(content_node, child)
                     remove_node(node, content_node)
-                    sorted_types = sorted(types + [content_node], key=lambda x : def_types.index(x['type']))
+                    sorted_types = sorted(types + [content_node], key=lambda x : duralex.tree.TYPE_DEFINITION.index(x['type']))
                     type_node = node
                     for sorted_type in sorted_types:
                         t = copy_node(sorted_type)

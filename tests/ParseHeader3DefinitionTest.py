@@ -13,7 +13,7 @@ class ParseHeader3DefinitionTest(DuralexTestCase):
             ),
             {'children': [
                 {
-                    'type': u'header3',
+                    'type': u'header3-definition',
                     'order': 1
                 }
             ]}
@@ -27,7 +27,7 @@ class ParseHeader3DefinitionTest(DuralexTestCase):
             ),
             {'children': [
                 {
-                    'type': u'header3',
+                    'type': u'header3-definition',
                     'order': 5
                 }
             ]}
@@ -44,7 +44,7 @@ class ParseHeader3DefinitionTest(DuralexTestCase):
             ),
             {'children': [
                 {
-                    'type': u'header3',
+                    'type': u'header3-definition',
                     'order': 3,
                     'children': [
                         {
@@ -54,7 +54,7 @@ class ParseHeader3DefinitionTest(DuralexTestCase):
                     ],
                 },
                 {
-                    'type': u'header3',
+                    'type': u'header3-definition',
                     'order': 4,
                     'children': [
                         {
@@ -64,7 +64,7 @@ class ParseHeader3DefinitionTest(DuralexTestCase):
                     ],
                 },
                 {
-                    'type': u'header3',
+                    'type': u'header3-definition',
                     'order': 5,
                     'children': [
                         {

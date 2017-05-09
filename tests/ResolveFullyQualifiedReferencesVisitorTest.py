@@ -7,7 +7,7 @@ from duralex.ResolveFullyQualifiedReferencesVisitor import ResolveFullyQualified
 class ResolveFullyQualifiedReferencesVisitorTest(DuralexTestCase):
     def test_code_danling_reference(self):
         self.assertEqualAST(
-            self.call_visitor(ResolveFullyQualifiedReferencesVisitor, self.make_ast({'children': [
+            self.call_visitor(ResolveFullyQualifiedReferencesVisitor, self.make_tree({'children': [
                 {
                     'editType': u'edit',
                     'type': u'edit',
@@ -23,7 +23,7 @@ class ResolveFullyQualifiedReferencesVisitorTest(DuralexTestCase):
                     'type': u'edit',
                     'children': [
                         {
-                            'type': u'words',
+                            'type': u'word-definition',
                             'children': [
                                 {
                                     'type': u'quote',
@@ -32,7 +32,7 @@ class ResolveFullyQualifiedReferencesVisitorTest(DuralexTestCase):
                             ]
                         },
                         {
-                            'type': u'words-reference',
+                            'type': u'word-reference',
                             'children': [
                                 {
                                     'type': u'quote',
@@ -53,7 +53,7 @@ class ResolveFullyQualifiedReferencesVisitorTest(DuralexTestCase):
                             'type': u'code-reference',
                             'children': [
                                 {
-                                    'type': u'words-reference',
+                                    'type': u'word-reference',
                                     'children': [
                                         {
                                             'type': u'quote',
@@ -64,7 +64,7 @@ class ResolveFullyQualifiedReferencesVisitorTest(DuralexTestCase):
                             ]
                         },
                         {
-                            'type': u'words',
+                            'type': u'word-definition',
                             'children': [
                                 {
                                     'type': u'quote',
@@ -79,7 +79,7 @@ class ResolveFullyQualifiedReferencesVisitorTest(DuralexTestCase):
 
     def test_code_danling_reference_2(self):
         self.assertEqualAST(
-            self.call_visitor(ResolveFullyQualifiedReferencesVisitor, self.make_ast({'children': [
+            self.call_visitor(ResolveFullyQualifiedReferencesVisitor, self.make_tree({'children': [
                 {
                     'editType': u'edit',
                     'type': u'edit',
@@ -101,7 +101,7 @@ class ResolveFullyQualifiedReferencesVisitorTest(DuralexTestCase):
                     'type': u'edit',
                     'children': [
                         {
-                            'type': u'words',
+                            'type': u'word-definition',
                             'children': [
                                 {
                                     'type': u'quote',
@@ -110,7 +110,7 @@ class ResolveFullyQualifiedReferencesVisitorTest(DuralexTestCase):
                             ]
                         },
                         {
-                            'type': u'words-reference',
+                            'type': u'word-reference',
                             'children': [
                                 {
                                     'type': u'quote',
@@ -135,7 +135,7 @@ class ResolveFullyQualifiedReferencesVisitorTest(DuralexTestCase):
                                     'type': u'article-reference',
                                     'children': [
                                         {
-                                            'type': u'words-reference',
+                                            'type': u'word-reference',
                                             'children': [
                                                 {
                                                     'type': u'quote',
@@ -148,7 +148,7 @@ class ResolveFullyQualifiedReferencesVisitorTest(DuralexTestCase):
                             ]
                         },
                         {
-                            'type': u'words',
+                            'type': u'word-definition',
                             'children': [
                                 {
                                     'type': u'quote',
@@ -163,9 +163,9 @@ class ResolveFullyQualifiedReferencesVisitorTest(DuralexTestCase):
 
     def test_code_danling_reference_3(self):
         self.assertEqualAST(
-            self.call_visitor(ResolveFullyQualifiedReferencesVisitor, self.make_ast({'children': [
+            self.call_visitor(ResolveFullyQualifiedReferencesVisitor, self.make_tree({'children': [
                 {
-                    'type': u'header1',
+                    'type': u'header1-definition',
                     'order': 1,
                     'children': [
                         {
@@ -179,7 +179,7 @@ class ResolveFullyQualifiedReferencesVisitorTest(DuralexTestCase):
                             ]
                         },
                         {
-                            'type': u'header2',
+                            'type': u'header2-definition',
                             'order': 1,
                             'children': [
                                 {
@@ -193,7 +193,7 @@ class ResolveFullyQualifiedReferencesVisitorTest(DuralexTestCase):
                                     ]
                                 },
                                 {
-                                    'type': u'header3',
+                                    'type': u'header3-definition',
                                     'order': 1,
                                     'children': [
                                         {
@@ -201,7 +201,7 @@ class ResolveFullyQualifiedReferencesVisitorTest(DuralexTestCase):
                                             'type': u'edit',
                                             'children': [
                                                 {
-                                                    'type': u'words',
+                                                    'type': u'word-definition',
                                                     'children': [
                                                         {
                                                             'type': u'quote',
@@ -210,7 +210,7 @@ class ResolveFullyQualifiedReferencesVisitorTest(DuralexTestCase):
                                                     ]
                                                 },
                                                 {
-                                                    'type': u'words-reference',
+                                                    'type': u'word-reference',
                                                     'children': [
                                                         {
                                                             'type': u'quote',
@@ -229,15 +229,15 @@ class ResolveFullyQualifiedReferencesVisitorTest(DuralexTestCase):
             ]})),
             {'children': [
                 {
-                    'type': u'header1',
+                    'type': u'header1-definition',
                     'order': 1,
                     'children': [
                         {
-                            'type': u'header2',
+                            'type': u'header2-definition',
                             'order': 1,
                             'children': [
                                 {
-                                    'type': u'header3',
+                                    'type': u'header3-definition',
                                     'order': 1,
                                     'children': [
                                         {
@@ -253,7 +253,7 @@ class ResolveFullyQualifiedReferencesVisitorTest(DuralexTestCase):
                                                             'type': u'alinea-reference',
                                                             'children': [
                                                                 {
-                                                                    'type': u'words-reference',
+                                                                    'type': u'word-reference',
                                                                     'children': [
                                                                         {
                                                                             'type': u'quote',
@@ -266,7 +266,7 @@ class ResolveFullyQualifiedReferencesVisitorTest(DuralexTestCase):
                                                     ]
                                                 },
                                                 {
-                                                    'type': u'words',
+                                                    'type': u'word-definition',
                                                     'children': [
                                                         {
                                                             'type': u'quote',
@@ -287,7 +287,7 @@ class ResolveFullyQualifiedReferencesVisitorTest(DuralexTestCase):
 
     def test_do_nothing_when_no_nested_edits(self):
         self.assertEqualAST(
-            self.call_visitor(ResolveFullyQualifiedReferencesVisitor, self.make_ast({'children': [
+            self.call_visitor(ResolveFullyQualifiedReferencesVisitor, self.make_tree({'children': [
                 {
                     'children': [
                         {
@@ -301,7 +301,7 @@ class ResolveFullyQualifiedReferencesVisitorTest(DuralexTestCase):
                                                     'words': u'Art. 4. - Le territoire de la République forme une circonscription unique.'
                                                 }
                                             ],
-                                            'type': u'words'
+                                            'type': u'word-definition'
                                         },
                                         {
                                             'children': [
@@ -320,12 +320,12 @@ class ResolveFullyQualifiedReferencesVisitorTest(DuralexTestCase):
                                 }
                             ],
                             'order': 1,
-                            'type': u'bill-header1'
+                            'type': u'header1-definition'
                         }
                     ],
                     'isNew': False,
                     'order': 2,
-                    'type': u'article'
+                    'type': u'article-definition'
                 }
             ]})),
             {'children': [
@@ -342,7 +342,7 @@ class ResolveFullyQualifiedReferencesVisitorTest(DuralexTestCase):
                                                     'words': u'Art. 4. - Le territoire de la République forme une circonscription unique.'
                                                 }
                                             ],
-                                            'type': u'words'
+                                            'type': u'word-definition'
                                         },
                                         {
                                             'children': [
@@ -361,12 +361,12 @@ class ResolveFullyQualifiedReferencesVisitorTest(DuralexTestCase):
                                 }
                             ],
                             'order': 1,
-                            'type': u'bill-header1'
+                            'type': u'header1-definition'
                         }
                     ],
                     'isNew': False,
                     'order': 2,
-                    'type': u'article'
+                    'type': u'article-definition'
                 }
             ]}
         )

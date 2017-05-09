@@ -11,6 +11,7 @@ sys.path.insert(0, os.path.join(os.path.realpath(os.path.dirname(__file__)), '..
 
 import duralex.alinea_parser as parser
 import duralex.alinea_lexer as lexer
+import duralex.tree
 
 from duralex.DeleteEmptyChildrenVisitor import DeleteEmptyChildrenVisitor
 from duralex.DeleteParentVisitor import DeleteParentVisitor
@@ -36,41 +37,40 @@ class DuralexTestCase(unittest.TestCase):
 
         return out
 
-    def call_parse_func(self, fn, data, ast=None):
-        if not ast:
-            ast = {'children':[]}
-        fn(lexer.tokenize(data), 0, ast)
-        # default_visitors(ast)
-        return ast
+    def call_parse_func(self, fn, data, tree=None):
+        if not tree:
+            tree = duralex.tree.create_node(None, {})
+        fn(lexer.tokenize(data), 0, tree)
+        return tree
 
-    def add_parent(self, ast):
-        AddParentVisitor().visit(ast)
-        return ast
+    def add_parent(self, tree):
+        AddParentVisitor().visit(tree)
+        return tree
 
-    def add_children(self, ast):
-        if 'children' not in ast:
-            ast['children'] = []
-        for child in ast['children']:
+    def add_children(self, tree):
+        if 'children' not in tree:
+            tree['children'] = []
+        for child in tree['children']:
             self.add_children(child)
-        return ast
+        return tree
 
-    def add_uuid(self, ast):
-        if 'uuid' not in ast:
-            ast['uuid'] = str(uuid.uuid4())
-        for child in ast['children']:
+    def add_uuid(self, tree):
+        if 'uuid' not in tree:
+            tree['uuid'] = str(uuid.uuid4())
+        for child in tree['children']:
             self.add_uuid(child)
-        return ast
+        return tree
 
-    def make_ast(self, ast):
-        ast = self.add_parent(ast)
-        ast = self.add_children(ast)
-        ast = self.add_uuid(ast)
-        return ast
+    def make_tree(self, tree):
+        tree = self.add_parent(tree)
+        tree = self.add_children(tree)
+        tree = self.add_uuid(tree)
+        return tree
 
-    def call_visitor(self, visitor, ast):
-        ast = self.make_ast(ast)
-        visitor().visit(ast)
-        return ast
+    def call_visitor(self, visitor, tree):
+        tree = self.make_tree(tree)
+        visitor().visit(tree)
+        return tree
 
     def assertEqualAST(self, a, b):
         DeleteParentVisitor().visit(a)
