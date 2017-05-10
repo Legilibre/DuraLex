@@ -44,17 +44,20 @@ def handle_data(data, args):
     duralex.alinea_parser.parse(bill_data, tree)
 
     if args.amendments:
-        amendement_url = (
-            'https://www.nosdeputes.fr/'
-            + str(bill_data['legislature'])
-            + '/amendements/'
-            + str(bill_data['id'])
-            + '/json'
-        )
-        amendements = urllib2.urlopen(amendement_url).read()
-        amendements = decode(amendements)
-        amendements = json.loads(amendements)
-        duralex.amendment_parser.parse(amendements, tree);
+        if args.amendments == '-':
+            amendment_url = (
+                'https://www.nosdeputes.fr/'
+                + str(bill_data['legislature'])
+                + '/amendments/'
+                + str(bill_data['id'])
+                + '/json'
+            )
+            amendments = urllib2.urlopen(amendment_url).read()
+        else:
+            amendments = open(args.amendments, 'r').read()
+        amendments = decode(amendments)
+        amendments = json.loads(amendments)
+        duralex.amendment_parser.parse(amendments, tree)
 
     ForkReferenceVisitor().visit(tree)
     ResolveFullyQualifiedDefinitionsVisitor().visit(tree)
@@ -78,7 +81,7 @@ def main(argv=None):
     parser.add_argument('--url', help='the URL of the bill to process')
     parser.add_argument('--quiet', action='store_true', help='no stdout output')
     parser.add_argument('--uuid', action='store_true', help='add a unique ID on each node')
-    parser.add_argument('--amendments', action='store_true', help='fetch and parse amendements')
+    parser.add_argument('--amendments', nargs='?', const='-', default=False, help='fetch and parse amendements')
 
     args = parser.parse_args()
 
