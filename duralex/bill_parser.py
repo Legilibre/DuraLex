@@ -272,7 +272,8 @@ def parse_bill(string, url):
                 if re_all_caps.match(line):
                     line = real_lower(line)
                 line = line.replace(',', '')
-                texte['description'] += ' ' + line
+                if line:
+                    texte['description'] += ' ' + line
             continue
 
         if line == "<b>RAPPORT</b>" or line == "Mesdames, Messieurs,":
