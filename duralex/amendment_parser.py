@@ -51,8 +51,8 @@ def parse_amendment(data, parent):
     #   - edit <- the actual 'edit' node coming from the admendment text
     #     - article-reference <- the 'article-reference' node coming from the "subject"
     #       - *-reference
-    fake_edit = create_node(node, {'type': 'edit', 'editType': 'edit'})
-    parse_subject(tokens, 0, fake_edit)
+    # fake_edit = create_node(node, {'type': 'edit', 'editType': 'edit'})
+    # parse_subject(tokens, 0, fake_edit)
     parse_alineas(node['content'], node)
 
     return node

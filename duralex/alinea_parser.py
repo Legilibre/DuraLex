@@ -1151,7 +1151,6 @@ def parse_word_reference(tokens, i, parent):
     # le chiffre
     # le taux
     elif tokens[i].lower() == u'le' and tokens[i + 2] in [u'nombre', u'chiffre', u'taux']:
-        print(tokens[i:i+10])
         i = alinea_lexer.skip_to_quote_start(tokens, i)
         i = parse_quote(tokens, i, node)
     # la référence
