@@ -51,6 +51,65 @@ class ParseLawReferenceTest(DuralexTestCase):
             ]}
         )
 
+    def test_the_same_law(self):
+        self.assertEqualAST(
+            self.call_parse_func(
+                parser.parse_law_reference,
+                u"de la même loi",
+                {'children':[
+                    {
+                        'type': u'law-reference',
+                        'lawId': u'2007-1199'
+                    }
+                ]}
+            ),
+            {'children':[
+                {
+                    'type': u'law-reference',
+                    'lawId': u'2007-1199'
+                },
+                {
+                    'type': u'law-reference',
+                    'lawId': u'2007-1199'
+                }
+            ]}
+        )
+
+    def test_the_same_law_word_ref(self):
+        self.assertEqualAST(
+            self.call_parse_func(
+                parser.parse_law_reference,
+                u"de la même loi, les mots \"ceci est un test\"",
+                {'children':[
+                    {
+                        'type': u'law-reference',
+                        'lawId': u'2007-1199'
+                    }
+                ]}
+            ),
+            {'children':[
+                {
+                    'type': u'law-reference',
+                    'lawId': u'2007-1199'
+                },
+                {
+                    'type': u'law-reference',
+                    'lawId': u'2007-1199',
+                    'children': [
+                        {
+                            'type': u'word-reference',
+                            'children': [
+                                {
+                                    'type': u'quote',
+                                    'words': u'ceci est un test'
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]}
+        )
+
     def test_law_with_id_2(self):
         self.assertEqualAST(
             self.call_parse_func(

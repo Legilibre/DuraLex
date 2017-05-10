@@ -249,29 +249,28 @@ def parse_law_reference(tokens, i, parent):
         )
         # the lduralex.tree.one in order of traversal is the previous one in order of syntax
         # don't forget the current node is in the list too => -2 instead of -1
-        law_ref = copy_node(law_refs[-2])
+        law_ref = copy_node(law_refs[-2], False)
         push_node(parent, law_ref)
         remove_node(parent, node)
-        return i
+        node = law_ref
     else:
         remove_node(parent, node)
         return i
 
-    if tokens[i] == u'organique':
+    if i < len(tokens) and tokens[i] == u'organique':
         node['lawType'] = 'organic'
         i += 2
 
-    i = alinea_lexer.skip_to_token(tokens, i, u'n°') + 1
-    # If we didn't find the "n°" token, the reference is incomplete and we forget about it.
-    # FIXME: we might have to handle the "la même ordonnance" or "la même loi" incomplete reference cases.
-    if i >= len(tokens):
-        remove_node(parent, node)
-        return j
-
-    i = alinea_lexer.skip_spaces(tokens, i)
-    node['lawId'] = tokens[i]
-    # skip {lawId} and the following space
-    i += 2
+    if node['lawId'] == '':
+        i = alinea_lexer.skip_to_token(tokens, i, u'n°') + 1
+        # If we didn't find the "n°" token, the reference is incomplete and we forget about it.
+        if i >= len(tokens):
+            remove_node(parent, node)
+            return j
+        i = alinea_lexer.skip_spaces(tokens, i)
+        node['lawId'] = tokens[i]
+        # skip {lawId} and the following space
+        i += 2
 
     if i < len(tokens) and tokens[i] == u'du':
         node['lawDate'] = tokens[i + 6] + u'-' + str(month_to_number(tokens[i + 4])) + u'-' + tokens[i + 2]
@@ -283,6 +282,17 @@ def parse_law_reference(tokens, i, parent):
         j = alinea_lexer.skip_to_token(tokens, i, 'code')
         if j < len(tokens):
             i = parse_code_reference(tokens, j, node)
+
+
+    # les mots
+    i = parse_one_of(
+        [
+            parse_word_reference,
+        ],
+        tokens,
+        i,
+        node
+    )
 
     debug(parent, tokens, i, 'parse_law_reference end')
 
@@ -1141,6 +1151,7 @@ def parse_word_reference(tokens, i, parent):
     # le chiffre
     # le taux
     elif tokens[i].lower() == u'le' and tokens[i + 2] in [u'nombre', u'chiffre', u'taux']:
+        print(tokens[i:i+10])
         i = alinea_lexer.skip_to_quote_start(tokens, i)
         i = parse_quote(tokens, i, node)
     # la référence

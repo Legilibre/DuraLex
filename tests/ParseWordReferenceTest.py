@@ -132,21 +132,96 @@ class ParseWordReferenceTest(DuralexTestCase):
             ]}
         )
 
-    # def test_alinea_ref_artice_ref_law_ref_words_ref(self):
-    #     self.assertEqualAST(
-    #         self.call_parse_func(
-    #             parser.parse_reference,
-    #             u"au deuxième alinéa de l'article 18 de la loi n° 77-729, le mot : \"test\""
-    #         ),
-    #         {'children':[
-    #             {
-    #                 'type': u'word-reference',
-    #                 'children': [
-    #                     {
-    #                         'type': u'quote',
-    #                         'words': u'test'
-    #                     }
-    #                 ]
-    #             }
-    #         ]}
-    #     )
+    def test_alinea_ref_word_ref(self):
+        self.assertEqualAST(
+            self.call_parse_func(
+                parser.parse_reference,
+                u"au deuxième alinéa, le mot : \"test\""
+            ),
+            {'children':[
+                {
+                    'type': u'alinea-reference',
+                    'order': 2,
+                    'children': [
+                        {
+                            'type': u'word-reference',
+                            'children': [
+                                {
+                                    'type': u'quote',
+                                    'words': u'test'
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]}
+        )
+
+    def test_alinea_ref_article_ref_word_ref(self):
+        self.assertEqualAST(
+            self.call_parse_func(
+                parser.parse_reference,
+                u"au deuxième alinéa de l'article L. 42, le mot : \"test\""
+            ),
+            {'children':[
+                {
+                    'type': u'alinea-reference',
+                    'order': 2,
+                    'children': [
+                        {
+                            'type': u'article-reference',
+                            'id': u'L. 42',
+                            'children': [
+                                {
+                                    'type': u'word-reference',
+                                    'children': [
+                                        {
+                                            'type': u'quote',
+                                            'words': u'test'
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]}
+        )
+
+    def test_alinea_ref_article_ref_law_ref_word_ref(self):
+        self.assertEqualAST(
+            self.call_parse_func(
+                parser.parse_reference,
+                u"au deuxième alinéa de l'article L. 42 de la loi n° 77-729, le mot : \"test\""
+            ),
+            {'children':[
+                {
+                    'type': u'alinea-reference',
+                    'order': 2,
+                    'children': [
+                        {
+                            'type': u'article-reference',
+                            'id': u'L. 42',
+                            'children': [
+                                {
+                                    'type': u'law-reference',
+                                    'lawId': u'77-729',
+                                    'children': [
+                                        {
+                                            'type': u'word-reference',
+                                            'children': [
+                                                {
+                                                    'type': u'quote',
+                                                    'words': u'test'
+                                                }
+                                            ]
+                                        }
+                                    ]
+
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]}
+        )
