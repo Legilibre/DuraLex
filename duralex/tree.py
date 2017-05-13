@@ -154,3 +154,18 @@ def is_reference(node):
 
 def is_root(node):
     return 'parent' not in node
+
+def get_node_descendants(node):
+    return filter_nodes(node, lambda n: True)
+
+def get_node_ancestors(node):
+    a = []
+
+    if 'parent' not in node:
+        return a
+
+    node = node['parent']
+    while node and 'type' in node:
+        a.append(node)
+        node = node['parent'] if 'parent' in node else None
+    return a
