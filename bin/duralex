@@ -22,6 +22,7 @@ from duralex.SortReferencesVisitor import SortReferencesVisitor
 from duralex.ResolveFullyQualifiedReferencesVisitor import ResolveFullyQualifiedReferencesVisitor
 from duralex.ResolveFullyQualifiedDefinitionsVisitor import ResolveFullyQualifiedDefinitionsVisitor
 from duralex.RemoveQuotePrefixVisitor import RemoveQuotePrefixVisitor
+from duralex.FixMissingCodeOrLawReferenceVisitor import FixMissingCodeOrLawReferenceVisitor
 from duralex.SwapDefinitionAndReferenceVisitor import SwapDefinitionAndReferenceVisitor
 
 def decode(data):
@@ -63,6 +64,7 @@ def handle_data(data, args):
     ForkReferenceVisitor().visit(tree)
     ResolveFullyQualifiedDefinitionsVisitor().visit(tree)
     ResolveFullyQualifiedReferencesVisitor().visit(tree)
+    FixMissingCodeOrLawReferenceVisitor().visit(tree)
     SortReferencesVisitor().visit(tree)
     SwapDefinitionAndReferenceVisitor().visit(tree)
     RemoveQuotePrefixVisitor().visit(tree)
