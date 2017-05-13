@@ -85,6 +85,8 @@ re_clean_coord = re.compile(ur'^["\(]*(pour)?\s*coordination[\)\s\.]*$', re.I)
 lower_inner_title = lambda x: x.group(1)+lower_but_first(x.group(3))+" "
 html_replace = [
     (re_clean_spaces, " "),
+    (re.compile(ur"\s*\n+\s*"), " "),
+    (re.compile(ur'</p><p>'), u'\n'),
     (re.compile(ur"−"), "-"),
     (re.compile(ur" "), " "),
     (re.compile(ur"<!--.*?-->", re.I), ""),
@@ -97,7 +99,6 @@ html_replace = [
     (re.compile(ur"(</?)em>", re.I), r"\1i>"),
     (re.compile(ur"(</?)strong>", re.I), r"\1b>"),
     (re.compile(ur"<(![^>]*|/?(p|span))>", re.I), ""),
-    (re.compile(ur"\s*\n+\s*"), " "),
     (re.compile(ur"<[^>]*></[^>]*>"), ""),
     (re.compile(ur"^<b><i>", re.I), "<i><b>"),
     (re.compile(ur"</b>(\s*)<b>", re.I), r"\1"),
