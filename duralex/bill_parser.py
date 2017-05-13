@@ -9,6 +9,8 @@ from bs4 import BeautifulSoup
 
 from alinea_parser import word_to_number, month_to_number
 
+import duralex.tree
+
 bister = u'(un|duo|tre|bis|qua|quin[tqu]*|sex|sept|octo?|novo?|non|dec|vic|ter|ies)+'
 
 ORDER = ''
@@ -237,9 +239,6 @@ def parse_bill(string, url):
     is_html = string.find('<html>') == 0 or string.find('<?xml version="1.0" encoding="UTF-8"?>') == 0
     lines = soup.body.find_all('p') if is_html else string.split(u'\n')
 
-    if is_html:
-        texte["type"] = (re_clean_title_legif.sub('', soup.title.string.strip()) if soup.title else "").lower()
-
     for line in lines:
         line = clean_html(line.text if is_html else line)
 
@@ -259,8 +258,10 @@ def parse_bill(string, url):
             texte['date'] = match.group(5) + '-' + str(month_to_number(match.group(4))) + '-' + match.group(3)
             texte['place'] = match.group(2).lower()
 
-        if line == 'PROPOSITION DE LOI':
-            texte['type'] = line.lower()
+        if line == u'PROPOSITION DE LOI':
+            texte['type'] = duralex.tree.TYPE_LAW_PROPOSAL
+        elif line == u'PROJET DE LOI':
+            texte['type'] = duralex.tree.TYPE_LAW_PROJECT
 
         if 'description' not in texte and line in [u'PROPOSITION DE LOI', u'PROJET DE LOI']:
             texte['description'] = line.lower()

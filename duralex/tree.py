@@ -9,6 +9,8 @@ TYPE_ARTICLE    = 'article'
 TYPE_AMENDMENT  = 'amendment'
 TYPE_EDIT       = 'edit'
 TYPE_QUOTE      = 'quote'
+TYPE_LAW_PROJECT    = u'law-project'
+TYPE_LAW_PROPOSAL   = u'law-proposal'
 
 TYPE_TITLE_DEFINITION           = 'title-definition'
 TYPE_ARTICLE_DEFINITION         = 'article-definition'
