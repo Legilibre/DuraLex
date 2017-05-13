@@ -22,6 +22,7 @@ from duralex.SortReferencesVisitor import SortReferencesVisitor
 from duralex.ResolveFullyQualifiedReferencesVisitor import ResolveFullyQualifiedReferencesVisitor
 from duralex.ResolveFullyQualifiedDefinitionsVisitor import ResolveFullyQualifiedDefinitionsVisitor
 from duralex.RemoveQuotePrefixVisitor import RemoveQuotePrefixVisitor
+from duralex.SwapDefinitionAndReferenceVisitor import SwapDefinitionAndReferenceVisitor
 
 def decode(data):
     try:
@@ -63,6 +64,7 @@ def handle_data(data, args):
     ResolveFullyQualifiedDefinitionsVisitor().visit(tree)
     ResolveFullyQualifiedReferencesVisitor().visit(tree)
     SortReferencesVisitor().visit(tree)
+    SwapDefinitionAndReferenceVisitor().visit(tree)
     RemoveQuotePrefixVisitor().visit(tree)
 
     if not args.uuid:
