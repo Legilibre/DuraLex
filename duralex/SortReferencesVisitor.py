@@ -23,8 +23,11 @@ class SortReferencesVisitor(AbstractVisitor):
             for ref in sorted_refs:
                 if 'parent' in ref:
                     remove_node(ref['parent'], ref)
-                    if ref['type'] != filtered_refs[-1]['type']:
-                        filtered_refs.append(ref)
+                    # the deepest *-reference of the same type wins
+                    # FIXME: should we raise because we're not supposed to have the same *-reference twice?
+                    if ref['type'] == filtered_refs[-1]['type']:
+                        filtered_refs.pop()
+                    filtered_refs.append(ref)
             for i in range(0, len(filtered_refs)):
                 ref = filtered_refs[i]
                 if i == 0:
