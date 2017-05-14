@@ -32,45 +32,34 @@ def parse_amendment(data, parent):
         'content': text,
         'status': AMENDMENT_STATUS[data['sort'].lower()],
         'description': clean_html(data['expose']),
-        'signatories': [s.strip() for s in data['signataires'].split(', ')]
+        'signatories': [{'name': s.strip()} for s in data['signataires'].split(', ')],
+        'url': data['source']
     })
 
-    # The "subject" declares the article referenced by the admendment as a whole.
-    # We create a "fake" 'edit' node with the corresponding 'article-reference' node
-    # and the ResolveFullyQualifiedReferencesVisitor will take care of properly transforming this:
-    #
-    # - amendment
-    #   - edit <- our "fake" 'edit' node
-    #     - article-reference <- the 'article-reference' node coming from the "subject"
-    #   - edit <- the actual 'edit' node coming from the admendment text
-    #     - *-reference
-    #
-    # into this:
-    #
-    # - amendment
-    #   - edit <- the actual 'edit' node coming from the admendment text
-    #     - article-reference <- the 'article-reference' node coming from the "subject"
-    #       - *-reference
-    # fake_edit = create_node(node, {'type': 'edit', 'editType': 'edit'})
-    # parse_subject(tokens, 0, fake_edit)
+    # The "subject" declares the target bill article reference for this admendment.
+    # That reference will be referenced later on using syntaxes such as "cet article" ("this article").
+    parse_subject(tokens, 0, node)
     parse_alineas(node['content'], node)
+    # If the admendment content actually need that bill article reference, they already have it copied by now.
+    # So we simply we remove it.
+    remove_node(node, node['children'][0])
 
     return node
 
 def parse_subject(tokens, i, parent):
     node = create_node(parent, {
-        'type': 'article-reference'
+        'type': TYPE_BILL_ARTICLE_REFERENCE
     })
 
     i = parse_ref_position(tokens, i, node)
 
     # ART. PREMIER
     if tokens[i] == 'ART' and is_number_word(tokens[i + 3]):
-        node['id'] = str(word_to_number(tokens[i + 3]))
+        node['order'] = word_to_number(tokens[i + 3])
         i += lexer.skip_to_end_of_line(tokens, i)
-    # ART. {id}
+    # ART. {order}
     elif tokens[i] == 'ART' and is_number(tokens[i + 3]):
-        node['id'] = tokens[i + 3]
+        node['order'] = parse_int(tokens[i + 3])
         i += lexer.skip_to_end_of_line(tokens, i)
 
     return i

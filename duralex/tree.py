@@ -2,54 +2,57 @@
 
 import uuid
 
-TYPE_HEADER1    = 'header1'
-TYPE_HEADER2    = 'header2'
-TYPE_HEADER3    = 'header3'
-TYPE_ARTICLE    = 'article'
-TYPE_AMENDMENT  = 'amendment'
-TYPE_EDIT       = 'edit'
-TYPE_QUOTE      = 'quote'
+TYPE_HEADER1        = u'header1'
+TYPE_HEADER2        = u'header2'
+TYPE_HEADER3        = u'header3'
+TYPE_BILL_ARTICLE   = u'bill-article'
+TYPE_AMENDMENT      = u'amendment'
+TYPE_EDIT           = u'edit'
+TYPE_QUOTE          = u'quote'
 TYPE_LAW_PROJECT    = u'law-project'
 TYPE_LAW_PROPOSAL   = u'law-proposal'
 
-TYPE_TITLE_DEFINITION           = 'title-definition'
-TYPE_ARTICLE_DEFINITION         = 'article-definition'
-TYPE_HEADER1_DEFINITION         = 'header1-definition'
-TYPE_HEADER2_DEFINITION         = 'header2-definition'
-TYPE_HEADER3_DEFINITION         = 'header3-definition'
-TYPE_SUBPARAGRAPH_DEFINITION    = 'subparagraph-definition'
-TYPE_ALINEA_DEFINITION          = 'alinea-definition'
-TYPE_SENTENCE_DEFINITION        = 'sentence-definition'
-TYPE_MENTION_DEFINITION         = 'mention-definition'
-TYPE_WORD_DEFINITION            = 'word-definition'
+TYPE_TITLE_DEFINITION           = u'title-definition'
+TYPE_ARTICLE_DEFINITION         = u'article-definition'
+TYPE_HEADER1_DEFINITION         = u'header1-definition'
+TYPE_HEADER2_DEFINITION         = u'header2-definition'
+TYPE_HEADER3_DEFINITION         = u'header3-definition'
+TYPE_SUBPARAGRAPH_DEFINITION    = u'subparagraph-definition'
+TYPE_ALINEA_DEFINITION          = u'alinea-definition'
+TYPE_SENTENCE_DEFINITION        = u'sentence-definition'
+TYPE_MENTION_DEFINITION         = u'mention-definition'
+TYPE_WORD_DEFINITION            = u'word-definition'
 
 TYPE_DEFINITION = [
+    TYPE_TITLE_DEFINITION,
     TYPE_ARTICLE_DEFINITION,
     TYPE_HEADER1_DEFINITION,
     TYPE_HEADER2_DEFINITION,
     TYPE_HEADER3_DEFINITION,
+    TYPE_SUBPARAGRAPH_DEFINITION,
     TYPE_ALINEA_DEFINITION,
     TYPE_SENTENCE_DEFINITION,
     TYPE_WORD_DEFINITION,
 ]
 
-TYPE_CODE_REFERENCE         = 'code-reference'
-TYPE_CODE_PART_REFERENCE    = 'code-part-reference'
-TYPE_BOOK_REFERENCE         = 'book-reference'
-TYPE_LAW_REFERENCE          = 'law-reference'
-TYPE_TITLE_REFERENCE        = 'title-reference'
-TYPE_CHAPTER_REFERENCE      = 'chapter-reference'
-TYPE_SECTION_REFERENCE      = 'section-reference'
-TYPE_SUBSECTION_REFERENCE   = 'subsection-reference'
-TYPE_PARAGRAPH_REFERENCE    = 'paragraph-reference'
-TYPE_ARTICLE_REFERENCE      = 'article-reference'
-TYPE_HEADER1_REFERENCE      = 'header1-reference'
-TYPE_HEADER2_REFERENCE      = 'header2-reference'
-TYPE_HEADER3_REFERENCE      = 'header3-reference'
-TYPE_ALINEA_REFERENCE       = 'alinea-reference'
-TYPE_SENTENCE_REFERENCE     = 'sentence-reference'
-TYPE_WORD_REFERENCE         = 'word-reference'
-TYPE_INCOMPLETE_REFERENCE   = 'incomplete-reference'
+TYPE_BILL_ARTICLE_REFERENCE = u'bill-article-reference'
+TYPE_CODE_REFERENCE         = u'code-reference'
+TYPE_CODE_PART_REFERENCE    = u'code-part-reference'
+TYPE_BOOK_REFERENCE         = u'book-reference'
+TYPE_LAW_REFERENCE          = u'law-reference'
+TYPE_TITLE_REFERENCE        = u'title-reference'
+TYPE_CHAPTER_REFERENCE      = u'chapter-reference'
+TYPE_SECTION_REFERENCE      = u'section-reference'
+TYPE_SUBSECTION_REFERENCE   = u'subsection-reference'
+TYPE_PARAGRAPH_REFERENCE    = u'paragraph-reference'
+TYPE_ARTICLE_REFERENCE      = u'article-reference'
+TYPE_HEADER1_REFERENCE      = u'header1-reference'
+TYPE_HEADER2_REFERENCE      = u'header2-reference'
+TYPE_HEADER3_REFERENCE      = u'header3-reference'
+TYPE_ALINEA_REFERENCE       = u'alinea-reference'
+TYPE_SENTENCE_REFERENCE     = u'sentence-reference'
+TYPE_WORD_REFERENCE         = u'word-reference'
+TYPE_INCOMPLETE_REFERENCE   = u'incomplete-reference'
 
 TYPE_REFERENCE = [
     TYPE_CODE_REFERENCE,
@@ -69,6 +72,7 @@ TYPE_REFERENCE = [
     TYPE_SENTENCE_REFERENCE,
     TYPE_WORD_REFERENCE,
     TYPE_INCOMPLETE_REFERENCE,
+    TYPE_BILL_ARTICLE_REFERENCE,
 ]
 
 def unshift_node(parent, node):

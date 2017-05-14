@@ -9,7 +9,7 @@ import duralex.tree
 from duralex.tree import *
 
 def debug(node, tokens, i, msg):
-    if '-v' in sys.argv:
+    if '--debug' in sys.argv:
         print('    ' * get_node_depth(node) + msg + ' ' + str(tokens[i:i+8]))
 
 def is_number(token):
@@ -641,7 +641,7 @@ def parse_header3_definition(tokens, i, parent):
 def parse_article_id(tokens, i, node):
     node['id'] = ''
 
-    # article {articleId} de {lawReference}
+    # article {articleId}
     if i < len(tokens) and tokens[i] == 'L' and tokens[i + 1] == '.':
         while not re.compile('\d+(-\d+)?').match(tokens[i]):
             node['id'] += tokens[i]
@@ -812,6 +812,27 @@ def parse_scope(tokens, i, parent):
 
     return i
 
+def parse_bill_article_reference(tokens, i, parent):
+    if i >= len(tokens):
+        return i
+
+    debug(parent, tokens, i, 'parse_bill_article_reference')
+
+    # cet article
+    if tokens[i] == u'cet' and tokens[i + 2] == u'article':
+        i += 4
+        article_refs = filter_nodes(
+            get_root(parent),
+            lambda n: 'type' in n and n['type'] == TYPE_BILL_ARTICLE_REFERENCE
+        )
+        # the last one in order of traversal is the previous one in order of syntax
+        article_ref = copy_node(article_refs[-1])
+        push_node(parent, article_ref)
+
+    debug(parent, tokens, i, 'parse_bill_article_reference end')
+
+    return i
+
 def parse_article_reference(tokens, i, parent):
     if i >= len(tokens):
         return i
@@ -893,7 +914,7 @@ def parse_article_reference(tokens, i, parent):
             get_root(parent),
             lambda n: 'type' in n and n['type'] == TYPE_ARTICLE_REFERENCE
         )
-        # the lduralex.tree.one in order of traversal is the previous one in order of syntax
+        # the last one in order of traversal is the previous one in order of syntax
         # don't forget the current node is in the list too => -2 instead of -1
         article_ref = copy_node(article_refs[-2])
         push_node(parent, article_ref)
@@ -1360,6 +1381,13 @@ def parse_edit(tokens, i, parent):
 
     debug(parent, tokens, i, 'parse_edit')
 
+    # Supprimer {reference}
+    if tokens[i] == u'Supprimer':
+        i += 2
+        node['editType'] = 'delete'
+        i = parse_reference(tokens, i, node)
+        return i
+
     r = i
     # i = parse_for_each(parse_reference, tokens, i, node)
     i = parse_reference_list(tokens, i, node)
@@ -1465,7 +1493,7 @@ def parse_edit(tokens, i, parent):
 
     # We've parsed pretty much everything we could handle. At this point,
     # there should be no meaningful content. But their might be trailing
-    # spaces or ponctuation (ofent "." or ";"), so we alinea_lexer.skip_ to the end of
+    # spaces or ponctuation (often "." or ";"), so we skip to the end of
     # the line.
     i = alinea_lexer.skip_to_end_of_line(tokens, i)
 
@@ -1621,7 +1649,8 @@ def parse_reference(tokens, i, parent):
             parse_back_reference,
             parse_incomplete_reference,
             parse_alinea_reference,
-            parse_word_reference
+            parse_word_reference,
+            parse_bill_article_reference,
         ],
         tokens,
         i,
@@ -1777,7 +1806,7 @@ def parse_bill_articles(data, parent):
 
 def parse_bill_article(data, parent):
     node = create_node(parent, {
-        'type': TYPE_ARTICLE,
+        'type': TYPE_BILL_ARTICLE,
         'order': 1,
         'isNew': False
     })
@@ -1803,15 +1832,3 @@ def parse(data, tree):
     # tree = create_node(tree, {'type': 'articles'})
     parse_bill_articles(data, tree)
     return tree
-
-def get_node_ancestors(node):
-    a = []
-
-    if 'parent' not in node:
-        return a
-
-    node = node['parent']
-    while node and 'type' in node:
-        a.append(node)
-        node = node['parent'] if 'parent' in node else None
-    return a
