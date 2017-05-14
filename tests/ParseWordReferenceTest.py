@@ -101,6 +101,26 @@ class ParseWordReferenceTest(DuralexTestCase):
             ]}
         )
 
+    def test_after_word(self):
+        self.assertEqualAST(
+            self.call_parse_func(
+                parser.parse_word_reference,
+                u"Après le mot : \"candidats\""
+            ),
+            {'children':[
+                {
+                    'type': u'word-reference',
+                    'position': u'after',
+                    'children': [
+                        {
+                            'type': u'quote',
+                            'words': u'candidats'
+                        }
+                    ]
+                }
+            ]}
+        )
+
     def test_words_reference_position_in_article(self):
         self.assertEqualAST(
             self.call_parse_func(

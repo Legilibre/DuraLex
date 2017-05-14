@@ -140,3 +140,25 @@ class SortReferencesVisitorTest(DuralexTestCase):
                 }
             ]}
         )
+
+    def test_article_ref_article_ref(self):
+        self.assertEqualAST(
+            self.call_visitor(SortReferencesVisitor, {'children': [
+                {
+                    'type': u'article-reference',
+                    'id': u'11',
+                    'children': [
+                        {
+                            'type': u'article-reference',
+                            'id': u'42'
+                        }
+                    ]
+                }
+            ]}),
+            {'children': [
+                {
+                    'type': u'article-reference',
+                    'id': u'42'
+                }
+            ]}
+        )
