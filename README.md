@@ -92,7 +92,7 @@ will give the following intermediary representation:
                 }
               ],
               "lawDate": "1978-7-17",
-              "lawId": "78-753",
+              "id": "78-753",
               "type": "law-reference"
             }
           ],
