@@ -384,6 +384,7 @@ def parse_word_definition(tokens, i, parent):
 
     j = i
     i = parse_position(tokens, i, node)
+    i = parse_scope(tokens, i, node)
     # le mot
     # les mots
     # des mots
@@ -680,6 +681,7 @@ def parse_title_reference(tokens, i, parent):
 
     j = i
     i = parse_position(tokens, i, node)
+    i = parse_scope(tokens, i, node)
 
     # le titre {order}
     # du titre {order}
@@ -741,6 +743,7 @@ def parse_code_part_reference(tokens, i, parent):
 
     j = i
     i = parse_position(tokens, i, node)
+    i = parse_scope(tokens, i, node)
 
     # la {order} partie [{codeReference}]
     if tokens[i] == u'la' and is_number_word(tokens[i + 2]) and tokens[i + 4] == u'partie':
@@ -774,6 +777,7 @@ def parse_book_reference(tokens, i, parent):
 
     j = i
     i = parse_position(tokens, i, node)
+    i = parse_scope(tokens, i, node)
 
     # le livre {order}
     # du livre {order}
@@ -791,6 +795,23 @@ def parse_book_reference(tokens, i, parent):
 
     return i
 
+def parse_scope(tokens, i, parent):
+    if i >= len(tokens):
+        return i
+
+    debug(parent, tokens, i, 'parse_scope')
+
+    node = None
+
+    # la fin de
+    if tokens[i] == u'la' and tokens[i + 2] == u'fin' and tokens[i + 4] in [u'de', u'du']:
+        i += 4
+        parent['scope'] = 'end'
+
+    debug(parent, tokens, i, 'parse_scope end')
+
+    return i
+
 def parse_article_reference(tokens, i, parent):
     if i >= len(tokens):
         return i
@@ -803,6 +824,7 @@ def parse_article_reference(tokens, i, parent):
 
     j = i
     i = parse_position(tokens, i, node)
+    i = parse_scope(tokens, i, node)
     # de l'article
     # à l'article
     if tokens[i].lower() in [u'de', u'à'] and tokens[i + 2] == u'l' and tokens[i + 4] == u'article':
@@ -923,10 +945,6 @@ def parse_position(tokens, i, node):
     elif tokens[i].lower() == u'au' and tokens[i + 2] == u'début':
         node['position'] = 'beginning'
         i += 4
-    # la fin du {article}
-    elif tokens[i] == u'la' and tokens[i + 2] == u'fin':
-        node['position'] = 'end'
-        i += 4
     # à la fin du {article}
     elif tokens[i].lower() == u'à' and tokens[i + 2] == u'la' and tokens[i + 4] == u'fin':
         node['position'] = 'end'
@@ -947,6 +965,7 @@ def parse_alinea_reference(tokens, i, parent):
 
     j = i
     i = parse_position(tokens, i, node)
+    i = parse_scope(tokens, i, node)
     # le {order} alinéa
     # du {order} alinéa
     # au {order} alinéa
@@ -1050,6 +1069,7 @@ def parse_sentence_reference(tokens, i, parent):
 
     j = i
     i = parse_position(tokens, i, node)
+    i = parse_scope(tokens, i, node)
     # une phrase
     # la phrase
     if tokens[i].lower() in [u'la', u'une'] and tokens[i + 2] == 'phrase':
@@ -1117,6 +1137,7 @@ def parse_incomplete_reference(tokens, i, parent):
     })
     j = i
     i = parse_position(tokens, i, node)
+    i = parse_scope(tokens, i, node)
     if tokens[i].lower() == u'à' and tokens[i + 2] in [u'le', u'la'] and is_number_word(tokens[i + 4]):
         node['order'] = word_to_number(tokens[i + 4])
         i += 6
@@ -1139,6 +1160,7 @@ def parse_word_reference(tokens, i, parent):
     j = i
     i = alinea_lexer.skip_to_next_word(tokens, i)
     i = parse_position(tokens, i, node)
+    i = parse_scope(tokens, i, node)
     # le mot
     # les mots
     # des mots
@@ -1175,6 +1197,7 @@ def parse_header2_reference(tokens, i, parent):
     debug(parent, tokens, i, 'parse_header2_reference')
     j = i
     i = parse_position(tokens, i, node)
+    i = parse_scope(tokens, i, node)
 
     # le {order}° ({multiplicativeAdverb}) ({articlePartRef})
     # du {order}° ({multiplicativeAdverb}) ({articlePartRef})
@@ -1210,6 +1233,7 @@ def parse_header3_reference(tokens, i, parent):
     debug(parent, tokens, i, 'parse_header3_reference')
     j = i
     i = parse_position(tokens, i, node)
+    i = parse_scope(tokens, i, node)
 
     # le {orderLetter} ({articlePartRef})
     # du {orderLetter} ({articlePartRef})
@@ -1244,6 +1268,7 @@ def parse_header1_reference(tokens, i, parent):
     debug(parent, tokens, i, 'parse_header1_reference')
     j = i
     i = parse_position(tokens, i, node)
+    i = parse_scope(tokens, i, node)
     # le {romanPartNumber}
     # du {romanPartNumber}
     # un {romanPartNumber}

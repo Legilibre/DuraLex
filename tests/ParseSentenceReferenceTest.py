@@ -93,16 +93,16 @@ class ParseSentenceReferenceTest(DuralexTestCase):
             ]}
         )
 
-    def test_after_the_nth_sentence(self):
+    def test_the_end_of_the_nth_sentence(self):
         self.assertEqualAST(
             self.call_parse_func(
                 parser.parse_sentence_reference,
-                u"après la première phrase"
+                u"la fin de la première phrase"
             ),
             {'children':[
                 {
                     'type': u'sentence-reference',
-                    'position': u'after',
+                    'scope': 'end',
                     'order': 1,
                 }
             ]}

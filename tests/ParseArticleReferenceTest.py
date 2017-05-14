@@ -262,3 +262,18 @@ class ParseArticleReferenceTest(DuralexTestCase):
                 }
             ]}
         )
+
+    def test_the_end_of_article_number(self):
+        self.assertEqualAST(
+            self.call_parse_func(
+                parser.parse_article_reference,
+                "la fin de l'article 3"
+            ),
+            {'children':[
+                {
+                    'scope': 'end',
+                    'type': u'article-reference',
+                    'id': u'3'
+                }
+            ]}
+        )

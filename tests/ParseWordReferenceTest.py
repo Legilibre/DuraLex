@@ -118,8 +118,8 @@ class ParseWordReferenceTest(DuralexTestCase):
                         },
                         {
                             'type': u'article-reference',
-                            'position': u'end',
                             'id': u'L. 112-3',
+                            'scope': 'end',
                             'children': [
                                 {
                                     'type': u'code-reference',
