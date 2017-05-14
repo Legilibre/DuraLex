@@ -13,7 +13,7 @@ class ParseCodeReferenceTest(DuralexTestCase):
             ),
             {'children':[
                 {
-                    'codeName': u'code de l\'éducation',
+                    'id': u'code de l\'éducation',
                     'type': u'code-reference'
                 }
             ]}
@@ -27,7 +27,7 @@ class ParseCodeReferenceTest(DuralexTestCase):
             ),
             {'children':[
                 {
-                    'codeName': u'code de l\'éducation',
+                    'id': u'code de l\'éducation',
                     'type': u'code-reference'
                 }
             ]}
@@ -40,18 +40,18 @@ class ParseCodeReferenceTest(DuralexTestCase):
                 "le même code",
                 {'children':[
                     {
-                        'codeName': u'code de l\'éducation',
+                        'id': u'code de l\'éducation',
                         'type': u'code-reference'
                     }
                 ]}
             ),
             {'children':[
                 {
-                    'codeName': u'code de l\'éducation',
+                    'id': u'code de l\'éducation',
                     'type': u'code-reference'
                 },
                 {
-                    'codeName': u'code de l\'éducation',
+                    'id': u'code de l\'éducation',
                     'type': u'code-reference'
                 }
             ]}
@@ -64,18 +64,18 @@ class ParseCodeReferenceTest(DuralexTestCase):
                 "du même code",
                 {'children':[
                     {
-                        'codeName': u'code de l\'éducation',
+                        'id': u'code de l\'éducation',
                         'type': u'code-reference'
                     }
                 ]}
             ),
             {'children':[
                 {
-                    'codeName': u'code de l\'éducation',
+                    'id': u'code de l\'éducation',
                     'type': u'code-reference'
                 },
                 {
-                    'codeName': u'code de l\'éducation',
+                    'id': u'code de l\'éducation',
                     'type': u'code-reference'
                 }
             ]}

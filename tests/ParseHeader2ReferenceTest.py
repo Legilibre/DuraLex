@@ -48,7 +48,7 @@ class ParseHeader2ReferenceTest(DuralexTestCase):
                         {
                             'children': [
                                 {
-                                    'codeName': u'code de l\'éducation',
+                                    'id': u'code de l\'éducation',
                                     'type': u'code-reference'
                                 }
                             ],

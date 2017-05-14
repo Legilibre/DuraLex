@@ -59,7 +59,7 @@ class ParseArticleReferenceTest(DuralexTestCase):
                     'id': u'11',
                     'children': [
                         {
-                            'lawId': u'78-753',
+                            'id': u'78-753',
                             'type': u'law-reference',
                         }
                     ]
@@ -80,7 +80,7 @@ class ParseArticleReferenceTest(DuralexTestCase):
                     'children': [
                         {
                             'lawDate': u'1978-7-17',
-                            'lawId': u'78-753',
+                            'id': u'78-753',
                             'type': u'law-reference',
                         }
                     ]
@@ -100,7 +100,7 @@ class ParseArticleReferenceTest(DuralexTestCase):
                     'type': u'article-reference',
                     'children': [
                         {
-                            'codeName': u'code de l\'éducation',
+                            'id': u'code de l\'éducation',
                             'type': u'code-reference'
                         }
                     ]
@@ -163,14 +163,14 @@ class ParseArticleReferenceTest(DuralexTestCase):
                 u"l'article L. 123-2 du même code",
                 {'children':[
                     {
-                        'codeName': u'code de l\'éducation',
+                        'id': u'code de l\'éducation',
                         'type': u'code-reference'
                     }
                 ]}
             ),
             {'children': [
                 {
-                    'codeName': u'code de l\'éducation',
+                    'id': u'code de l\'éducation',
                     'type': u'code-reference'
                 },
                 {
@@ -178,7 +178,7 @@ class ParseArticleReferenceTest(DuralexTestCase):
                     'type': u'article-reference',
                     'children': [
                         {
-                            'codeName': u'code de l\'éducation',
+                            'id': u'code de l\'éducation',
                             'type': u'code-reference'
                         }
                     ]
@@ -236,7 +236,7 @@ class ParseArticleReferenceTest(DuralexTestCase):
                     'children': [
                         {
                             'type': u'code-reference',
-                            'codeName': u'code de l\'éducation'
+                            'id': u'code de l\'éducation'
                         }
                     ]
                 },
@@ -246,7 +246,7 @@ class ParseArticleReferenceTest(DuralexTestCase):
                     'children': [
                         {
                             'type': u'code-reference',
-                            'codeName': u'code de l\'éducation'
+                            'id': u'code de l\'éducation'
                         }
                     ]
                 },
@@ -256,7 +256,7 @@ class ParseArticleReferenceTest(DuralexTestCase):
                     'children': [
                         {
                             'type': u'code-reference',
-                            'codeName': u'code de l\'éducation'
+                            'id': u'code de l\'éducation'
                         }
                     ]
                 }

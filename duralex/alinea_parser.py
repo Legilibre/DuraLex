@@ -225,7 +225,7 @@ def parse_law_reference(tokens, i, parent):
 
     node = create_node(parent, {
         'type': TYPE_LAW_REFERENCE,
-        'lawId': '',
+        'id': '',
         'children': [],
     })
 
@@ -261,15 +261,15 @@ def parse_law_reference(tokens, i, parent):
         node['lawType'] = 'organic'
         i += 2
 
-    if node['lawId'] == '':
+    if node['id'] == '':
         i = alinea_lexer.skip_to_token(tokens, i, u'n°') + 1
         # If we didn't find the "n°" token, the reference is incomplete and we forget about it.
         if i >= len(tokens):
             remove_node(parent, node)
             return j
         i = alinea_lexer.skip_spaces(tokens, i)
-        node['lawId'] = tokens[i]
-        # skip {lawId} and the following space
+        node['id'] = tokens[i]
+        # skip {id} and the following space
         i += 2
 
     if i < len(tokens) and tokens[i] == u'du':
@@ -1470,9 +1470,9 @@ def parse_raw_article_content(tokens, i, parent):
 
 def parse_code_name(tokens, i, node):
     while i < len(tokens) and tokens[i] != u',' and tokens[i] != u'est':
-        node['codeName'] += tokens[i]
+        node['id'] += tokens[i]
         i += 1
-    node['codeName'] = node['codeName'].strip()
+    node['id'] = node['id'].strip()
     return i
 
 # Parse a reference to a specific or aforementioned code.
@@ -1484,7 +1484,7 @@ def parse_code_reference(tokens, i, parent):
 
     node = create_node(parent, {
         'type': TYPE_CODE_REFERENCE,
-        'codeName': '',
+        'id': '',
     })
 
     debug(parent, tokens, i, 'parse_code_reference')
@@ -1511,7 +1511,7 @@ def parse_code_reference(tokens, i, parent):
         # skip "le même code "
         i += 6
 
-    if node['codeName'] == '' or is_space(node['codeName']):
+    if node['id'] == '' or is_space(node['id']):
         remove_node(parent, node)
     else:
         i = parse_reference(tokens, i, node)

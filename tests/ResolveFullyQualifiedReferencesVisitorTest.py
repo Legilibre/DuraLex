@@ -13,7 +13,7 @@ class ResolveFullyQualifiedReferencesVisitorTest(DuralexTestCase):
                     'type': u'edit',
                     'children': [
                         {
-                            'codeName': u'code de l\'éducation',
+                            'id': u'code de l\'éducation',
                             'type': u'code-reference'
                         }
                     ]
@@ -49,7 +49,7 @@ class ResolveFullyQualifiedReferencesVisitorTest(DuralexTestCase):
                     'type': u'edit',
                     'children': [
                         {
-                            'codeName': u'code de l\'éducation',
+                            'id': u'code de l\'éducation',
                             'type': u'code-reference',
                             'children': [
                                 {
@@ -89,7 +89,7 @@ class ResolveFullyQualifiedReferencesVisitorTest(DuralexTestCase):
                             'type': u'article-reference',
                             'children': [
                                 {
-                                    'codeName': u'code de l\'éducation',
+                                    'id': u'code de l\'éducation',
                                     'type': u'code-reference'
                                 }
                             ]
@@ -127,7 +127,7 @@ class ResolveFullyQualifiedReferencesVisitorTest(DuralexTestCase):
                     'type': u'edit',
                     'children': [
                         {
-                            'codeName': u'code de l\'éducation',
+                            'id': u'code de l\'éducation',
                             'type': u'code-reference',
                             'children': [
                                 {
@@ -311,7 +311,7 @@ class ResolveFullyQualifiedReferencesVisitorTest(DuralexTestCase):
                                                 }
                                             ],
                                             'lawDate': u'1977-7-7',
-                                            'lawId': u'77-729',
+                                            'id': u'77-729',
                                             'type': u'law-reference'
                                         }
                                     ],
@@ -352,7 +352,7 @@ class ResolveFullyQualifiedReferencesVisitorTest(DuralexTestCase):
                                                 }
                                             ],
                                             'lawDate': u'1977-7-7',
-                                            'lawId': u'77-729',
+                                            'id': u'77-729',
                                             'type': u'law-reference'
                                         }
                                     ],

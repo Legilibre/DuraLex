@@ -84,7 +84,7 @@ class ParseSentenceReferenceTest(DuralexTestCase):
                             'children': [
                                 {
                                     'type': u'code-reference',
-                                    'codeName': u'code de la recherche'
+                                    'id': u'code de la recherche'
                                 }
                             ]
                         }

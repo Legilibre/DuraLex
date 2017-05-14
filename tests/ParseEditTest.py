@@ -91,7 +91,7 @@ class ParseEditTest(DuralexTestCase):
                             'children': [
                                 {
                                     'type': u'law-reference',
-                                    'lawId': u'77‑729'
+                                    'id': u'77‑729'
                                 }
                             ]
                         },
@@ -279,7 +279,7 @@ class ParseEditTest(DuralexTestCase):
                     'type': u'edit',
                     'children': [
                         {
-                            'codeName': u'code de l\'éducation',
+                            'id': u'code de l\'éducation',
                             'type': u'code-reference'
                         }
                     ]
@@ -536,6 +536,63 @@ class ParseEditTest(DuralexTestCase):
                         {
                             'type': u'article-reference',
                             'id': u'L. 123-4-1'
+                        }
+                    ]
+                }
+            ]}
+        )
+
+    def test_delete_alinea(self):
+        self.assertEqualAST(
+            self.call_parse_func(
+                parser.parse_edit,
+                u"le troisième alinéa est supprimé"
+            ),
+            {'children':[
+                {
+                    'type': u'edit',
+                    'editType': u'delete',
+                    'children': [
+                        {
+                            'type': u'alinea-reference',
+                            'order': 3
+                        }
+                    ]
+                }
+            ]}
+        )
+
+    def test_delete_end_of_last_sentence_after_word(self):
+        self.assertEqualAST(
+            self.call_parse_func(
+                parser.parse_edit,
+                u"Après le mot : \"candidats\", la fin de la première phrase du quatrième alinéa est supprimée."
+            ),
+            {'children':[
+                {
+                    'editType': 'delete',
+                    'type': 'edit',
+                    'children': [
+                        {
+                            'position': 'after',
+                            'type': 'word-reference',
+                            'children': [
+                                {
+                                    'type': 'quote',
+                                    'words': 'candidats'
+                                },
+                                {
+                                    'order': 1,
+                                    'scope': 'end',
+                                    'type': 'sentence-reference',
+                                    'children': [
+                                        {
+                                            'order': 4,
+                                            'type': 'alinea-reference'
+                                        }
+                                    ]
+                                }
+                            ]
                         }
                     ]
                 }

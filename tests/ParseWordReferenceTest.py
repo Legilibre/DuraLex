@@ -123,7 +123,7 @@ class ParseWordReferenceTest(DuralexTestCase):
                             'children': [
                                 {
                                     'type': u'code-reference',
-                                    'codeName': u'code de la recherche'
+                                    'id': u'code de la recherche'
                                 }
                             ]
                         }
@@ -205,7 +205,7 @@ class ParseWordReferenceTest(DuralexTestCase):
                             'children': [
                                 {
                                     'type': u'law-reference',
-                                    'lawId': u'77-729',
+                                    'id': u'77-729',
                                     'children': [
                                         {
                                             'type': u'word-reference',

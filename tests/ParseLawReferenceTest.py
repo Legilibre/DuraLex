@@ -14,7 +14,7 @@ class ParseLawReferenceTest(DuralexTestCase):
             {'children':[
                 {
                     'type': u'law-reference',
-                    'lawId': u'2008-1305',
+                    'id': u'2008-1305',
                     'lawDate': u'2008-12-11',
                     'lawType': u'ordonnance'
                 }
@@ -30,7 +30,7 @@ class ParseLawReferenceTest(DuralexTestCase):
             {'children':[
                 {
                     'type': u'law-reference',
-                    'lawId': u'2008-1305',
+                    'id': u'2008-1305',
                     'lawDate': u'2008-12-11',
                     'lawType': u'ordonnance'
                 }
@@ -46,7 +46,7 @@ class ParseLawReferenceTest(DuralexTestCase):
             {'children':[
                 {
                     'type': u'law-reference',
-                    'lawId': u'2007-1199'
+                    'id': u'2007-1199'
                 }
             ]}
         )
@@ -59,18 +59,18 @@ class ParseLawReferenceTest(DuralexTestCase):
                 {'children':[
                     {
                         'type': u'law-reference',
-                        'lawId': u'2007-1199'
+                        'id': u'2007-1199'
                     }
                 ]}
             ),
             {'children':[
                 {
                     'type': u'law-reference',
-                    'lawId': u'2007-1199'
+                    'id': u'2007-1199'
                 },
                 {
                     'type': u'law-reference',
-                    'lawId': u'2007-1199'
+                    'id': u'2007-1199'
                 }
             ]}
         )
@@ -83,18 +83,18 @@ class ParseLawReferenceTest(DuralexTestCase):
                 {'children':[
                     {
                         'type': u'law-reference',
-                        'lawId': u'2007-1199'
+                        'id': u'2007-1199'
                     }
                 ]}
             ),
             {'children':[
                 {
                     'type': u'law-reference',
-                    'lawId': u'2007-1199'
+                    'id': u'2007-1199'
                 },
                 {
                     'type': u'law-reference',
-                    'lawId': u'2007-1199',
+                    'id': u'2007-1199',
                     'children': [
                         {
                             'type': u'word-reference',
@@ -119,7 +119,7 @@ class ParseLawReferenceTest(DuralexTestCase):
             {'children':[
                 {
                     'type': u'law-reference',
-                    'lawId': u'2007-1199'
+                    'id': u'2007-1199'
                 }
             ]}
         )
@@ -133,7 +133,7 @@ class ParseLawReferenceTest(DuralexTestCase):
             {'children':[
                 {
                     'type': u'law-reference',
-                    'lawId': u'2007-1199',
+                    'id': u'2007-1199',
                     'lawDate': u'2007-8-10'
                 }
             ]}
@@ -148,7 +148,7 @@ class ParseLawReferenceTest(DuralexTestCase):
             {'children':[
                 {
                     'type': u'law-reference',
-                    'lawId': u'2007-1199',
+                    'id': u'2007-1199',
                     'lawDate': u'2007-8-10'
                 }
             ]}
@@ -164,12 +164,12 @@ class ParseLawReferenceTest(DuralexTestCase):
                 {
                     'type': u'law-reference',
                     'lawType': u'ordonnance',
-                    'lawId': u'2008-1305',
+                    'id': u'2008-1305',
                     'lawDate': u'2008-12-11',
                     'children': [
                         {
                             'type': u'code-reference',
-                            'codeName': u'code de la recherche'
+                            'id': u'code de la recherche'
                         }
                     ]
                 }

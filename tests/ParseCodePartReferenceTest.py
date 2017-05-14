@@ -18,7 +18,7 @@ class ParseCodePartReferenceTest(DuralexTestCase):
                     'children': [
                         {
                             'type': u'code-reference',
-                            'codeName': u'code de l\'éducation'
+                            'id': u'code de l\'éducation'
                         }
                     ]
                 }

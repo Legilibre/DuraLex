@@ -43,7 +43,7 @@ class ParseHeader1Test(DuralexTestCase):
                             'children': [
                                 {
                                     'type': u'code-reference',
-                                    'codeName': u'code de l\'éducation'
+                                    'id': u'code de l\'éducation'
                                 }
                             ]
                         }
@@ -107,7 +107,7 @@ class ParseHeader1Test(DuralexTestCase):
                             'children': [
                                 {
                                     'type': u'code-reference',
-                                    'codeName': u'code de l\'éducation'
+                                    'id': u'code de l\'éducation'
                                 }
                             ]
                         }

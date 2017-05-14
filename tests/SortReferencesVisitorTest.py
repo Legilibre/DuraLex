@@ -10,7 +10,7 @@ class SortReferencesVisitorTest(DuralexTestCase):
             self.call_visitor(SortReferencesVisitor, {'children': [
                 {
                     'lawDate': u'1978-7-17',
-                    'lawId': u'78-753',
+                    'id': u'78-753',
                     'type': u'law-reference',
                     'children': [
                         {
@@ -23,7 +23,7 @@ class SortReferencesVisitorTest(DuralexTestCase):
             {'children': [
                 {
                     'lawDate': u'1978-7-17',
-                    'lawId': u'78-753',
+                    'id': u'78-753',
                     'type': u'law-reference',
                     'children': [
                         {
@@ -44,7 +44,7 @@ class SortReferencesVisitorTest(DuralexTestCase):
                     'children': [
                         {
                             'lawDate': u'1978-7-17',
-                            'lawId': u'78-753',
+                            'id': u'78-753',
                             'type': u'law-reference',
                         }
                     ]
@@ -53,7 +53,7 @@ class SortReferencesVisitorTest(DuralexTestCase):
             {'children': [
                 {
                     'lawDate': u'1978-7-17',
-                    'lawId': u'78-753',
+                    'id': u'78-753',
                     'type': u'law-reference',
                     'children': [
                         {
