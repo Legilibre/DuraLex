@@ -1,21 +1,23 @@
+import duralex.tree as tree
+
 class AbstractVisitor(object):
     def __init__(self):
         self.visitors = {
-            'edit': self.visit_edit_node,
-            'code-reference': self.visit_code_reference_node,
-            'book-reference': self.visit_book_reference_node,
-            'law-reference': self.visit_law_reference_node,
-            'title-reference': self.visit_title_reference_node,
-            'article-reference': self.visit_article_reference_node,
-            'header1-reference': self.visit_header1_reference_node,
-            'header2-reference': self.visit_header2_reference_node,
-            'header3-reference': self.visit_header3_reference_node,
-            'alinea-reference': self.visit_alinea_reference_node,
-            'sentence-reference': self.visit_sentence_reference_node,
-            'words-reference': self.visit_words_reference_node,
-            'words': self.visit_words_definition_node,
+            tree.TYPE_EDIT: self.visit_edit_node,
+            tree.TYPE_CODE_REFERENCE: self.visit_code_reference_node,
+            tree.TYPE_BOOK_REFERENCE: self.visit_book_reference_node,
+            tree.TYPE_LAW_REFERENCE: self.visit_law_reference_node,
+            tree.TYPE_TITLE_REFERENCE: self.visit_title_reference_node,
+            tree.TYPE_ARTICLE_REFERENCE: self.visit_article_reference_node,
+            tree.TYPE_HEADER1_REFERENCE: self.visit_header1_reference_node,
+            tree.TYPE_HEADER2_REFERENCE: self.visit_header2_reference_node,
+            tree.TYPE_HEADER3_REFERENCE: self.visit_header3_reference_node,
+            tree.TYPE_ALINEA_REFERENCE: self.visit_alinea_reference_node,
+            tree.TYPE_SENTENCE_REFERENCE: self.visit_sentence_reference_node,
+            tree.TYPE_WORD_REFERENCE: self.visit_words_reference_node,
+            tree.TYPE_WORD_DEFINITION: self.visit_words_definition_node,
             tree.TYPE_ARTICLE_DEFINITION: self.visit_article_definition_node,
-            'quote': self.visit_quote_node
+            tree.TYPE_QUOTE: self.visit_quote_node,
             tree.TYPE_BILL_ARTICLE_REFERENCE: self.visit_bill_article_reference_node,
             tree.TYPE_BILL_ARTICLE: self.visit_bill_article_node,
         }
