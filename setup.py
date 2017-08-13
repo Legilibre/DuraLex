@@ -8,6 +8,9 @@ setup(
         'simplejson',
         'beautifulsoup4'
     ],
+    packages=[
+        'duralex'
+    ],
     scripts=[
         'bin/duralex'
     ]
