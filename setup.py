@@ -7,5 +7,8 @@ setup(
         'html5lib',
         'simplejson',
         'beautifulsoup4'
+    ],
+    scripts=[
+        'bin/duralex'
     ]
 )
