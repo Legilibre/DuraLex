@@ -4,8 +4,6 @@ from AbstractVisitor import AbstractVisitor
 
 from duralex.alinea_parser import *
 
-import duralex.node_type
-
 class RemoveQuotePrefixVisitor(AbstractVisitor):
     def visit_quote_node(self, node, post):
         if post:

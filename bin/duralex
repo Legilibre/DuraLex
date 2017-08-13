@@ -13,7 +13,6 @@ sys.path.insert(0, os.path.join(os.path.realpath(os.path.dirname(__file__)), '..
 import duralex.alinea_parser
 import duralex.bill_parser
 import duralex.amendment_parser
-import duralex.ast
 from duralex.DeleteEmptyChildrenVisitor import DeleteEmptyChildrenVisitor
 from duralex.DeleteParentVisitor import DeleteParentVisitor
 from duralex.DeleteUUIDVisitor import DeleteUUIDVisitor
