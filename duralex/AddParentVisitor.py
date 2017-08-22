@@ -1,6 +1,6 @@
 # -*- coding=utf-8 -*-
 
-from AbstractVisitor import AbstractVisitor
+from duralex.AbstractVisitor import AbstractVisitor
 
 class AddParentVisitor(AbstractVisitor):
     def __init__(self):

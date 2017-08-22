@@ -1,6 +1,6 @@
 from duralex.alinea_parser import *
 
-from AbstractVisitor import AbstractVisitor
+from duralex.AbstractVisitor import AbstractVisitor
 
 class ResolveFullyQualifiedReferencesVisitor(AbstractVisitor):
     def __init__(self):

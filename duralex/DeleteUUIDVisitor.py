@@ -1,4 +1,4 @@
-from AbstractVisitor import AbstractVisitor
+from duralex.AbstractVisitor import AbstractVisitor
 
 class DeleteUUIDVisitor(AbstractVisitor):
     def visit_node(self, node):

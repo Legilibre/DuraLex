@@ -3,7 +3,7 @@
 import re
 import sys
 
-import alinea_lexer
+import duralex.alinea_lexer as alinea_lexer
 import duralex.tree
 
 from duralex.tree import *
@@ -1817,7 +1817,7 @@ def parse_bill_article(data, parent):
         parse_json_alineas(data['alineas'], node)
 
 def parse_json_alineas(data, parent):
-    text = alinea_lexer.TOKEN_NEW_LINE.join(value for key, value in list(iter(sorted(data.iteritems()))))
+    text = alinea_lexer.TOKEN_NEW_LINE.join(value for key, value in list(iter(sorted(data.items()))))
     parent['content'] = text#.decode('utf-8')
     return parse_alineas(text, parent)
 

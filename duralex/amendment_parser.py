@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
-import alinea_lexer as lexer
+import duralex.alinea_lexer as lexer
 
-from bill_parser import clean_html
+from duralex.bill_parser import clean_html
 from duralex.tree import *
-from alinea_parser import is_number_word, word_to_number, is_number, parse_int, parse_alineas
+from duralex.alinea_parser import is_number_word, word_to_number, is_number, parse_int, parse_alineas
 
 AMENDMENT_STATUS = {
     u'rejeté': 'rejected',
