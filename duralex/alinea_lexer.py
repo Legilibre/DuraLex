@@ -58,7 +58,7 @@ def tokenize(text):
 
     tokens = TOKEN_DELIMITERS.split(text)
     # remove empty strings
-    tokens = list(filter(lambda s: s != '', tokens))
+    tokens = [s for s in tokens if s != '']
     return tokens
 
 def skip_tokens(tokens, i, f):
