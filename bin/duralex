@@ -6,7 +6,8 @@ import os
 import json
 import sys
 import argparse
-import urllib2
+
+import requests
 
 sys.path.insert(0, os.path.join(os.path.realpath(os.path.dirname(__file__)), '..'))
 
@@ -53,7 +54,7 @@ def handle_data(data, args):
                 + str(bill_data['id'])
                 + '/json'
             )
-            amendments = urllib2.urlopen(amendment_url).read()
+            amendments = requests.get(amendment_url).text
         else:
             amendments = open(args.amendments, 'r').read()
         amendments = decode(amendments)
@@ -75,7 +76,7 @@ def handle_data(data, args):
     DeleteEmptyChildrenVisitor().visit(tree)
 
     if not args.quiet:
-        json_data = json.dumps(tree, sort_keys=True, indent=2, ensure_ascii=False).encode('utf-8')
+        json_data = json.dumps(tree, sort_keys=True, indent=2, ensure_ascii=False)
         sys.stdout.write(json_data)
 
 def main(argv=None):
@@ -90,7 +91,7 @@ def main(argv=None):
     args = parser.parse_args()
 
     if args.url:
-        data = urllib2.urlopen(args.url).read()
+        data = requests.get(args.url).text
     elif args.file:
         data = args.file.read()
 

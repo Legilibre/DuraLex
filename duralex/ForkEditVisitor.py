@@ -1,4 +1,4 @@
-from AbstractVisitor import AbstractVisitor
+from duralex.AbstractVisitor import AbstractVisitor
 
 from duralex.alinea_parser import *
 
@@ -7,8 +7,8 @@ import duralex.tree
 class ForkEditVisitor(AbstractVisitor):
     def visit_node(self, node):
         if 'type' in node and node['type'] == 'edit' and 'children' in node and len(node['children']) > 1:
-            ref_nodes = filter(lambda n: duralex.tree.is_reference(n), node['children'])
-            def_nodes = filter(lambda n: duralex.tree.is_definition(n), node['children'])
+            ref_nodes = [n for n in node['children'] if duralex.tree.is_reference(n)]
+            def_nodes = [n for n in node['children'] if duralex.tree.is_definition(n)]
             edit_node = copy_node(node, recursive=False)
             parent = node['parent']
             remove_node(parent, node)

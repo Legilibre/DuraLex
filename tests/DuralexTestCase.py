@@ -80,8 +80,8 @@ class DuralexTestCase(unittest.TestCase):
         DeleteEmptyChildrenVisitor().visit(b)
         DeleteUUIDVisitor().visit(b)
 
-        a = json.dumps(a, sort_keys=True, indent=2, ensure_ascii=False).encode('utf-8')
-        b = json.dumps(b, sort_keys=True, indent=2, ensure_ascii=False).encode('utf-8')
+        a = json.dumps(a, sort_keys=True, indent=2, ensure_ascii=False)
+        b = json.dumps(b, sort_keys=True, indent=2, ensure_ascii=False)
 
         diff = difflib.unified_diff(a.splitlines(), b.splitlines(), fromfile='computed', tofile='expected')
         diff_lines = list(diff)

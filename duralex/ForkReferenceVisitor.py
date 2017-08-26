@@ -1,4 +1,4 @@
-from AbstractVisitor import AbstractVisitor
+from duralex.AbstractVisitor import AbstractVisitor
 
 from duralex.alinea_parser import *
 
@@ -7,7 +7,7 @@ import duralex.tree
 class ForkReferenceVisitor(AbstractVisitor):
     def visit_node(self, node):
         if duralex.tree.is_reference(node) and 'children' in node and len(node['children']) > 1:
-            ref_nodes = filter(lambda n: duralex.tree.is_reference(n), node['children'])
+            ref_nodes = [n for n in node['children'] if duralex.tree.is_reference(n)]
             for i in range(1, len(ref_nodes)):
                 ref = ref_nodes[i]
                 fork = copy_node(node, recursive=False)

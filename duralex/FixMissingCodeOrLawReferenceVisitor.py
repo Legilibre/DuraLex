@@ -1,6 +1,6 @@
 # -*- coding=utf-8 -*-
 
-from AbstractVisitor import AbstractVisitor
+from duralex.AbstractVisitor import AbstractVisitor
 
 from duralex.tree import *
 
@@ -27,10 +27,9 @@ class FixMissingCodeOrLawReferenceVisitor(AbstractVisitor):
     def visit_article_reference_node(self, node, post):
         if post:
             return
-        ancestor_refs = filter(
-            lambda n: not is_root(n) and n['type'] in [TYPE_CODE_REFERENCE, TYPE_LAW_REFERENCE],
-            get_node_ancestors(node) + get_node_descendants(node)
-        )
+        ancestor_refs = [n for n in get_node_ancestors(node) + get_node_descendants(node) if
+            not is_root(n) and n['type'] in [TYPE_CODE_REFERENCE, TYPE_LAW_REFERENCE]
+        ]
         if len(ancestor_refs) == 0:
             while len(node['children']) != 0:
                 node = node['children'][0]

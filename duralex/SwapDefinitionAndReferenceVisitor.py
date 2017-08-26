@@ -1,4 +1,4 @@
-from AbstractVisitor import AbstractVisitor
+from duralex.AbstractVisitor import AbstractVisitor
 
 import duralex.tree as tree
 
