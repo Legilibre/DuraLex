@@ -24,23 +24,15 @@ pip install -r requirements.txt
 ## Usage
 
 ```bash
-usage: duralex [-h] [--file FILE] [--url URL] [--quiet] [--diff] [--uuid]
-               [--commit-message] [--git-commit] [--github-token GITHUB_TOKEN]
-               [--github-repository GITHUB_REPOSITORY]
+usage: duralex [-h] [--file FILE] [--url URL] [--amendments] [--quiet] [--uuid]
 
 optional arguments:
   -h, --help            show this help message and exit
   --file FILE           the path of the bill to process
   --url URL             the URL of the bill to process
   --quiet               no stdout output
-  --diff                compute a diff for each edit
   --uuid                add a unique ID on each node
-  --commit-message      generate a commit message for each edit
-  --git-commit          git commit each edit
-  --github-token GITHUB_TOKEN
-                        the GitHub API token
-  --github-repository GITHUB_REPOSITORY
-                        the target GitHub repository
+  --amendments          fetch and include amendments for the specified bill
 ```
 
 Examples:
@@ -117,6 +109,7 @@ python main.py
 
 ## Related projects
 
+* https://github.com/Legilibre/SedLex
 * https://github.com/Legilibre/NuitCodeCitoyen
 * https://github.com/Legilibre/Archeo-Lex
 * https://github.com/regardscitoyens/the-law-factory-parser
