@@ -25,7 +25,10 @@ from duralex.RemoveQuotePrefixVisitor import RemoveQuotePrefixVisitor
 from duralex.FixMissingCodeOrLawReferenceVisitor import FixMissingCodeOrLawReferenceVisitor
 from duralex.SwapDefinitionAndReferenceVisitor import SwapDefinitionAndReferenceVisitor
 
-def decode(data):
+def decode(data, encoding = None):
+    if encoding:
+        return data.decode(encoding)
+
     try:
         data = data.decode('utf-8')
     except:
@@ -91,11 +94,10 @@ def main(argv=None):
     args = parser.parse_args()
 
     if args.url:
-        data = requests.get(args.url).text
+        res = requests.get(args.url)
+        data = decode(res.content, res.apparent_encoding)
     elif args.file:
-        data = args.file.read()
-
-    data = decode(data)
+        data = decode(args.file.read())
 
     handle_data(data, args)
 
