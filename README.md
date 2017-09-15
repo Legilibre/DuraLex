@@ -17,6 +17,11 @@ DuraLex is the backend for [SedLex](https://github.com/Legilibre/SedLex).
 
 ## Installation
 
+Requirements:
+
+* Python 3+
+* pip
+
 ```bash
 pip install -r requirements.txt
 ```
