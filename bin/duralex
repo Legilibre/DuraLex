@@ -104,4 +104,10 @@ def main(argv=None):
     return 0
 
 if __name__ == "__main__":
+    if sys.version_info < (3,0):
+        raise Exception(
+            'DuraLex requires Python 3.0+, current version is '
+            + str(sys.version_info[0]) + '.' + str(sys.version_info[1])
+        )
+
     sys.exit(main())
