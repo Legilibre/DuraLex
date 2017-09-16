@@ -1112,6 +1112,10 @@ def parse_sentence_reference(tokens, i, parent):
     elif tokens[i].lower() == u'la' and tokens[i + 2] == u'dernière' and tokens[i + 4] == u'phrase':
         node['order'] = -1
         i += 6
+    # les {n} première phrases
+    elif tokens[i].lower() == u'les' and is_number_word(tokens[i + 2]) and tokens[i + 4] == u'premières' and tokens[i + 6] == u'phrases':
+        node['order'] = [0, word_to_number(tokens[i + 2])]
+        i += 8
     else:
         debug(parent, tokens, i, 'parse_sentence_reference none')
         remove_node(parent, node)
