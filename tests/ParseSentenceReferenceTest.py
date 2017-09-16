@@ -107,3 +107,17 @@ class ParseSentenceReferenceTest(DuralexTestCase):
                 }
             ]}
         )
+
+    def test_the_first_two_sentences(self):
+        self.assertEqualAST(
+            self.call_parse_func(
+                parser.parse_sentence_reference,
+                u"les deux premières phrases"
+            ),
+            {'children':[
+                {
+                    'type': u'sentence-reference',
+                    'order': [0, 2]
+                }
+            ]}
+        )
