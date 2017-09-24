@@ -19,7 +19,7 @@ def parse_article_reference(patch, tree):
 
     article_ref = duralex.tree.create_node(law_ref, {
         'type': duralex.tree.TYPE_ARTICLE_REFERENCE,
-        'id': parse_article_id(patch.target_file),
+        'id': parse_article_id(patch.source_file),
     })
 
     return law_ref
