@@ -28,16 +28,27 @@ def parse_law_id(filename):
     return re.search(r"loi_([-0-9]+)", filename).group(1)
 
 def parse_article_id(filename):
-    return re.search(r"Article_(.*)\.", filename).group(1)
+    return re.search(r"Article_([-0-9]+)\.", filename).group(1)
 
 def parse_patch(patch, tree):
-    bill_article = duralex.tree.create_node(tree, {'type': duralex.tree.TYPE_BILL_ARTICLE})
+    bill_article = duralex.tree.create_node(tree, {
+        'type': duralex.tree.TYPE_BILL_ARTICLE,
+        'order': 1,
+    })
+    law_ref = parse_article_reference(patch, bill_article)
 
-    parse_article_reference(patch, bill_article)
-
-    for hunk in patch:
-        for line in hunk:
-            parse_line(line, bill_article)
+    if patch.target_file == '/dev/null':
+        # The patch.source_file has been deleted.
+        edit = duralex.tree.create_node(bill_article, {
+            'type': duralex.tree.TYPE_EDIT,
+            'editType': 'delete',
+        })
+        duralex.tree.push_node(edit, law_ref)
+        pass
+    else:
+        for hunk in patch:
+            for line in hunk:
+                parse_line(line, bill_article)
 
 def parse_line(line, tree):
     if line.line_type == '+':
