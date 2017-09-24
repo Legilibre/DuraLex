@@ -44,7 +44,13 @@ def parse_patch(patch, tree):
             'editType': 'delete',
         })
         duralex.tree.push_node(edit, law_ref)
-        pass
+    elif patch.source_file == '/dev/null':
+        # The patch.target_file has been added.
+        edit = duralex.tree.create_node(bill_article, {
+            'type': duralex.tree.TYPE_EDIT,
+            'editType': 'add',
+        })
+        duralex.tree.push_node(edit, law_ref)
     else:
         for hunk in patch:
             for line in hunk:
