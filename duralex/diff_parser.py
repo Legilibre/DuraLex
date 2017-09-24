@@ -14,13 +14,18 @@ def parse(data, tree):
 def parse_article_reference(patch, tree):
     law_ref = duralex.tree.create_node(tree, {
         'type': duralex.tree.TYPE_LAW_REFERENCE,
-        'id': 'unknown',
+        'id': parse_law_id(patch.source_file),
     })
 
     article_ref = duralex.tree.create_node(law_ref, {
         'type': duralex.tree.TYPE_ARTICLE_REFERENCE,
         'id': parse_article_id(patch.target_file),
     })
+
+    return law_ref
+
+def parse_law_id(filename):
+    return re.search(r"loi_([-0-9]+)", filename).group(1)
 
 def parse_article_id(filename):
     return re.search(r"Article_(.*)\.", filename).group(1)
