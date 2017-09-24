@@ -31,57 +31,56 @@ def parse_article_id(filename):
     return re.search(r"Article_([-0-9]+)\.", filename).group(1)
 
 def parse_patch(patch, tree):
-    bill_article = duralex.tree.create_node(tree, {
-        'type': duralex.tree.TYPE_BILL_ARTICLE,
-        'order': 1,
+    amendment = duralex.tree.create_node(tree, {
+        'type': duralex.tree.TYPE_AMENDMENT,
+        'id': '1',
     })
-    law_ref = parse_article_reference(patch, bill_article)
+    law_ref = parse_article_reference(patch, None)
 
     if patch.target_file == '/dev/null':
         # The patch.source_file has been deleted.
-        edit = duralex.tree.create_node(bill_article, {
+        edit = duralex.tree.create_node(amendment, {
             'type': duralex.tree.TYPE_EDIT,
             'editType': 'delete',
         })
         duralex.tree.push_node(edit, law_ref)
     elif patch.source_file == '/dev/null':
         # The patch.target_file has been added.
-        edit = duralex.tree.create_node(bill_article, {
+        edit = duralex.tree.create_node(amendment, {
             'type': duralex.tree.TYPE_EDIT,
             'editType': 'add',
         })
         duralex.tree.push_node(edit, law_ref)
     else:
         for hunk in patch:
-            for line in hunk:
-                parse_line(line, bill_article)
+            parse_hunk(hunk, amendment, law_ref)
 
-def parse_line(line, tree):
-    if line.line_type == '+':
-        edit = duralex.tree.create_node(tree, {
-            'type': duralex.tree.TYPE_EDIT,
-            'editType': 'add',
-        })
+def parse_hunk(hunk, parent, ref):
+    line_type = ''
+    edit = None
+    word_def = None
 
-        word_def = duralex.tree.create_node(edit, {
-            'type': duralex.tree.TYPE_WORD_DEFINITION,
-        })
-
-        quote = duralex.tree.create_node(word_def, {
-            'type': duralex.tree.TYPE_QUOTE,
-            'words': line.value,
-        })
-    elif line.line_type == '-':
-        edit = duralex.tree.create_node(tree, {
-            'type': duralex.tree.TYPE_EDIT,
-            'editType': 'remove',
-        })
-
-        word_def = duralex.tree.create_node(edit, {
-            'type': duralex.tree.TYPE_WORD_DEFINITION,
-        })
+    for line in hunk:
+        if line.line_type != line_type:
+            if edit:
+                duralex.tree.push_node(parent, edit)
+            edit = duralex.tree.create_node(None, {
+                'type': duralex.tree.TYPE_EDIT,
+            })
+            duralex.tree.push_node(edit, duralex.tree.copy_node(ref))
+            word_def = duralex.tree.create_node(edit, {
+                'type': duralex.tree.TYPE_WORD_DEFINITION,
+            })
+            if line.line_type == '+':
+                edit['editType'] = 'add'
+            elif line.line_type == '-':
+                edit['editType'] = 'delete'
+            line_type = line.line_type
 
         quote = duralex.tree.create_node(word_def, {
             'type': duralex.tree.TYPE_QUOTE,
             'words': line.value,
         })
+
+    if edit:
+        duralex.tree.push_node(parent, edit)
