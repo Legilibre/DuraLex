@@ -4,9 +4,11 @@ setup(
     name='DuraLex',
     version='0.2',
     install_requires=[
+        'colorama',
         'html5lib',
-        'simplejson',
-        'beautifulsoup4'
+        'beautifulsoup4',
+        'requests',
+        'unidiff'
     ],
     packages=[
         'duralex'
