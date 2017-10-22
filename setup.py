@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='DuraLex',
-    version='0.2',
+    version='0.3',
     install_requires=[
         'colorama',
         'html5lib',
