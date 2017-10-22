@@ -90,10 +90,12 @@ def push_node(parent, node):
     parent['children'].append(node)
 
 def create_node(parent, node):
+    if 'children' not in node:
+        node['children'] = []
+    node['uuid'] = str(uuid.uuid4())
+
     if parent:
         push_node(parent, node)
-    node['children'] = []
-    node['uuid'] = str(uuid.uuid4())
 
     return node
 
