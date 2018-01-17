@@ -268,7 +268,7 @@ def parse_bill(string, url):
             read = 3
             continue
         if read == 3:
-            if real_lower(line).startswith(u'transmise par') or real_lower(line).startswith(u'présentée par'):
+            if real_lower(line).startswith(u'transmise par') or re.compile(r'présentée?( par)?').search(real_lower(line)):
                 read = 0
             else:
                 if re_all_caps.match(line):
@@ -402,7 +402,7 @@ def parse_bill(string, url):
             if line:
                 ali_num += 1
                 # match alinea numbering in the form of "(ali_num) actual alinea content goes here..."
-                m = re.compile(r"^\((\d)\) (.*)$", re.MULTILINE).match(line)
+                m = re.compile(r"^\((\d+)\) (.*)$", re.MULTILINE).match(line)
                 if m:
                     ali_num = int(m.group(1))
                     line = m.group(2)

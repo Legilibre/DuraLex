@@ -25,6 +25,26 @@ class ParseSentenceDefinitionTest(DuralexTestCase):
             ]}
         )
 
+    def test_the_following_sentence_with_quote(self):
+        self.assertEqualAST(
+            self.call_parse_func(
+                parser.parse_sentence_definition,
+                ("la phrase suivante :\n"
+                "\"phrase 1\"\n")
+            ),
+            {'children':[
+                {
+                    'children': [
+                        {
+                            'type': 'quote',
+                            'words': 'phrase 1'
+                        }
+                    ],
+                    'type': 'sentence-definition'
+                }
+            ]}
+        )
+
     def test_three_sentences_with_quotes(self):
         self.assertEqualAST(
             self.call_parse_func(

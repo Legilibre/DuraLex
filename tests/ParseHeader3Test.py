@@ -8,7 +8,7 @@ class ParseHeader3Test(DuralexTestCase):
     def test_header3_raw_content(self):
         self.assertEqualAST(
             self.call_parse_func(
-                parser.parse_header2,
+                parser.parse_header3,
                 u"b) Ceci est un header3."
             ),
             {'children':[

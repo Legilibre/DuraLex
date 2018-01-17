@@ -565,7 +565,7 @@ class ParseEditTest(DuralexTestCase):
     def test_delete_end_of_last_sentence_after_word(self):
         self.assertEqualAST(
             self.call_parse_func(
-                parser.parse_edit,
+                parser.parse_edit_list,
                 u"Après le mot : \"candidats\", la fin de la première phrase du quatrième alinéa est supprimée."
             ),
             {'children':[
@@ -579,16 +579,18 @@ class ParseEditTest(DuralexTestCase):
                             'children': [
                                 {
                                     'type': 'quote',
-                                    'words': 'candidats'
-                                },
-                                {
-                                    'order': 1,
-                                    'scope': 'end',
-                                    'type': 'sentence-reference',
+                                    'words': 'candidats',
                                     'children': [
                                         {
-                                            'order': 4,
-                                            'type': 'alinea-reference'
+                                            'order': 1,
+                                            'scope': 'end',
+                                            'type': 'sentence-reference',
+                                            'children': [
+                                                {
+                                                    'order': 4,
+                                                    'type': 'alinea-reference'
+                                                }
+                                            ]
                                         }
                                     ]
                                 }
@@ -598,3 +600,40 @@ class ParseEditTest(DuralexTestCase):
                 }
             ]}
         )
+
+    # def test_delete_end_of_last_sentence_after_word(self):
+    #     self.assertEqualAST(
+    #         self.call_parse_func(
+    #             parser.parse_edit,
+    #             u'après les mots : "original 1", sont ajoutés les mots : "remplacement 1" et après les mots : "original 2" sont ajoutés les mots : "remplacement 2"'
+    #         ),
+    #         {'children':[
+    #             {
+    #                 'editType': 'delete',
+    #                 'type': 'edit',
+    #                 'children': [
+    #                     {
+    #                         'position': 'after',
+    #                         'type': 'word-reference',
+    #                         'children': [
+    #                             {
+    #                                 'type': 'quote',
+    #                                 'words': 'candidats'
+    #                             },
+    #                             {
+    #                                 'order': 1,
+    #                                 'scope': 'end',
+    #                                 'type': 'sentence-reference',
+    #                                 'children': [
+    #                                     {
+    #                                         'order': 4,
+    #                                         'type': 'alinea-reference'
+    #                                     }
+    #                                 ]
+    #                             }
+    #                         ]
+    #                     }
+    #                 ]
+    #             }
+    #         ]}
+    #     )

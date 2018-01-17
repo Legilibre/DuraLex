@@ -124,7 +124,7 @@ class ParseWordReferenceTest(DuralexTestCase):
     def test_words_reference_position_in_article(self):
         self.assertEqualAST(
             self.call_parse_func(
-                parser.parse_word_reference,
+                parser.parse_reference_list_or_compound_reference,
                 u"après les mots : \"aux dispositions de l'article L. 123-5\", la fin de l'article L. 112-3 du code de la recherche"
             ),
             {'children':[
@@ -134,16 +134,18 @@ class ParseWordReferenceTest(DuralexTestCase):
                     'children': [
                         {
                             'type': u'quote',
-                            'words': u'aux dispositions de l\'article L. 123-5'
-                        },
-                        {
-                            'type': u'article-reference',
-                            'id': u'L. 112-3',
-                            'scope': 'end',
+                            'words': u'aux dispositions de l\'article L. 123-5',
                             'children': [
                                 {
-                                    'type': u'code-reference',
-                                    'id': u'code de la recherche'
+                                    'type': u'article-reference',
+                                    'id': u'L. 112-3',
+                                    'scope': 'end',
+                                    'children': [
+                                        {
+                                            'type': u'code-reference',
+                                            'id': u'code de la recherche'
+                                        }
+                                    ]
                                 }
                             ]
                         }
@@ -155,7 +157,7 @@ class ParseWordReferenceTest(DuralexTestCase):
     def test_alinea_ref_word_ref(self):
         self.assertEqualAST(
             self.call_parse_func(
-                parser.parse_reference,
+                parser.parse_reference_list_or_compound_reference,
                 u"au deuxième alinéa, le mot : \"test\""
             ),
             {'children':[
