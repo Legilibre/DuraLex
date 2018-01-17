@@ -1419,9 +1419,6 @@ def parse_edit_list(tokens, i, parent):
             i += 2
             i = parse_edit(tokens, i, parent)
 
-    # if i < len(tokens) and tokens[i] == u';':
-    #     i = alinea_lexer.skip_to_end_of_line(tokens, i)
-
     return i
 
 # Parse the verb to determine the corresponding action (one of 'add', 'delete', 'edit' or 'replace').
@@ -1449,7 +1446,6 @@ def parse_edit(tokens, i, parent):
     # if we did not parse a reference
 
     i = alinea_lexer.skip_spaces(tokens, i)
-
 
     # if we didn't find any reference as a subject and the subject/verb are not reversed
     if len(node['children']) == 0 and tokens[i] != 'Est' and tokens[i] != 'Sont':
@@ -1547,6 +1543,9 @@ def parse_edit(tokens, i, parent):
         i = parse_raw_article_content(tokens, i, parent)
         i = alinea_lexer.skip_to_end_of_line(tokens, i)
         return i
+
+    if i < len(tokens) and tokens[i] in [u';', u'.']:
+        i = alinea_lexer.skip_to_end_of_line(tokens, i)
 
     debug(parent, tokens, i, 'parse_edit end')
 
