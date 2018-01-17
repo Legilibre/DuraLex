@@ -27,7 +27,7 @@ class SortReferencesVisitor(AbstractVisitor):
                     # FIXME: should we raise because we're not supposed to have the same *-reference twice?
                     if ref['type'] == filtered_refs[-1]['type']:
                         filtered_refs.pop()
-                    filtered_refs.append(ref)
+                    filtered_refs.append(copy_node(ref, False))
             for i in range(0, len(filtered_refs)):
                 ref = filtered_refs[i]
                 if i == 0:
