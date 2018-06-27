@@ -248,9 +248,15 @@ def parse_law_reference(tokens, i, parent):
 
     # de la loi n° 77-729 du 7 juillet 1977
     grammar = parsimonious.Grammar( """
-entry = ( ~"de la loi n° +" numero_annee_identifiant du_date ) / ( ~"de la même loi" )
+texte = ( ~"(de +)?(la +|l' *)" texte_francais ) / ~"de +la +même +loi"
 
-numero_annee_identifiant = ~"[0-9]+-[0-9]+"
+nom_texte_francais = ~"loi( +constitutionnelle| +organique)?|ordonnance|d[ée]cret(-loi)?|arr[êe]t[ée]|circulaire"i
+
+texte_francais = nom_texte_francais ( ( numtexte du_date ) / numtexte / du_date )
+
+numtexte = numero numero_annee_identifiant
+
+numero_annee_identifiant = ~"[0-9]+[-‑][0-9]+"
 
 du_date = ~" +du +"i date
 date = jour espace mois espace annee
@@ -260,6 +266,8 @@ annee = ~"(1[5-9]|2[0-9])[0-9]{2}"
 
 espace = ~" +"
 numero = ~" +n° *| +no *"i
+
+nombre_cardinal = ~"[0-9]+"
     """ )
 
     node = create_node(parent, {
@@ -268,15 +276,47 @@ numero = ~" +n° *| +no *"i
         'children': [],
     })
     try:
-        tree = grammar.match( ''.join( tokens[i:] ) )
-        i += len( alinea_lexer.tokenize( tree.text ) )
-        capture = CaptureVisitor( [ 'numero_annee_identifiant', 'annee', 'mois', 'jour' ] )
-        capture.visit( tree )
-        if 'numero_annee_identifiant' in capture.captures:
-            node['id'] = capture.captures['numero_annee_identifiant']
-            node['lawDate'] = '%s-%i-%s' % (capture.captures['annee'], month_to_number( capture.captures['mois'] ), capture.captures['jour'] )
+        tree = grammar.match(''.join( tokens[i:]))
+        if re.match(r"de la même loi", tree.text):
+            i += 8
+            law_refs = filter_nodes(
+                get_root(parent),
+                lambda n: 'type' in n and n['type'] == TYPE_LAW_REFERENCE
+            )
+            law_ref = copy_node(law_refs[-2], False)
+            push_node(parent, law_ref)
+            remove_node(parent, node)
+            node = law_ref
+        else:
+            i += len(alinea_lexer.tokenize(tree.text))
+            i = alinea_lexer.skip_spaces(tokens, i)
+            capture = CaptureVisitor(['nom_texte_francais', 'numero_annee_identifiant', 'annee', 'mois', 'jour'])
+            capture.visit(tree)
+            if 'nom_texte_francais' in capture.captures:
+                node['id'] = capture.captures['numero_annee_identifiant']
+            if 'nom_texte_francais' in capture.captures:
+                node['lawType'] = capture.captures['nom_texte_francais']
+            if 'annee' in capture.captures:
+                node['lawDate'] = '%s-%i-%s' % (capture.captures['annee'], month_to_number( capture.captures['mois'] ), capture.captures['jour'] )
     except parsimonious.exceptions.ParseError:
         remove_node(parent, node)
+        return i
+
+    i = alinea_lexer.skip_spaces(tokens, i)
+    if i < len(tokens) and tokens[i] == u'modifiant':
+        j = alinea_lexer.skip_to_token(tokens, i, 'code')
+        if j < len(tokens):
+            i = parse_code_reference(tokens, j, node)
+
+    # les mots
+    i = parse_one_of(
+        [
+            parse_word_reference,
+        ],
+        tokens,
+        i,
+        node
+    )
 
     debug(parent, tokens, i, 'parse_law_reference end')
 

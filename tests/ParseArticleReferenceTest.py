@@ -60,6 +60,7 @@ class ParseArticleReferenceTest(DuralexTestCase):
                     'children': [
                         {
                             'id': u'78-753',
+                            'lawType': u'loi',
                             'type': u'law-reference',
                         }
                     ]
@@ -81,6 +82,7 @@ class ParseArticleReferenceTest(DuralexTestCase):
                         {
                             'lawDate': u'1978-7-17',
                             'id': u'78-753',
+                            'lawType': u'loi',
                             'type': u'law-reference',
                         }
                     ]

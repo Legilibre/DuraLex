@@ -226,6 +226,7 @@ class ParseWordReferenceTest(DuralexTestCase):
                                 {
                                     'type': u'law-reference',
                                     'id': u'77-729',
+                                    'lawType': u'loi',
                                     'children': [
                                         {
                                             'type': u'word-reference',
