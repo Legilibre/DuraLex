@@ -8,6 +8,8 @@ import duralex.tree
 
 from duralex.tree import *
 
+import parsimonious
+
 def debug(node, tokens, i, msg):
     if '--debug' in sys.argv:
         print('    ' * get_node_depth(node) + msg + ' ' + str(tokens[i:i+8]))
@@ -223,76 +225,39 @@ def parse_law_reference(tokens, i, parent):
 
     j = i
 
+    debug(parent, tokens, i, 'parse_law_reference')
+
+    # de la loi n° 77-729 du 7 juillet 1977
+    grammar = parsimonious.Grammar( """
+entry = ( ~"de la loi n° +" numero_annee_identifiant du_date ) / ( ~"de la même loi" )
+
+numero_annee_identifiant = ~"[0-9]+-[0-9]+"
+
+du_date = ~" +du +"i date
+date = jour espace mois espace annee
+jour = ~"1er|[12][0-9]|3[01]|[1-9]"i
+mois = ~"janvier|février|mars|avril|mai|juin|juillet|août|septembre|octobre|novembre|décembre"i
+annee = ~"(1[5-9]|2[0-9])[0-9]{2}"
+
+espace = ~" +"
+numero = ~" +n° *| +no *"i
+    """ )
+
     node = create_node(parent, {
         'type': TYPE_LAW_REFERENCE,
         'id': '',
         'children': [],
     })
-
-    debug(parent, tokens, i, 'parse_law_reference')
-
-    # de l'ordonnance
-    # l'ordonnance
-    if i + 4 < len(tokens) and (tokens[i + 2] == u'ordonnance' or tokens[i + 4] == u'ordonnance'):
-        node['lawType'] = 'ordonnance'
-        i = alinea_lexer.skip_to_token(tokens, i, u'ordonnance') + 2
-    # de la loi
-    # la loi
-    elif i + 4 < len(tokens) and ((tokens[i] == u'la' and tokens[i + 2] == u'loi') or (tokens[i] == u'de' and tokens[i + 4] == u'loi')):
-        i = alinea_lexer.skip_to_token(tokens, i, u'loi') + 2
-    # de la même loi
-    elif tokens[i].lower() == u'de' and tokens[i + 2] == u'la' and tokens[i + 4] == u'même' and tokens[i + 6] == u'loi':
-        i += 8
-        law_refs = filter_nodes(
-            get_root(parent),
-            lambda n: 'type' in n and n['type'] == TYPE_LAW_REFERENCE
-        )
-        # the lduralex.tree.one in order of traversal is the previous one in order of syntax
-        # don't forget the current node is in the list too => -2 instead of -1
-        law_ref = copy_node(law_refs[-2], False)
-        push_node(parent, law_ref)
+    try:
+        tree = grammar.match( ''.join( tokens[i:] ) )
+        i += len( alinea_lexer.tokenize( tree.text ) )
+        capture = CaptureVisitor( [ 'numero_annee_identifiant', 'annee', 'mois', 'jour' ] )
+        capture.visit( tree )
+        if 'numero_annee_identifiant' in capture.captures:
+            node['id'] = capture.captures['numero_annee_identifiant']
+            node['lawDate'] = '%s-%i-%s' % (capture.captures['annee'], month_to_number( capture.captures['mois'] ), capture.captures['jour'] )
+    except parsimonious.exceptions.ParseError:
         remove_node(parent, node)
-        node = law_ref
-    else:
-        remove_node(parent, node)
-        return i
-
-    if i < len(tokens) and tokens[i] == u'organique':
-        node['lawType'] = 'organic'
-        i += 2
-
-    if node['id'] == '':
-        i = alinea_lexer.skip_to_token(tokens, i, u'n°') + 1
-        # If we didn't find the "n°" token, the reference is incomplete and we forget about it.
-        if i >= len(tokens):
-            remove_node(parent, node)
-            return j
-        i = alinea_lexer.skip_spaces(tokens, i)
-        node['id'] = tokens[i]
-        # skip {id} and the following space
-        i += 2
-
-    if i < len(tokens) and tokens[i] == u'du':
-        node['lawDate'] = tokens[i + 6] + u'-' + str(month_to_number(tokens[i + 4])) + u'-' + tokens[i + 2]
-        # skip {lawDate} and the following space
-        i += 7
-
-    i = alinea_lexer.skip_spaces(tokens, i)
-    if i < len(tokens) and tokens[i] == u'modifiant':
-        j = alinea_lexer.skip_to_token(tokens, i, 'code')
-        if j < len(tokens):
-            i = parse_code_reference(tokens, j, node)
-
-
-    # les mots
-    i = parse_one_of(
-        [
-            parse_word_reference,
-        ],
-        tokens,
-        i,
-        node
-    )
 
     debug(parent, tokens, i, 'parse_law_reference end')
 
@@ -1836,3 +1801,20 @@ def parse(data, tree):
     # tree = create_node(tree, {'type': 'articles'})
     parse_bill_articles(data, tree)
     return tree
+
+
+class CaptureVisitor(parsimonious.NodeVisitor):
+
+    def __init__( self, table ):
+
+        self.table = table
+        self.captures = {}
+
+    def generic_visit( self, node, visited_children ):
+
+        if node.expr_name in self.table:
+
+            rule_name = node.expr_name
+            self.captures[rule_name] = node.text
+
+# vim: set ts=4 sw=4 sts=4 et:
