@@ -1136,32 +1136,27 @@ def parse_sentence_reference(tokens, i, parent):
     j = i
     i = parse_position(tokens, i, node)
     i = parse_scope(tokens, i, node)
-    # une phrase
-    # la phrase
-    if tokens[i].lower() in [u'la', u'une'] and tokens[i + 2] == 'phrase':
-        i += 4
-    # de la {partNumber} phrase
-    elif tokens[i].lower() == u'de' and tokens[i + 2] == u'la' and is_number_word(tokens[i + 4]) and tokens[i + 6] == u'phrase':
-        node['order'] = word_to_number(tokens[i + 4])
-        i += 8
-    # la {partNumber} phrase
-    elif tokens[i].lower() == u'la' and is_number_word(tokens[i + 2]) and tokens[i + 4] == u'phrase':
-        node['order'] = word_to_number(tokens[i + 2])
-        i += 6
-    # à la {partNumber} phrase
-    # À la {partNumber} phrase
-    elif (tokens[i] == u'à' or tokens[i] == u'À') and tokens[i + 2].lower() == u'la' and is_number_word(tokens[i + 4]) and tokens[i + 6] == u'phrase':
-        node['order'] = word_to_number(tokens[i + 4])
-        i += 8
-    # la dernière phrase
-    elif tokens[i].lower() == u'la' and tokens[i + 2] == u'dernière' and tokens[i + 4] == u'phrase':
-        node['order'] = -1
-        i += 6
-    # les {n} première phrases
-    elif tokens[i].lower() == u'les' and is_number_word(tokens[i + 2]) and tokens[i + 4] == u'premières' and tokens[i + 6] == u'phrases':
-        node['order'] = [0, word_to_number(tokens[i + 2])]
-        i += 8
-    else:
+
+    grammar = parsimonious.Grammar("""
+entry = ( ( ( ~"de"i / ~"à"i ) whitespace )? ( ~"la"i / ~"une"i ) whitespace ordinal_adjective_number whitespace ~"phrase"i ) / ( ( ~"des +"i / ~"les +"i ) ( cardinal_adjective_number whitespace )? ordinal_adjective_number ~"s"? whitespace ~"phrases" )
+
+ordinal_adjective_number = ~"première|seconde|dernière|dixième|onzième|douzième|treizième|quatorzième|quinzième|seizième|(dix-|vingt-|trente-|quarante-|cinquante-|soixante-|soixante-dix-|quatre-vingt-|quatre-vingt-dix-)?(et-)?(un|deux|trois|quatr|cinqu|six|sept|huit|neuv)ième"i
+
+cardinal_adjective_number = ~"(vingt|trente|quarante|cinquante|soixante|septante|quatre-vingt|huitante|octante|nonante)(-et-un|-deux|-trois|-quatre|-cinq|-six|-sept|-huit|-neuf)?|(soixante|quatre-vingt)(-et-onze|-douze|-treize|-quatorze|-quinze|-seize|-dix-sept|-dix-huit|-dix-neuf)?|zéro|un|deux|trois|quatre|cinq|six|sept|huit|neuf|dix|onze|douze|treize|quatorze|quinze|seize|dix-sept|dix-huit|dix-neuf|quatre-vingt-un|quatre-vingt-onze"i
+
+whitespace = ~" +"
+""")
+
+    try:
+        tree = grammar.match(''.join(tokens[i:]))
+        i += len(alinea_lexer.tokenize(tree.text))
+        i = alinea_lexer.skip_spaces(tokens, i)
+        capture = CaptureVisitor(['cardinal_adjective_number', 'ordinal_adjective_number'])
+        capture.visit(tree)
+        node['order'] = word_to_number(capture.captures['ordinal_adjective_number'])
+        if 'cardinal_adjective_number' in capture.captures and capture.captures['cardinal_adjective_number']:
+            node['order'] = [0, word_to_number(capture.captures['cardinal_adjective_number'])]
+    except parsimonious.exceptions.ParseError as e:
         debug(parent, tokens, i, 'parse_sentence_reference none')
         remove_node(parent, node)
         return j
