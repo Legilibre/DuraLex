@@ -707,14 +707,22 @@ def parse_title_reference(tokens, i, parent):
     i = parse_position(tokens, i, node)
     i = parse_scope(tokens, i, node)
 
-    # le titre {order}
-    # du titre {order}
-    if tokens[i].lower() in [u'le', u'du'] and tokens[i + 2] == u'titre' and is_roman_number(tokens[i + 4]):
-        node['order'] = parse_roman_number(tokens[i + 4])
-        i += 6
-        i = parse_multiplicative_adverb(tokens, i, node)
-    else:
-        debug(parent, tokens, i, 'parse_title_reference none')
+    grammar = parsimonious.Grammar("""
+title_ref = pronoun whitespace* "titre" whitespace* title_order
+title_order = roman_number
+
+roman_number = ~"Ier|[IVXLCDM]+(èm)?e?"
+whitespace = ~"\s+"
+pronoun = "le" / "du"
+    """)
+
+    try:
+        tree = grammar.match(''.join(tokens[i:]))
+        i += len(alinea_lexer.tokenize(tree.text))
+        capture = CaptureVisitor(['roman_number' ])
+        capture.visit(tree)
+        node['order'] = parse_roman_number(capture.captures['roman_number'])
+    except parsimonious.exceptions.ParseError:
         remove_node(parent, node)
         return j
 
