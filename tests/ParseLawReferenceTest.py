@@ -46,7 +46,8 @@ class ParseLawReferenceTest(DuralexTestCase):
             {'children':[
                 {
                     'type': u'law-reference',
-                    'id': u'2007-1199'
+                    'id': u'2007-1199',
+                    'lawType': u'loi',
                 }
             ]}
         )
@@ -119,7 +120,8 @@ class ParseLawReferenceTest(DuralexTestCase):
             {'children':[
                 {
                     'type': u'law-reference',
-                    'id': u'2007-1199'
+                    'id': u'2007-1199',
+                    'lawType': u'loi'
                 }
             ]}
         )
@@ -134,7 +136,8 @@ class ParseLawReferenceTest(DuralexTestCase):
                 {
                     'type': u'law-reference',
                     'id': u'2007-1199',
-                    'lawDate': u'2007-8-10'
+                    'lawDate': u'2007-8-10',
+                    'lawType': u'loi'
                 }
             ]}
         )
@@ -149,6 +152,7 @@ class ParseLawReferenceTest(DuralexTestCase):
                 {
                     'type': u'law-reference',
                     'id': u'2007-1199',
+                    'lawType': u'loi',
                     'lawDate': u'2007-8-10'
                 }
             ]}
