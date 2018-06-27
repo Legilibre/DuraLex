@@ -1218,8 +1218,6 @@ whitespace = ~"\s+"
 not_double_quote = ~"[^\\"]*"
 positional_conjunction = "après" / "avant" / "au début" / "à la fin"
 not_a_word = ~"\W*"
-
-quoted = ~"\\".+\\""
     """)
 
     position = {
@@ -1384,29 +1382,23 @@ def parse_quote(tokens, i, parent):
 
     debug(parent, tokens, i, 'parse_quote')
 
-    i = alinea_lexer.skip_spaces(tokens, i)
+    grammar = parsimonious.Grammar("""
+quoted = whitespace* "\\"" not_a_double_quote "\\"" whitespace*
 
-    # "
-    if tokens[i] == alinea_lexer.TOKEN_DOUBLE_QUOTE_OPEN:
-        i += 1
-    # # est rédigé(es)
-    # # ainsi rédigé(es)
-    # # est ainsi rédigé(es)
-    # elif (i + 2 < len(tokens) and tokens[i + 2].startswith(u'rédigé')
-    #     or (i + 4 < len(tokens) and tokens[i + 4].startswith(u'rédigé'))):
-    #     i = alinea_lexer.skip_to_quote_start(tokens, i + 2) + 1
-    else:
+not_a_double_quote = ~"[^\\"]*"
+whitespace = ~"\s+"
+not_a_word = ~"\W*"
+    """)
+
+    try:
+        tree = grammar.match(''.join(tokens[i:]))
+        i += len(alinea_lexer.tokenize(tree.text))
+        capture = CaptureVisitor(['not_a_double_quote' ])
+        capture.visit(tree)
+        node['words'] = capture.captures['not_a_double_quote']
+    except parsimonious.exceptions.ParseError as e:
         remove_node(parent, node)
         return i
-
-    while i < len(tokens) and tokens[i] != alinea_lexer.TOKEN_DOUBLE_QUOTE_CLOSE and tokens[i] != alinea_lexer.TOKEN_NEW_LINE:
-        node['words'] += tokens[i]
-        i += 1
-    node['words'] = node['words'].strip()
-
-    # skipalinea_lexer.TOKEN_DOUBLE_QUOTE_CLOSE
-    i += 1
-    i = alinea_lexer.skip_spaces(tokens, i)
 
     debug(parent, tokens, i, 'parse_quote end')
 
