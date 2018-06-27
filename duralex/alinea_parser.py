@@ -86,15 +86,18 @@ def parse_section_reference(tokens, i, parent):
 
     debug(parent, tokens, i, 'parse_section_reference')
 
-    # la section {order}
-    if tokens[i].lower() == u'la' and tokens[i + 2] == u'section':
-        node['order'] = parse_int(tokens[i + 4]);
-        i += 6
-    # de la section {order}
-    elif tokens[i] == u'de' and tokens[i + 2] == u'la' and tokens[i + 4] == u'section':
-        node['order'] = parse_int(tokens[i + 6]);
-        i += 8
-    else:
+    grammar = parsimonious.Grammar("""
+section = ~"(de )*" "la section " section_order
+section_order = ~"\d+"
+    """)
+
+    try:
+        tree = grammar.match(''.join(tokens[i:]))
+        i += len(alinea_lexer.tokenize(tree.text))
+        capture = CaptureVisitor(['section_order' ])
+        capture.visit(tree)
+        node['order'] = parse_int(capture.captures['section_order'])
+    except parsimonious.exceptions.ParseError:
         remove_node(parent, node)
         return i
 
