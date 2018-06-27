@@ -1202,38 +1202,52 @@ def parse_incomplete_reference(tokens, i, parent):
 def parse_word_reference(tokens, i, parent):
     if i >= len(tokens):
         return i
+    
     node = create_node(parent, {
         'type': TYPE_WORD_REFERENCE
     })
+
     debug(parent, tokens, i, 'parse_word_reference')
-    j = i
-    i = alinea_lexer.skip_to_next_word(tokens, i)
-    i = parse_position(tokens, i, node)
+
+    grammar = parsimonious.Grammar("""
+word_ref = not_a_word* (positional_conjunction whitespace)* pronoun whitespace* word_ref_type not_double_quote*
+word_ref_type = "mots" / "mot" / "nombre" / "chiffre" / "taux" / "références" / "référence"
+
+pronoun = "les" / "le" / "des" / "la" / "l'"
+whitespace = ~"\s+"
+not_double_quote = ~"[^\\"]*"
+positional_conjunction = "après" / "avant" / "au début" / "à la fin"
+not_a_word = ~"\W*"
+
+quoted = ~"\\".+\\""
+    """)
+
+    position = {
+        'après': 'after',
+        'avant': 'before',
+        'au début': 'begining',
+        'à la fin': 'end',
+    }
+
     i = parse_scope(tokens, i, node)
-    # le mot
-    # les mots
-    # des mots
-    if tokens[i].lower() in [u'le', u'les', u'des'] and tokens[i + 2].startswith(u'mot'):
-        i = alinea_lexer.skip_to_quote_start(tokens, i)
-        i = parse_for_each(parse_quote, tokens, i, node)
-        i = alinea_lexer.skip_to_next_word(tokens, i)
-        i = parse_reference(tokens, i, node)
-    # le nombre
-    # le chiffre
-    # le taux
-    elif tokens[i].lower() == u'le' and tokens[i + 2] in [u'nombre', u'chiffre', u'taux']:
-        i = alinea_lexer.skip_to_quote_start(tokens, i)
+
+    try:
+        tree = grammar.match(''.join(tokens[i:]).lower())
+        i += len(alinea_lexer.tokenize(tree.text))
+        capture = CaptureVisitor(['positional_conjunction' ])
+        capture.visit(tree)
+        if 'positional_conjunction' in capture.captures:
+            node['position'] = position[capture.captures['positional_conjunction']]
         i = parse_quote(tokens, i, node)
-    # la référence
-    # les références
-    elif tokens[i].lower() in [u'la', u'les'] and tokens[i + 2].startswith(u'référence'):
-        i = alinea_lexer.skip_to_quote_start(tokens, i)
-        i = parse_quote(tokens, i, node)
-    else:
-        debug(parent, tokens, i, 'parse_word_reference none')
+    except parsimonious.exceptions.ParseError:
         remove_node(parent, node)
-        return j
+        return i
+
+    i = alinea_lexer.skip_to_next_word(tokens, i)
+    i = parse_reference(tokens, i, node)
+    
     debug(parent, tokens, i, 'parse_word_reference end')
+
     return i
 
 def parse_header2_reference(tokens, i, parent):
