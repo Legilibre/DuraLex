@@ -183,12 +183,18 @@ def parse_paragraph_reference(tokens, i, parent):
 
     debug(parent, tokens, i, 'parse_paragraph_reference')
 
-    # du paragraphe {order}
-    # le paragraphe {order}
-    if tokens[i].lower() in [u'du', u'le'] and tokens[i + 2] == u'paragraphe':
-        node['order'] = parse_int(tokens[i + 4]);
-        i += 6
-    else:
+    grammar = parsimonious.Grammar("""
+paragraph_ref = ("du paragraphe " paragraph_order) / ("le paragraphe " paragraph_order)
+paragraph_order = ~"\d+"
+    """)
+
+    try:
+        tree = grammar.match(''.join(tokens[i:]))
+        i += len(alinea_lexer.tokenize(tree.text))
+        capture = CaptureVisitor(['paragraph_order' ])
+        capture.visit(tree)
+        node['order'] = parse_int(capture.captures['paragraph_order'])
+    except parsimonious.exceptions.ParseError:
         remove_node(parent, node)
         return i
 
