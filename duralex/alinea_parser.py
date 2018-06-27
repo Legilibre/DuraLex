@@ -777,18 +777,25 @@ def parse_code_part_reference(tokens, i, parent):
     i = parse_position(tokens, i, node)
     i = parse_scope(tokens, i, node)
 
-    # la {order} partie [{codeReference}]
-    if tokens[i] == u'la' and is_number_word(tokens[i + 2]) and tokens[i + 4] == u'partie':
-        node['order'] = word_to_number(tokens[i + 2])
-        i += 6
+    grammar = parsimonious.Grammar("""
+code_part_ref = pronoun whitespace+ code_part_order whitespace+ "partie" whitespace+
+code_part_order = number_word
+
+pronoun = "la" / "de la"
+number_word = "une" / "un" / "première" / "premier" / "deuxième" / "deux" / "seconde" / "second" / "troisième" / "trois" / "quatrième" / "quatre" / "cinquième" / "cinq" / "sixième" / "six" / "septième" / "sept" / "huitième" / "huit" / "neuvième" / "neuf" / "dixième" / "dix" / "onzième" / "onze" / "douzième" / "douze" / "treizième" / "treize" / "quatorzième" / "quatorze" / "quinzième" / "quinze" / "seizième" / "seize"
+whitespace = ~"\s+"
+    """)
+
+    try:
+        tree = grammar.match(''.join(tokens[i:]))
+        i += len(alinea_lexer.tokenize(tree.text))
+        
+        capture = CaptureVisitor(['number_word' ])
+        capture.visit(tree)
+        node['order'] = word_to_number(capture.captures['number_word'])
+
         i = parse_code_reference(tokens, i, node)
-    # de la {order} partie [{codeReference}]
-    elif tokens[i] == u'de' and tokens[i + 2] == u'la' and is_number_word(tokens[i + 4]) and tokens[i + 6] == u'partie':
-        node['order'] = word_to_number(tokens[i + 4])
-        i += 8
-        i = parse_code_reference(tokens, i, node)
-    else:
-        debug(parent, tokens, i, 'parse_code_part_reference none')
+    except parsimonious.exceptions.ParseError as e:
         remove_node(parent, node)
         return j
 
