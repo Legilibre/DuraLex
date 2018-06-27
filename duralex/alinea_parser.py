@@ -87,7 +87,7 @@ def parse_section_reference(tokens, i, parent):
     debug(parent, tokens, i, 'parse_section_reference')
 
     grammar = parsimonious.Grammar("""
-section = ~"(de )*" "la section " section_order
+section_ref = ~"(de )*" "la section " section_order
 section_order = ~"\d+"
     """)
 
@@ -119,7 +119,7 @@ def parse_subsection_reference(tokens, i, parent):
     debug(parent, tokens, i, 'parse_subsection_reference')
 
     grammar = parsimonious.Grammar("""
-sub_section = ~"(de )*" "la sous-section " sub_section_order
+sub_section_ref = ~"(de )*" "la sous-section " sub_section_order
 sub_section_order = ~"\d+"
     """)
 
@@ -150,12 +150,19 @@ def parse_chapter_reference(tokens, i, parent):
 
     debug(parent, tokens, i, 'parse_chapter_reference')
 
-    # du chapitre {order}
-    # le chapitre {order}
-    if tokens[i].lower() in [u'du', u'le'] and tokens[i + 2] == u'chapitre' and is_roman_number(tokens[i + 4]):
-        node['order'] = parse_roman_number(tokens[i + 4]);
-        i += 6
-    else:
+    grammar = parsimonious.Grammar("""
+chapter_ref = ("du chapitre " chapter_order) / ("le chapitre " chapter_order)
+chapter_order = roman_number
+roman_number = ~"Ier|[IVXLCDM]+(èm)?e?"
+    """)
+
+    try:
+        tree = grammar.match(''.join(tokens[i:]))
+        i += len(alinea_lexer.tokenize(tree.text))
+        capture = CaptureVisitor(['roman_number' ])
+        capture.visit(tree)
+        node['order'] = parse_roman_number(capture.captures['roman_number'])
+    except parsimonious.exceptions.ParseError:
         remove_node(parent, node)
         return i
 
