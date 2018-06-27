@@ -799,21 +799,27 @@ def parse_book_reference(tokens, i, parent):
 
     debug(parent, tokens, i, 'parse_book_reference')
 
-    j = i
-    i = parse_position(tokens, i, node)
-    i = parse_scope(tokens, i, node)
+    grammar = parsimonious.Grammar("""
+book_ref = pronoun whitespace* "livre" whitespace book_order
+book_order = roman_number
 
-    # le livre {order}
-    # du livre {order}
-    if tokens[i].lower() in [u'le', u'du'] and tokens[i + 2] == u'livre' and is_roman_number(tokens[i + 4]):
-        node['order'] = parse_roman_number(tokens[i + 4])
-        i += 6
-    else:
-        debug(parent, tokens, i, 'parse_book_reference none')
+roman_number = ~"Ier|[IVXLCDM]+(èm)?e?"
+whitespace = ~"\s+"
+pronoun = "du" / "le"
+    """)
+
+    try:
+        tree = grammar.match(''.join(tokens[i:]))
+        i = parse_position(tokens, i, node)
+        i = parse_scope(tokens, i, node)
+        i += len(alinea_lexer.tokenize(tree.text))
+        capture = CaptureVisitor(['roman_number' ])
+        capture.visit(tree)
+        node['order'] = parse_roman_number(capture.captures['roman_number'])
+        i = parse_reference(tokens, i, node)
+    except parsimonious.exceptions.ParseError as e:
         remove_node(parent, node)
-        return j
-
-    i = parse_reference(tokens, i, node)
+        return i
 
     debug(parent, tokens, i, 'parse_book_reference end')
 
