@@ -3,3 +3,4 @@ html5lib
 beautifulsoup4
 requests
 unidiff
+parsimonious
