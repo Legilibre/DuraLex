@@ -1050,27 +1050,29 @@ def parse_position(tokens, i, node):
     if i >= len(tokens):
         return i
 
-    j = i
-    # i = alinea_lexer.skip_to_next_word(tokens, i)
+    grammar = parsimonious.Grammar("""
+rule = whitespaces position whitespaces
 
-    # après
-    if tokens[i].lower() == u'après':
-        node['position'] = 'after'
-        i += 2
-    # avant
-    elif tokens[i].lower() == u'avant':
-        node['position'] = 'before'
-        i += 2
-    # au début
-    elif tokens[i].lower() == u'au' and tokens[i + 2] == u'début':
-        node['position'] = 'beginning'
-        i += 4
-    # à la fin du {article}
-    elif tokens[i].lower() == u'à' and tokens[i + 2] == u'la' and tokens[i + 4] == u'fin':
-        node['position'] = 'end'
-        i += 6
-    else:
-        return j
+position = ~"après|avant|au +début|à +la +fin"i
+
+whitespaces = ~"\s*"
+""")
+
+    try:
+        tree = grammar.match(''.join(tokens[i:]))
+        i += len(alinea_lexer.tokenize(tree.text))
+        capture = CaptureVisitor(['position'])
+        capture.visit(tree)
+        if re.fullmatch( r' *après *', tree.text, flags=re.IGNORECASE ):
+            node['position'] = 'after'
+        elif re.fullmatch( r' *avant *', tree.text, flags=re.IGNORECASE ):
+            node['position'] = 'before'
+        elif re.fullmatch( r' *à +la +fin *', tree.text, flags=re.IGNORECASE ):
+            node['position'] = 'beginning'
+        elif re.fullmatch( r' *au +début *', tree.text, flags=re.IGNORECASE ):
+            node['position'] = 'end'
+    except parsimonious.exceptions.ParseError as e:
+        return i
 
     return i
 
