@@ -336,18 +336,16 @@ multiplicative_adverb_decades = ~"(dec|v[ei]c|tr[ei]c|quadrag|quinquag|sexag|sep
     try:
         tree = grammar.match(''.join(tokens[i:]))
         node['is' + tokens[i].title()] = True
+        # ? FIXME: we should re-asses how we handle multiplicative adverbs
+        # ? We might want to include them in the actual ID.
+        # ? Code might look like that:
+        # ? for k, adverb in enumerate(alinea_lexer.TOKEN_MULTIPLICATIVE_ADVERBS):
+        # ?   if re.fullmatch(adverb, tokens[j]):
         j = i
         i += len(alinea_lexer.tokenize(tree.text))
         i = alinea_lexer.skip_spaces(tokens, i)
     except parsimonious.exceptions.ParseError:
         return i
-
-    for k, adverb in enumerate(alinea_lexer.TOKEN_MULTIPLICATIVE_ADVERBS):
-        if re.fullmatch(adverb, tokens[j]):
-            node['is' + tokens[j].title()] = True
-            # node['number'] = k+1
-            # skip {multiplicativeAdverb} and the following space
-            break
 
     return i
 
@@ -1291,28 +1289,37 @@ def parse_header2_reference(tokens, i, parent):
     i = parse_position(tokens, i, node)
     i = parse_scope(tokens, i, node)
 
-    # le {order}° ({multiplicativeAdverb}) ({articlePartRef})
-    # du {order}° ({multiplicativeAdverb}) ({articlePartRef})
-    # au {order}° ({multiplicativeAdverb}) ({articlePartRef})
-    if tokens[i].lower() in [u'le', u'du', u'au'] and re.compile(u'\d+°').match(tokens[i + 2]):
-        node['order'] = parse_int(tokens[i + 2])
-        i += 4
-        i = parse_multiplicative_adverb(tokens, i, node)
-        i = parse_article_part_reference(tokens, i, node)
-    # le même {order}° ({multiplicativeAdverb}) ({articlePartRef})
-    # du même {order}° ({multiplicativeAdverb}) ({articlePartRef})
-    # au même {order}° ({multiplicativeAdverb}) ({articlePartRef})
-    elif tokens[i].lower() in [u'le', u'du', u'au'] and tokens[i + 2] == u'même' and re.compile(u'\d+°').match(tokens[i + 4]):
-        node['order'] = parse_int(tokens[i + 4])
-        i += 6
-        i = parse_multiplicative_adverb(tokens, i, node)
-        i = parse_article_part_reference(tokens, i, node)
-    else:
-        debug(parent, tokens, i, 'parse_header2_reference none')
+    grammar = parsimonious.Grammar("""
+header2_ref = whitespace* pronoun whitespace* ("même" whitespace)* header2_order whitespace*
+header2_order = ~"\d+" "°" (whitespace multiplicative_adverb)*
+
+whitespace = ~"\s+"
+pronoun = "le" / "du" / "au"
+
+multiplicative_adverb = ( multiplicative_adverb_units_before_decades? multiplicative_adverb_decades ) / multiplicative_adverb_units
+multiplicative_adverb_units = ~"semel|bis|ter|quater|(quinqu|sex|sept|oct|no[nv])ies"i
+multiplicative_adverb_units_before_decades = ~"un(de?)?|duo(de)?|ter|quater|quin|sex?|sept|octo|novo"i
+multiplicative_adverb_decades = ~"(dec|v[ei]c|tr[ei]c|quadrag|quinquag|sexag|septuag|octog|nonag)ies"i
+    """)
+
+    try:
+        tree = grammar.match(''.join(tokens[i:]))
+        i += len(alinea_lexer.tokenize(tree.text))
+
+        capture = CaptureVisitor(['header2_order', 'multiplicative_adverb'])
+        capture.visit(tree)
+        
+        if 'multiplicative_adverb' in capture.captures:
+            node['is' + capture.captures['multiplicative_adverb'].title()] = True
+        node['order'] = parse_int(capture.captures['header2_order'])
+
+        parse_article_part_reference(tokens, i, node)
+    except parsimonious.exceptions.ParseError as e:
         remove_node(parent, node)
         return j
-    # i = parse_quote(tokens, i, node)
+    
     debug(parent, tokens, i, 'parse_header2_reference end')
+    
     return i
 
 def parse_header3_reference(tokens, i, parent):
@@ -1329,19 +1336,26 @@ def parse_header3_reference(tokens, i, parent):
 
     grammar = parsimonious.Grammar("""
 header3_ref = whitespace* pronoun whitespace* ("même" whitespace)* header3_order whitespace*
-header3_order = ~"[a-z]"
+header3_order = ~"[a-z]" (whitespace multiplicative_adverb)*
 
 whitespace = ~"\s+"
 pronoun = "le" / "du" / "au"
+
+multiplicative_adverb = ( multiplicative_adverb_units_before_decades? multiplicative_adverb_decades ) / multiplicative_adverb_units
+multiplicative_adverb_units = ~"semel|bis|ter|quater|(quinqu|sex|sept|oct|no[nv])ies"i
+multiplicative_adverb_units_before_decades = ~"un(de?)?|duo(de)?|ter|quater|quin|sex?|sept|octo|novo"i
+multiplicative_adverb_decades = ~"(dec|v[ei]c|tr[ei]c|quadrag|quinquag|sexag|septuag|octog|nonag)ies"i
     """)
 
     try:
         tree = grammar.match(''.join(tokens[i:]))
         i += len(alinea_lexer.tokenize(tree.text))
 
-        capture = CaptureVisitor(['header3_order' ])
+        capture = CaptureVisitor(['header3_order', 'multiplicative_adverb'])
         capture.visit(tree)
 
+        if 'multiplicative_adverb' in capture.captures:
+            node['is' + capture.captures['multiplicative_adverb'].title()] = True
         node['order'] = ord(capture.captures['header3_order']) - ord('a') + 1
     except parsimonious.exceptions.ParseError as e:
         remove_node(parent, node)
@@ -1369,20 +1383,27 @@ def parse_header1_reference(tokens, i, parent):
 
     grammar = parsimonious.Grammar("""
 header1_ref = whitespace* pronoun whitespace* header1_order whitespace*
-header1_order = roman_number
+header1_order = roman_number (whitespace multiplicative_adverb)*
 
 roman_number = ~"Ier|[IVXLCDM]+(èm)?e?"
 whitespace = ~"\s+"
 pronoun = "le" / "du"
+
+multiplicative_adverb = ( multiplicative_adverb_units_before_decades? multiplicative_adverb_decades ) / multiplicative_adverb_units
+multiplicative_adverb_units = ~"semel|bis|ter|quater|(quinqu|sex|sept|oct|no[nv])ies"i
+multiplicative_adverb_units_before_decades = ~"un(de?)?|duo(de)?|ter|quater|quin|sex?|sept|octo|novo"i
+multiplicative_adverb_decades = ~"(dec|v[ei]c|tr[ei]c|quadrag|quinquag|sexag|septuag|octog|nonag)ies"i
     """)
 
     try:
         tree = grammar.match(''.join(tokens[i:]))
         i += len(alinea_lexer.tokenize(tree.text))
 
-        capture = CaptureVisitor(['roman_number' ])
+        capture = CaptureVisitor(['roman_number', 'multiplicative_adverb'])
         capture.visit(tree)
 
+        if 'multiplicative_adverb' in capture.captures:
+            node['is' + capture.captures['multiplicative_adverb'].title()] = True
         node['order'] = parse_roman_number(capture.captures['roman_number'])
     except parsimonious.exceptions.ParseError as e:
         remove_node(parent, node)

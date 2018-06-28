@@ -198,7 +198,7 @@ class ParseAlineaReferenceTest(DuralexTestCase):
         self.assertEqualAST(
             self.call_parse_func(
                 parser.parse_alinea_reference,
-                u"le premier alinéa du II de l'article L. 121-3"
+                u"le premier alinéa du II bis de l'article L. 121-3"
             ),
             {'children': [
                 {
@@ -206,6 +206,7 @@ class ParseAlineaReferenceTest(DuralexTestCase):
                     'type': u'alinea-reference',
                     'children': [
                         {
+                            'isBis': True,
                             'order': 2,
                             'type': u'header1-reference',
                             'children': [
