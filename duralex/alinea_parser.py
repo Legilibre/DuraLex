@@ -326,14 +326,29 @@ def parse_multiplicative_adverb(tokens, i, node):
     if i >= len(tokens):
         return i
 
-    adverbs = alinea_lexer.TOKEN_MULTIPLICATIVE_ADVERBS.sort(key = lambda s: -len(s))
-    for adverb in alinea_lexer.TOKEN_MULTIPLICATIVE_ADVERBS:
-        if tokens[i].endswith(adverb):
-            node['is' + adverb.title()] = True;
+    grammar = parsimonious.Grammar("""
+multiplicative_adverb = ( multiplicative_adverb_units_before_decades? multiplicative_adverb_decades ) / multiplicative_adverb_units
+multiplicative_adverb_units = ~"semel|bis|ter|quater|(quinqu|sex|sept|oct|no[nv])ies"i
+multiplicative_adverb_units_before_decades = ~"un(de?)?|duo(de)?|ter|quater|quin|sex?|sept|octo|novo"i
+multiplicative_adverb_decades = ~"(dec|v[ei]c|tr[ei]c|quadrag|quinquag|sexag|septuag|octog|nonag)ies"i
+""")
+
+    try:
+        tree = grammar.match(''.join(tokens[i:]))
+        node['is' + tokens[i].title()] = True
+        j = i
+        i += len(alinea_lexer.tokenize(tree.text))
+        i = alinea_lexer.skip_spaces(tokens, i)
+    except parsimonious.exceptions.ParseError:
+        return i
+
+    for k, adverb in enumerate(alinea_lexer.TOKEN_MULTIPLICATIVE_ADVERBS):
+        if re.fullmatch(adverb, tokens[j]):
+            node['is' + tokens[j].title()] = True
+            # node['number'] = k+1
             # skip {multiplicativeAdverb} and the following space
-            i += 1
-            i = alinea_lexer.skip_spaces(tokens, i)
-            return i
+            break
+
     return i
 
 def parse_definition(tokens, i, parent):
