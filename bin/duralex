@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding=utf-8 -*-
 
 import codecs
@@ -25,6 +25,7 @@ from duralex.ResolveFullyQualifiedDefinitionsVisitor import ResolveFullyQualifie
 from duralex.RemoveQuotePrefixVisitor import RemoveQuotePrefixVisitor
 from duralex.FixMissingCodeOrLawReferenceVisitor import FixMissingCodeOrLawReferenceVisitor
 from duralex.SwapDefinitionAndReferenceVisitor import SwapDefinitionAndReferenceVisitor
+from duralex.ResolveLookbackReferencesVisitor import ResolveLookbackReferencesVisitor
 
 def decode(data, encoding = None):
     if encoding:
@@ -69,6 +70,7 @@ def handle_data(data, args):
             amendments = json.loads(amendments)
             duralex.amendment_parser.parse(amendments, tree)
 
+    ResolveLookbackReferencesVisitor().visit(tree)
     ForkReferenceVisitor().visit(tree)
     ResolveFullyQualifiedDefinitionsVisitor().visit(tree)
     ResolveFullyQualifiedReferencesVisitor().visit(tree)

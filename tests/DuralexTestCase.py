@@ -17,6 +17,7 @@ from duralex.DeleteEmptyChildrenVisitor import DeleteEmptyChildrenVisitor
 from duralex.DeleteParentVisitor import DeleteParentVisitor
 from duralex.DeleteUUIDVisitor import DeleteUUIDVisitor
 from duralex.AddParentVisitor import AddParentVisitor
+from duralex.ResolveLookbackReferencesVisitor import ResolveLookbackReferencesVisitor
 
 from colorama import init, Fore
 
@@ -73,9 +74,11 @@ class DuralexTestCase(unittest.TestCase):
         return tree
 
     def assertEqualAST(self, a, b):
+        ResolveLookbackReferencesVisitor().visit(a)
         DeleteParentVisitor().visit(a)
         DeleteEmptyChildrenVisitor().visit(a)
         DeleteUUIDVisitor().visit(a)
+        ResolveLookbackReferencesVisitor().visit(b)
         DeleteParentVisitor().visit(b)
         DeleteEmptyChildrenVisitor().visit(b)
         DeleteUUIDVisitor().visit(b)

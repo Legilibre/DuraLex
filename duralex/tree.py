@@ -54,6 +54,7 @@ TYPE_ALINEA_REFERENCE       = u'alinea-reference'
 TYPE_SENTENCE_REFERENCE     = u'sentence-reference'
 TYPE_WORD_REFERENCE         = u'word-reference'
 TYPE_INCOMPLETE_REFERENCE   = u'incomplete-reference'
+TYPE_LOOKBACK_REFERENCE     = u'lookback-reference'
 
 TYPE_REFERENCE = [
     TYPE_CODE_REFERENCE,
@@ -74,6 +75,7 @@ TYPE_REFERENCE = [
     TYPE_WORD_REFERENCE,
     TYPE_INCOMPLETE_REFERENCE,
     TYPE_BILL_ARTICLE_REFERENCE,
+    TYPE_LOOKBACK_REFERENCE,
 ]
 
 def unshift_node(parent, node):

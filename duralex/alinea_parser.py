@@ -246,56 +246,47 @@ def parse_law_reference(tokens, i, parent):
 
     debug(parent, tokens, i, 'parse_law_reference')
 
-    # de la loi n° 77-729 du 7 juillet 1977
-    grammar = parsimonious.Grammar( """
-texte = whitespace* ( ( ~"(de +)?(la +|l' *)" french_text ) / ~"de +la +même +loi" ) whitespace*
+    grammar = parsimonious.Grammar("""
+law_ref = _* (explicit_law_ref / lookback_law_ref) _*
+explicit_law_ref = (pronoun _*) law_type _ ((number_abvr _* law_id _ "du" _ date) / (number_abvr _* law_id) / ("du" _ date))
+lookback_law_ref = (pronoun _*) "même" _ law_type
 
-french_text_name = ~"loi( +constitutionnelle| +organique)?|ordonnance|d[ée]cret(-loi)?|arr[êe]t[ée]|circulaire"i
+law_type = ~"loi( +constitutionnelle| +organique)?|ordonnance|d[ée]cret(-loi)?|arr[êe]t[ée]|circulaire"i
+law_id = ~"[0-9]+[-‑][0-9]+"
 
-french_text = french_text_name ( ( numtext du_date ) / numtext / du_date )
-
-numtext = numero french_law_identifier
-
-french_law_identifier = ~"[0-9]+[-‑][0-9]+"
-
-du_date = ~" +du +"i date
-date = day whitespace month whitespace year
+date = day _ month _ year
 day = ~"1er|[12][0-9]|3[01]|[1-9]"i
 month = ~"janvier|février|mars|avril|mai|juin|juillet|août|septembre|octobre|novembre|décembre"i
 year = ~"(1[5-9]|2[0-9])[0-9]{2}"
 
-whitespace = ~"\s+"
-numero = ~" +n° *| +no *"i
-    """ )
+pronoun = ~"la"i / ~"de la"i / ~"de l'"i / ~"l'"i
+number_abvr = ~"n°|no"i
+_ = ~"\s+"
+    """)
 
     node = create_node(parent, {
         'type': TYPE_LAW_REFERENCE,
         'id': '',
         'children': [],
     })
+
     try:
         tree = grammar.match(''.join( tokens[i:]))
-        if re.match(r"de la même loi", tree.text):
-            i += 8
-            law_refs = filter_nodes(
-                get_root(parent),
-                lambda n: 'type' in n and n['type'] == TYPE_LAW_REFERENCE
-            )
-            law_ref = copy_node(law_refs[-2], False)
-            push_node(parent, law_ref)
-            remove_node(parent, node)
-            node = law_ref
+        i += len(alinea_lexer.tokenize(tree.text))
+
+        capture = CaptureVisitor(['law_type', 'lookback_law_ref', 'law_id', 'year', 'month', 'day'])
+        capture.visit(tree)
+
+        if 'lookback_law_ref' in capture.captures:
+            mark_as_lookback_reference(node)
         else:
-            i += len(alinea_lexer.tokenize(tree.text))
-            capture = CaptureVisitor(['french_text_name', 'french_law_identifier', 'year', 'month', 'day'])
-            capture.visit(tree)
-            if 'french_law_identifier' in capture.captures:
-                node['id'] = capture.captures['french_law_identifier']
-            if 'french_text_name' in capture.captures:
-                node['lawType'] = capture.captures['french_text_name']
+            if 'law_id' in capture.captures:
+                node['id'] = capture.captures['law_id']
+            if 'law_type' in capture.captures:
+                node['lawType'] = capture.captures['law_type']
             if 'year' in capture.captures:
                 node['lawDate'] = '%s-%i-%s' % (capture.captures['year'], month_to_number( capture.captures['month'] ), capture.captures['day'] )
-    except parsimonious.exceptions.ParseError:
+    except parsimonious.exceptions.ParseError as e:
         remove_node(parent, node)
         return i
 
@@ -723,13 +714,13 @@ title_order = roman_number
 
 roman_number = ~"Ier|[IVXLCDM]+(èm)?e?"
 whitespace = ~"\s+"
-pronoun = "le" / "du"
+pronoun = ~"le"i / ~"du"i
     """)
 
     try:
         tree = grammar.match(''.join(tokens[i:]))
         i += len(alinea_lexer.tokenize(tree.text))
-        capture = CaptureVisitor(['roman_number' ])
+        capture = CaptureVisitor(['roman_number'])
         capture.visit(tree)
         node['order'] = parse_roman_number(capture.captures['roman_number'])
     except parsimonious.exceptions.ParseError:
@@ -791,7 +782,7 @@ def parse_code_part_reference(tokens, i, parent):
 code_part_ref = pronoun whitespace+ code_part_order whitespace+ "partie" whitespace+
 code_part_order = number_word
 
-pronoun = "la" / "de la"
+pronoun = ~"la"i / ~"de la"i
 number_word = "une" / "un" / "première" / "premier" / "deuxième" / "deux" / "seconde" / "second" / "troisième" / "trois" / "quatrième" / "quatre" / "cinquième" / "cinq" / "sixième" / "six" / "septième" / "sept" / "huitième" / "huit" / "neuvième" / "neuf" / "dixième" / "dix" / "onzième" / "onze" / "douzième" / "douze" / "treizième" / "treize" / "quatorzième" / "quatorze" / "quinzième" / "quinze" / "seizième" / "seize"
 whitespace = ~"\s+"
     """)
@@ -830,7 +821,7 @@ book_order = roman_number
 
 roman_number = ~"Ier|[IVXLCDM]+(èm)?e?"
 whitespace = ~"\s+"
-pronoun = "du" / "le"
+pronoun = ~"du"i / ~"le"i
     """)
 
     try:
@@ -1189,18 +1180,15 @@ def fix_incomplete_references(parent, node):
                 for c in node['children']:
                     push_node(child, copy_node(c))
 
-def parse_back_reference(tokens, i, parent):
+def parse_lookback_reference(tokens, i, parent):
     if i >= len(tokens):
         return i
+ 
     if tokens[i] == u'Il':
-        refs = filter_nodes(
-            get_root(parent),
-            lambda n: is_reference(n)
-        )
-        for j in reversed(range(0, len(refs))):
-            if get_node_depth(refs[j]) <= get_node_depth(parent):
-                push_node(parent, copy_node(refs[j]))
-                break
+        create_node(parent, {
+            'type': TYPE_LOOKBACK_REFERENCE,
+        })
+
         i += 2
     return i
 
@@ -1239,10 +1227,10 @@ def parse_word_reference(tokens, i, parent):
 word_ref = not_a_word* (positional_conjunction whitespace)* pronoun whitespace* word_ref_type not_double_quote*
 word_ref_type = "mots" / "mot" / "nombre" / "chiffre" / "taux" / "références" / "référence"
 
-pronoun = "les" / "le" / "des" / "la" / "l'"
+pronoun = ~"les"i / ~"le"i / ~"des"i / ~"la"i / ~"l'"i
 whitespace = ~"\s+"
 not_double_quote = ~"[^\\"]*"
-positional_conjunction = "après" / "avant" / "au début" / "à la fin"
+positional_conjunction = ~"après"i / ~"avant"i / ~"au début"i / ~"à la fin"i
 not_a_word = ~"\W*"
     """)
 
@@ -1256,12 +1244,12 @@ not_a_word = ~"\W*"
     i = parse_scope(tokens, i, node)
 
     try:
-        tree = grammar.match(''.join(tokens[i:]).lower())
+        tree = grammar.match(''.join(tokens[i:]))
         i += len(alinea_lexer.tokenize(tree.text))
         capture = CaptureVisitor(['positional_conjunction' ])
         capture.visit(tree)
         if 'positional_conjunction' in capture.captures:
-            node['position'] = position[capture.captures['positional_conjunction']]
+            node['position'] = position[capture.captures['positional_conjunction'].lower()]
         i = parse_quote(tokens, i, node)
     except parsimonious.exceptions.ParseError:
         remove_node(parent, node)
@@ -1291,7 +1279,7 @@ header2_ref = whitespace* pronoun whitespace* ("même" whitespace)* header2_orde
 header2_order = ~"\d+" "°" (whitespace multiplicative_adverb)*
 
 whitespace = ~"\s+"
-pronoun = "le" / "du" / "au"
+pronoun = ~"le"i / ~"du"i / "au"
 
 multiplicative_adverb = ( multiplicative_adverb_units_before_decades? multiplicative_adverb_decades ) / multiplicative_adverb_units
 multiplicative_adverb_units = ~"semel|bis|ter|quater|(quinqu|sex|sept|oct|no[nv])ies"i
@@ -1336,7 +1324,7 @@ header3_ref = whitespace* pronoun whitespace* ("même" whitespace)* header3_orde
 header3_order = ~"[a-z]" (whitespace multiplicative_adverb)*
 
 whitespace = ~"\s+"
-pronoun = "le" / "du" / "au"
+pronoun = ~"le"i / ~"du"i / "au"
 
 multiplicative_adverb = ( multiplicative_adverb_units_before_decades? multiplicative_adverb_decades ) / multiplicative_adverb_units
 multiplicative_adverb_units = ~"semel|bis|ter|quater|(quinqu|sex|sept|oct|no[nv])ies"i
@@ -1384,7 +1372,7 @@ header1_order = roman_number (whitespace multiplicative_adverb)*
 
 roman_number = ~"Ier|[IVXLCDM]+(èm)?e?"
 whitespace = ~"\s+"
-pronoun = "le" / "du"
+pronoun = ~"le"i / ~"du"i
 
 multiplicative_adverb = ( multiplicative_adverb_units_before_decades? multiplicative_adverb_decades ) / multiplicative_adverb_units
 multiplicative_adverb_units = ~"semel|bis|ter|quater|(quinqu|sex|sept|oct|no[nv])ies"i
@@ -1619,14 +1607,6 @@ def parse_raw_article_content(tokens, i, parent):
 
     return i
 
-
-def parse_code_name(tokens, i, node):
-    while i < len(tokens) and tokens[i] != u',' and tokens[i] != u'est':
-        node['id'] += tokens[i]
-        i += 1
-    node['id'] = node['id'].strip()
-    return i
-
 # Parse a reference to a specific or aforementioned code.
 # References to a specific code are specified by using the exact name of that code (cf parse_code_name).
 # References to an aforementioned code will be in the form of "le même code".
@@ -1636,37 +1616,36 @@ def parse_code_reference(tokens, i, parent):
 
     node = create_node(parent, {
         'type': TYPE_CODE_REFERENCE,
-        'id': '',
     })
 
     debug(parent, tokens, i, 'parse_code_reference')
 
-    # code
-    if tokens[i] == u'code':
-        i = parse_code_name(tokens, i, node)
-    # le code
-    # du code
-    elif tokens[i].lower() in [u'le', u'du'] and tokens[i + 2] == 'code':
-        i = parse_code_name(tokens, i + 2, node)
-    # le même code
-    # du même code
-    elif tokens[i].lower() in [u'le', u'du'] and tokens[i + 2] == u'même' and tokens[i + 4] == 'code':
-        remove_node(parent, node)
-        codeRefs = filter_nodes(
-            get_root(parent),
-            lambda n: 'type' in n and n['type'] == TYPE_CODE_REFERENCE
-        )
-        # the lduralex.tree.one in order of traversal is the previous one in order of syntax
-        node = copy_node(codeRefs[-1])
-        node['children'] = []
-        push_node(parent, node)
-        # skip "le même code "
-        i += 6
+    grammar = parsimonious.Grammar("""
+code_ref = named_code_ref / back_reference_code_ref
+named_code_ref = whitespace* (pronoun whitespace)* "code" whitespace+ code_name whitespace*
+back_reference_code_ref = whitespace* (pronoun whitespace)* "même" whitespace+ "code" whitespace*
+code_name = ~"de +la +consommation +des +boissons +et +des +mesures +contre +l['’] *alcoolisme +applicable +dans +la +collectivité +territoriale +de +Mayotte|du +domaine +de +l['’] *Etat +et +des +collectivités +publiques +applicable +à +la +collectivité +territoriale +de +Mayotte|des +pensions +de +retraite +des +marins +français +du +commerce, +de +pêche +ou +de +plaisance|des +pensions +militaires +d['’] *invalidité +et +des +victimes +de +la +guerre|des +tribunaux +administratifs +et +des +cours +administratives +d['’] *appel|des +pensions +militaires +d['’] *invalidité +et +des +victimes +de +guerre|de +déontologie +des +professionnels +de +l['’] *expertise +comptable|de +déontologie +de +la +profession +de +commissaire +aux +comptes|de +l['’] *entrée +et +du +séjour +des +étrangers +et +du +droit +d['’] *asile|des +débits +de +boissons +et +des +mesures +contre +l['’] *alcoolisme|du +domaine +public +fluvial +et +de +la +navigation +intérieure|de +la +Légion +d['’] *honneur +et +de +la +médaille +militaire|des +relations +entre +le +public +et +l['’] *administration|de +l['’] *expropriation +pour +cause +d['’] *utilité +publique|général +de +la +propriété +des +personnes +publiques|des +postes +et +des +communications +électroniques|des +pensions +civiles +et +militaires +de +retraite|de +l['’] *Office +national +interprofessionnel +du +blé|de +déontologie +des +agents +de +police +municipale|disciplinaire +et +pénal +de +la +marine +marchande|des +instruments +monétaires +et +des +médailles|de +déontologie +des +chirurgiens-dentistes|général +des +collectivités +territoriales|de +la +construction +et +de +l['’] *habitation|de +déontologie +de +la +police +nationale|des +communes +de +la +Nouvelle-Calédonie|général +des +impôts, +annexe +2, +CGIAN2|général +des +impôts, +annexe +3, +CGIAN3|général +des +impôts, +annexe +4, +CGIAN4|général +des +impôts +annexe +1, +CGIAN1|de +l['’] *action +sociale +et +des +familles|des +procédures +civiles +d['’] *exécution|de +la +famille +et +de +l['’] *aide +sociale|de +l['’] *industrie +cinématographique|du +travail +applicable +à +Mayotte|de +déontologie +des +sages-femmes|de +déontologie +des +architectes|de +la +propriété +intellectuelle|du +cinéma +et +de +l['’] *image +animée|rural +et +de +la +pêche +maritime|de +l['’] *organisation +judiciaire|des +juridictions +financières|de +déontologie +des +médecins|de +l['’] *enseignement +technique|de +la +nationalité +française|de +déontologie +vétérinaire|de +justice +administrative|de +la +sécurité +intérieure|de +déontologie +médicale|général +des +impôts(, +CGI)?|de +la +sécurité +sociale|monétaire +et +financier|des +caisses +d['’] *épargne|de +la +voirie +routière|de +l['’] *aviation +civile|de +justice +militaire|de +la +santé +publique|du +domaine +de +l['’] *Etat|des +marchés +publics( +\(édition +(1964|2001|2004|2006)\))?|de +procédure +civile( +\(1807\))?|de +procédure +pénale|du +travail +maritime|du +service +national|des +ports +maritimes|de +l['’] *environnement|de +la +consommation|de +la +mutualité|de +la +recherche|de +l['’] *artisanat|de +l['’] *éducation|de +l['’] *urbanisme|des +assurances|des +transports|du +patrimoine|de +la +défense|des +communes|de +l['’] *énergie|des +douanes( +de +Mayotte)?|de +commerce|de +la +route|du +tourisme|du +travail|forestier( +de +Mayotte)?|électoral|du +sport|du +blé|du +vin|minier|pénal|rural|civil"i
 
-    if node['id'] == '' or is_space(node['id']):
-        remove_node(parent, node)
-    else:
+whitespace = ~"\s+"
+pronoun = ~"le"i / ~"du"i
+    """)
+
+    try:
+        tree = grammar.match(''.join(tokens[i:]))
+        i += len(alinea_lexer.tokenize(tree.text))
+
+        capture = CaptureVisitor(['code_name', 'back_reference_code_ref'])
+        capture.visit(tree)
+
+        if 'back_reference_code_ref' in capture.captures:
+            node = mark_as_lookback_reference(node)
+        else:
+            node['id'] = 'code ' + capture.captures['code_name']
+
         i = parse_reference(tokens, i, node)
+    except parsimonious.exceptions.ParseError as e:
+        remove_node(parent, node)
+        return i
 
     debug(parent, tokens, i, 'parse_code_reference end')
 
@@ -1745,7 +1724,7 @@ def parse_reference(tokens, i, parent):
             parse_article_reference,
             parse_article_part_reference,
             parse_paragraph_reference,
-            parse_back_reference,
+            parse_lookback_reference,
             parse_incomplete_reference,
             parse_alinea_reference,
             parse_word_reference,
@@ -1878,6 +1857,13 @@ def parse_header3(tokens, i, parent):
     debug(parent, tokens, i, 'parse_header3 end')
 
     return i
+
+def mark_as_lookback_reference(node):
+    ref = create_node(node['parent'], {
+        'type': TYPE_LOOKBACK_REFERENCE,
+    })
+    push_node(ref, node)
+    return ref
 
 def parse_for_each(fn, tokens, i, parent):
     n = parent() if callable(parent) else parent

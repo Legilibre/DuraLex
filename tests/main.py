@@ -38,6 +38,8 @@ from ResolveFullyQualifiedReferencesVisitorTest import ResolveFullyQualifiedRefe
 from SortReferencesVisitorTest import SortReferencesVisitorTest
 from ForkReferenceVisitorTest import ForkReferenceVisitorTest
 from ForkEditVisitorTest import ForkEditVisitorTest
+from ResolveLookbackReferencesVisitorTest import ResolveLookbackReferencesVisitorTest
+from ParseLookbackReferenceTest import ParseLookbackReferenceTest
 
 if __name__ == '__main__':
     unittest.main()

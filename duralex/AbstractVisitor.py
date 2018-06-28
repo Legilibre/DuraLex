@@ -20,6 +20,7 @@ class AbstractVisitor(object):
             tree.TYPE_QUOTE: self.visit_quote_node,
             tree.TYPE_BILL_ARTICLE_REFERENCE: self.visit_bill_article_reference_node,
             tree.TYPE_BILL_ARTICLE: self.visit_bill_article_node,
+            tree.TYPE_LOOKBACK_REFERENCE: self.visit_lookback_reference_node,
         }
 
     def visit_code_reference_node(self, node, post):
@@ -73,12 +74,15 @@ class AbstractVisitor(object):
     def visit_bill_article_node(self, node, post):
         pass
 
+    def visit_lookback_reference_node(self, node, post):
+        pass
+
     def visit_node(self, node):
         if 'type' in node and node['type'] in self.visitors:
             self.visitors[node['type']](node, False)
 
         if 'children' in node:
-            for child in node['children']:
+            for child in list(node['children']):
                 self.visit_node(child)
 
         if 'type' in node and node['type'] in self.visitors:
