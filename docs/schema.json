@@ -1,0 +1,100 @@
+{
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"name": "MediaWiki configuration parameters schema.",
+	"type": "object",
+	"required": ["children"],
+	"additionalProperties": false,
+	"properties": {
+		"children": {
+			"type": "array",
+			"items": {
+				"$ref": "#/definitions/child"
+			}
+		},
+		"date": {
+			"type": "string",
+			"description": "Date of the law proposal or proposition proposal.",
+			"pattern": "^\\d{4}-\\d{1,2}-\\d{1,2}"
+		},
+		"description": {
+			"type": "string",
+			"description": "Description of the law proposal or proposition proposal."
+		},
+		"id": {
+			"type": "integer",
+			"description": "ID of the law proposal or proposition proposal."
+		},
+		"legislature": {
+			"type": "integer",
+			"description": "Legislature of the law proposal or proposition proposal.",
+			"minimum": 1
+		},
+		"place": {
+			"type": "string",
+			"description": "Status where the law proposal or proposition proposal is."
+		},
+		"type": {
+			"type": "string",
+			"description": "Status where the law proposal or proposition proposal is.",
+			"enum": ["law-project", "law-proposal"]
+		},
+		"url": {
+			"type": "string"
+		}
+	},
+	"definitions": {
+		"child": {
+			"anyOf": [{
+				"type": "object",
+				"required": ["type"],
+				"additionalProperties": false,
+				"properties": {
+					"type": {
+						"type": "string",
+						"description": "Child type.",
+						"enum": ["bill-article-reference", "code-reference", "code-part-reference", "book-reference", "law-reference", "title-reference", "chapter-reference", "section-reference", "subsection-reference", "paragraph-reference", "article-reference", "header1-reference", "header2-reference", "header3-reference", "alinea-reference", "sentence-reference", "word-reference", "incomplete-reference", "title-definition", "article-definition", "header1-definition", "header2-definition", "header3-definition", "subparagraph-definition", "alinea-definition", "sentence-definition", "mention-definition", "word-definition", "header1", "header2", "header3", "bill-article", "amendment", "edit", "quote", "law-project", "law-proposal"]
+					},
+					"children": {
+						"$ref": "#/properties/children",
+						"description": "Child children."
+					},
+					"id": {
+						"type": "string",
+						"description": "Child ID."
+					},
+					"editType": {
+						"type": "string",
+						"description": "Edit type.",
+						"enum": ["add", "delete", "rename", "replace", "ratified", "edit"]
+					},
+					"lawType": {
+						"type": "string",
+						"description": "Law type."
+					},
+					"lawDate": {
+						"type": "string",
+						"description": "Law date.",
+						"pattern": "^\\d{4}-\\d{1,2}-\\d{1,2}"
+					},
+					"order": {
+						"type": "integer",
+						"description": "Order in the list.",
+						"minimum": 0
+					},
+					"words": {
+						"type": "string",
+						"description": "Words, used in definitions."
+					},
+					"content": {
+						"type": "string",
+						"description": "Content, when the child is not recognized."
+					},
+					"isNew": {
+						"type": "boolean",
+						"description": "This child is new."
+					}
+				}
+			}]
+		}
+	}
+}
