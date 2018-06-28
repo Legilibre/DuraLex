@@ -19,6 +19,21 @@ class ParseArticleReferenceTest(DuralexTestCase):
             ]}
         )
 
+    def test_article_number_bis(self):
+        self.assertEqualAST(
+            self.call_parse_func(
+                parser.parse_article_reference,
+                "l'article 3 bis"
+            ),
+            {'children':[
+                {
+                    'type': u'article-reference',
+                    'id': u'3',
+                    'isBis': True
+                }
+            ]}
+        )
+
     def test_article_id(self):
         self.assertEqualAST(
             self.call_parse_func(

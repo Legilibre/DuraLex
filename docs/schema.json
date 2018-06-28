@@ -93,6 +93,11 @@
 						"type": "boolean",
 						"description": "This child is new."
 					}
+				},
+				"patternProperties": {
+					"is((Un(de?)?|Duo(de)?|Ter|Quater|Quin|Sex?|Sept|Octo|Novo)(dec|v[ei]c|tr[ei]c|quadrag|quinquag|sexag|septuag|octog|nonag)ies|(Dec|V[ei]c|Tr[ei]c|Quadrag|Quinquag|Sexag|Septuag|Octog|Nonag)ies|Semel|Bis|Ter|Quater|(Quinqu|Sex|Sept|Oct|No[nv])ies)": 
+						"type": "boolean"
+					}
 				}
 			}]
 		}
