@@ -891,12 +891,21 @@ def parse_scope(tokens, i, parent):
 
     debug(parent, tokens, i, 'parse_scope')
 
-    node = None
+    grammar = parsimonious.Grammar("""
+rule = whitespaces scope_end whitespaces
+scope_end = ~"la +fin +(de|du)"i
 
-    # la fin de
-    if tokens[i] == u'la' and tokens[i + 2] == u'fin' and tokens[i + 4] in [u'de', u'du']:
-        i += 4
+_ = ~"\s+"
+whitespaces = ~"\s*"
+    """)
+
+    node = None
+    try:
+        tree = grammar.match(''.join(tokens[i:]))
+        i += len(alinea_lexer.tokenize(tree.text))
         parent['scope'] = 'end'
+    except parsimonious.exceptions.ParseError as e:
+        return i
 
     debug(parent, tokens, i, 'parse_scope end')
 
