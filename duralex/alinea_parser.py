@@ -215,24 +215,28 @@ def parse_subparagraph_definition(tokens, i, parent):
         'children': [],
     })
 
-    j = i
+    grammar = parsimonious.Grammar("""
+rule = whitespaces subparagraph whitespaces
+subparagraph = ~"un"i _ ~"sous-paragraphe"i (_ number)? (_ ~"ainsi"i _ ~"rédigé"i)?
 
-    # un sous-paragraphe[s] [{order}] [ainsi rédigé]
-    if is_number_word(tokens[i]) and tokens[i + 2].startswith(u'sous-paragraphe'):
-        count = word_to_number(tokens[i])
-        i += 4
-        # [{order}]
-        if is_number(tokens[i]):
-            node['order'] = parse_int(tokens[i])
-        # ainsi rédigé
-        if (i + 2 < len(tokens) and tokens[i + 2].startswith(u'rédigé')
-            or (i + 4 < len(tokens) and tokens[i + 4].startswith(u'rédigé'))):
-            i = alinea_lexer.skip_to_quote_start(tokens, i)
-            i = parse_for_each(parse_quote, tokens, i, node)
-    else:
+number = ~"[0-9]+"
+_ = ~"\s+"
+whitespaces = ~"\s*"
+    """)
+
+    try:
+        tree = grammar.match(''.join(tokens[i:]))
+        i += len(alinea_lexer.tokenize(tree.text))
+        capture = CaptureVisitor(['number'])
+        capture.visit(tree)
+        if 'number' in capture.captures:
+            node['order'] = parse_int(capture.captures['number'])
+        i = alinea_lexer.skip_to_quote_start(tokens, i)
+        i = parse_for_each(parse_quote, tokens, i, node)
+    except parsimonious.exceptions.ParseError:
         remove_node(parent, node)
         debug(parent, tokens, i, 'parse_subparagraph_definition none')
-        return j
+        return i
 
     debug(parent, tokens, i, 'parse_subparagraph_definition end')
 
