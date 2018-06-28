@@ -1327,28 +1327,30 @@ def parse_header3_reference(tokens, i, parent):
     i = parse_position(tokens, i, node)
     i = parse_scope(tokens, i, node)
 
-    # le {orderLetter} ({articlePartRef})
-    # du {orderLetter} ({articlePartRef})
-    # au {orderLetter} ({articlePartRef})
-    if tokens[i].lower() in [u'le', u'du', u'au'] and re.compile(u'^[a-z]$').match(tokens[i + 2]):
-        node['order'] = ord(str(tokens[i + 2])) - ord('a') + 1
-        i += 4
-        i = parse_multiplicative_adverb(tokens, i, node)
-        i = parse_article_part_reference(tokens, i, node)
-    # le même {orderLetter} ({articlePartRef})
-    # du même {orderLetter} ({articlePartRef})
-    # au même {orderLetter} ({articlePartRef})
-    elif tokens[i].lower() in [u'le', u'du', u'au'] and tokens[i + 2] == u'même' and re.compile(u'^[a-z]$').match(tokens[i + 4]):
-        node['order'] = ord(str(tokens[i + 4])) - ord('a') + 1
-        i += 6
-        i = parse_multiplicative_adverb(tokens, i, node)
-        i = parse_article_part_reference(tokens, i, node)
-    else:
-        debug(parent, tokens, i, 'parse_header3_reference none')
+    grammar = parsimonious.Grammar("""
+header3_ref = whitespace* pronoun whitespace* ("même" whitespace)* header3_order whitespace*
+header3_order = ~"[a-z]"
+
+whitespace = ~"\s+"
+pronoun = "le" / "du" / "au"
+    """)
+
+    try:
+        tree = grammar.match(''.join(tokens[i:]))
+        i += len(alinea_lexer.tokenize(tree.text))
+
+        capture = CaptureVisitor(['header3_order' ])
+        capture.visit(tree)
+
+        node['order'] = ord(capture.captures['header3_order']) - ord('a') + 1
+    except parsimonious.exceptions.ParseError as e:
         remove_node(parent, node)
         return j
-    # i = parse_quote(tokens, i, node)
+
+    i = parse_article_part_reference(tokens, i, node)
+    
     debug(parent, tokens, i, 'parse_header3_reference end')
+    
     return i
 
 def parse_header1_reference(tokens, i, parent):
