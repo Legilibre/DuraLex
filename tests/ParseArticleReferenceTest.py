@@ -28,7 +28,7 @@ class ParseArticleReferenceTest(DuralexTestCase):
             {'children':[
                 {
                     'type': u'article-reference',
-                    'id': u'3',
+                    'id': u'3 bis',
                     'isBis': True
                 }
             ]}

@@ -449,23 +449,48 @@ def parse_article_definition(tokens, i, parent):
     })
     debug(parent, tokens, i, 'parse_article_definition')
 
-    # un article
-    if tokens[i].lower() == u'un' and tokens[i + 2] == u'article':
-        i += 4
-    # l'article
-    elif tokens[i].lower() == u'l' and tokens[i + 2] == u'article':
-        i += 4
-    else:
+    grammar = parsimonious.Grammar("""
+rule = whitespaces an_article whitespaces
+
+an_article = ( ~"un +"i / ~"l['’] *"i ) ~"article"i (whitespace article_id (whitespace so_that_written)?)?
+
+so_that_written = ~"ainsi +rédigé"i
+
+article_id = numbered_article / named_article
+
+# Classically numbered article
+numbered_article = article_type ~"[0-9]+(er|ème|e)?" ( ~" *[-‐‑] *| *\.| +" ( ~"[A-Z0-9]+(er|ème|e)?" / multiplicative_adverb ) )*
+
+# Optional prefix
+article_type = ~"\*?\*?((L\.O|LO|L|R|D|A)\*?\*?\.? *)?"
+
+# Specific article names
+named_article = ~"annexe|ex[ée]cution|unique|(pr[ée])?liminaire|pr[ée]ambule"i
+
+multiplicative_adverb = ( multiplicative_adverb_units_before_decades? multiplicative_adverb_decades ) / multiplicative_adverb_units
+multiplicative_adverb_units = ~"semel|bis|ter|quater|(quinqu|sex|sept|oct|no[nv])ies"i
+multiplicative_adverb_units_before_decades = ~"un(de?)?|duo(de)?|ter|quater|quin|sex?|sept|octo|novo"i
+multiplicative_adverb_decades = ~"(dec|v[ei]c|tr[ei]c|quadrag|quinquag|sexag|septuag|octog|nonag)ies"i
+
+whitespace = ~"\s+"
+whitespaces = ~"\s*"
+    """)
+
+    try:
+        tree = grammar.match(''.join(tokens[i:]))
+        i += len(alinea_lexer.tokenize(tree.text))
+        capture = CaptureVisitor(['article_id', 'multiplicative_adverb'])
+        capture.visit(tree)
+        if 'article_id' in capture.captures:
+            node['id'] = capture.captures['article_id']
+        if 'multiplicative_adverb' in capture.captures:
+            node['is' + capture.captures['multiplicative_adverb'].title()] = True
+        i = alinea_lexer.skip_to_quote_start(tokens, i)
+        i = parse_for_each(parse_quote, tokens, i, node)
+    except parsimonious.exceptions.ParseError:
         debug(parent, tokens, i, 'parse_article_definition none')
         remove_node(parent, node)
         return i
-
-    i = parse_article_id(tokens, i, node)
-
-    i = alinea_lexer.skip_spaces(tokens, i)
-    if i < len(tokens) and tokens[i] == u'ainsi' and tokens[i + 2] == u'rédigé':
-        i = alinea_lexer.skip_to_quote_start(tokens, i)
-        i = parse_for_each(parse_quote, tokens, i, node)
 
     debug(parent, tokens, i, 'parse_article_definition end')
 
@@ -664,29 +689,39 @@ def parse_header3_definition(tokens, i, parent):
     return i
 
 def parse_article_id(tokens, i, node):
-    node['id'] = ''
 
-    # article {articleId}
-    if i < len(tokens) and tokens[i] == 'L' and tokens[i + 1] == '.':
-        while not re.compile('\d+(-\d+)?').match(tokens[i]):
-            node['id'] += tokens[i]
-            i += 1
+    grammar = parsimonious.Grammar("""
+rule = whitespaces article_id whitespaces
 
-    if i < len(tokens) and re.compile('\d+(-\d+)?').match(tokens[i]):
-        node['id'] += tokens[i]
-        # skip {articleId} and the following space
-        i += 1
-        i = alinea_lexer.skip_spaces(tokens, i)
+article_id = numbered_article / named_article
 
-    # {articleId} {articleLetter}
-    # FIXME: handle the {articleLetter}{multiplicativeAdverb} case?
-    if i < len(tokens) and re.compile('^[A-Z]$').match(tokens[i]):
-        node['id'] += ' ' + tokens[i]
-        # skip {articleLetter} and the following space
-        i += 1
-        i = alinea_lexer.skip_spaces(tokens, i)
+# Classically numbered article
+numbered_article = article_type ~"[0-9]+(er|ème|e)?" ( ~" *[-‐‑] *| *\.| +" ( ~"[A-Z0-9]+(er|ème|e)?" / multiplicative_adverb ) )*
 
-    i = parse_multiplicative_adverb(tokens, i, node)
+# Optional prefix
+article_type = ~"\*?\*?((L\.O|LO|L|R|D|A)\*?\*?\.? *)?"
+
+# Specific article names
+named_article = ~"annexe|ex[ée]cution|unique|(pr[ée])?liminaire|pr[ée]ambule"i
+
+multiplicative_adverb = ( multiplicative_adverb_units_before_decades? multiplicative_adverb_decades ) / multiplicative_adverb_units
+multiplicative_adverb_units = ~"semel|bis|ter|quater|(quinqu|sex|sept|oct|no[nv])ies"i
+multiplicative_adverb_units_before_decades = ~"un(de?)?|duo(de)?|ter|quater|quin|sex?|sept|octo|novo"i
+multiplicative_adverb_decades = ~"(dec|v[ei]c|tr[ei]c|quadrag|quinquag|sexag|septuag|octog|nonag)ies"i
+
+whitespaces = ~"\s*"
+    """)
+
+    try:
+        tree = grammar.match(''.join(tokens[i:]))
+        i += len(alinea_lexer.tokenize(tree.text))
+        capture = CaptureVisitor(['article_id', 'multiplicative_adverb'])
+        capture.visit(tree)
+        node['id'] = capture.captures['article_id']
+        if 'multiplicative_adverb' in capture.captures:
+            node['is' + capture.captures['multiplicative_adverb'].title()] = True
+    except parsimonious.exceptions.ParseError:
+        return i
 
     if not node['id'] or is_space(node['id']):
         del node['id']
@@ -847,12 +882,21 @@ def parse_scope(tokens, i, parent):
 
     debug(parent, tokens, i, 'parse_scope')
 
-    node = None
+    grammar = parsimonious.Grammar("""
+rule = whitespaces scope_end whitespaces
+scope_end = ~"la +fin +(de|du)"i
 
-    # la fin de
-    if tokens[i] == u'la' and tokens[i + 2] == u'fin' and tokens[i + 4] in [u'de', u'du']:
-        i += 4
+_ = ~"\s+"
+whitespaces = ~"\s*"
+    """)
+
+    node = None
+    try:
+        tree = grammar.match(''.join(tokens[i:]))
+        i += len(alinea_lexer.tokenize(tree.text))
         parent['scope'] = 'end'
+    except parsimonious.exceptions.ParseError as e:
+        return i
 
     debug(parent, tokens, i, 'parse_scope end')
 
@@ -997,27 +1041,29 @@ def parse_position(tokens, i, node):
     if i >= len(tokens):
         return i
 
-    j = i
-    # i = alinea_lexer.skip_to_next_word(tokens, i)
+    grammar = parsimonious.Grammar("""
+rule = whitespaces position whitespaces
 
-    # après
-    if tokens[i].lower() == u'après':
-        node['position'] = 'after'
-        i += 2
-    # avant
-    elif tokens[i].lower() == u'avant':
-        node['position'] = 'before'
-        i += 2
-    # au début
-    elif tokens[i].lower() == u'au' and tokens[i + 2] == u'début':
-        node['position'] = 'beginning'
-        i += 4
-    # à la fin du {article}
-    elif tokens[i].lower() == u'à' and tokens[i + 2] == u'la' and tokens[i + 4] == u'fin':
-        node['position'] = 'end'
-        i += 6
-    else:
-        return j
+position = ~"après|avant|au +début|à +la +fin"i
+
+whitespaces = ~"\s*"
+""")
+
+    try:
+        tree = grammar.match(''.join(tokens[i:]))
+        i += len(alinea_lexer.tokenize(tree.text))
+        capture = CaptureVisitor(['position'])
+        capture.visit(tree)
+        if re.fullmatch( r' *après *', tree.text, flags=re.IGNORECASE ):
+            node['position'] = 'after'
+        elif re.fullmatch( r' *avant *', tree.text, flags=re.IGNORECASE ):
+            node['position'] = 'before'
+        elif re.fullmatch( r' *à +la +fin *', tree.text, flags=re.IGNORECASE ):
+            node['position'] = 'beginning'
+        elif re.fullmatch( r' *au +début *', tree.text, flags=re.IGNORECASE ):
+            node['position'] = 'end'
+    except parsimonious.exceptions.ParseError as e:
+        return i
 
     return i
 
