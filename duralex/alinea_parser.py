@@ -779,20 +779,28 @@ def parse_title_definition(tokens, i, parent):
 
     debug(parent, tokens, i, 'parse_title_definition')
 
-    # un titre {order}
-    if tokens[i].lower() == u'un' and tokens[i + 2] == u'titre' and is_roman_number(tokens[i + 4]):
-        node['order'] = parse_roman_number(tokens[i + 4])
-        i += 6
-        i = parse_multiplicative_adverb(tokens, i, node)
-    else:
+    grammar = parsimonious.Grammar("""
+rule = whitespaces a_title whitespaces
+
+a_title = ~"un"i _ ~"titre"i _ roman_number (_ ~"ainsi"i _ ~"rédigé"i)?
+
+roman_number = ~"Ier|[IVXLCDM]+(èm)?e?"
+_ = ~"\s+"
+whitespaces = ~"\s*"
+    """)
+
+    try:
+        tree = grammar.match(''.join(tokens[i:]))
+        i += len(alinea_lexer.tokenize(tree.text))
+        capture = CaptureVisitor(['roman_number'])
+        capture.visit(tree)
+        node['order'] = parse_roman_number(capture.captures['roman_number'])
+        i = alinea_lexer.skip_to_quote_start(tokens, i)
+        i = parse_for_each(parse_quote, tokens, i, node)
+    except parsimonious.exceptions.ParseError:
         debug(parent, tokens, i, 'parse_title_definition none')
         remove_node(parent, node)
         return i
-
-    i = alinea_lexer.skip_spaces(tokens, i)
-    if tokens[i] == u'ainsi' and tokens[i + 2] == u'rédigé':
-        i = alinea_lexer.skip_to_quote_start(tokens, i)
-        i = parse_for_each(parse_quote, tokens, i, node)
 
     debug(parent, tokens, i, 'parse_title_definition end')
 
