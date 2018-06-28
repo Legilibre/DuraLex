@@ -22,32 +22,35 @@ TOKEN_MONTH_NAMES = [
     u'décembre'
 ]
 TOKEN_MULTIPLICATIVE_ADVERBS = [
-    u'bis',
-    u'ter',
-    u'quater',
-    u'quinquies',
-    u'sexies',
-    u'septies',
-    u'octies',
-    u'novies',
-    u'decies',
-    u'undecies',
-    u'duodecies',
-    u'terdecies',
-    u'quaterdecies',
-    u'quindecies',
-    u'sexdecies',
-    u'septdecies',
-    u'octodecies',
-    u'novodecies',
-    u'vicies',
-    u'unvicies',
-    u'duovicies',
-    u'tervicies',
-    u'quatervicies',
-    u'quinvicies',
-    u'sexvicies',
-    u'septvicies'
+    r'semel',
+    r'bis',
+    r'ter',
+    r'quater',
+    r'quinquies',
+    r'sexies',
+    r'septies',
+    r'octies',
+    r'no[nv]ies',
+    r'decies',
+    r'un(de?)?cies',
+    r'duo(de)?cies',
+    r'terdecies',
+    r'quaterdecies',
+    r'quindecies',
+    r'sex?decies',
+    r'septdecies',
+    r'octodecies',
+    r'novodecies',
+    r'vicies',
+    r'un(de?)?v[ei]cies',
+    r'duo(de)?v[ei]cies',
+    r'terv[ei]cies',
+    r'quaterv[ei]cies',
+    r'quinv[ei]cies',
+    r'sex?v[ei]cies',
+    r'septv[ei]cies',
+    r'octov[ei]cies',
+    r'novov[ei]cies',
 ]
 
 def tokenize(text):
@@ -83,3 +86,5 @@ def skip_to_end_of_line(tokens, i):
 
 def skip_to_quote_start(tokens, i):
     return skip_to_token(tokens, i, TOKEN_DOUBLE_QUOTE_OPEN)
+
+# vim: set ts=4 sw=4 sts=4 et:
