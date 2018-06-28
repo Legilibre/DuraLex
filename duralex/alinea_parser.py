@@ -1668,25 +1668,26 @@ def parse_code_reference(tokens, i, parent):
 
     grammar = parsimonious.Grammar("""
 code_ref = named_code_ref / back_reference_code_ref
-named_code_ref = whitespace* (pronoun whitespace)* "code" whitespace+ code_name whitespace*
+named_code_ref = whitespace* (pronoun whitespace)* code whitespace*
+code = ( ~"code"i whitespace+ code_name ) / ~"constitution"i
 back_reference_code_ref = whitespace* (pronoun whitespace)* "même" whitespace+ "code" whitespace*
 code_name = ~"de +la +consommation +des +boissons +et +des +mesures +contre +l['’] *alcoolisme +applicable +dans +la +collectivité +territoriale +de +Mayotte|du +domaine +de +l['’] *Etat +et +des +collectivités +publiques +applicable +à +la +collectivité +territoriale +de +Mayotte|des +pensions +de +retraite +des +marins +français +du +commerce, +de +pêche +ou +de +plaisance|des +pensions +militaires +d['’] *invalidité +et +des +victimes +de +la +guerre|des +tribunaux +administratifs +et +des +cours +administratives +d['’] *appel|des +pensions +militaires +d['’] *invalidité +et +des +victimes +de +guerre|de +déontologie +des +professionnels +de +l['’] *expertise +comptable|de +déontologie +de +la +profession +de +commissaire +aux +comptes|de +l['’] *entrée +et +du +séjour +des +étrangers +et +du +droit +d['’] *asile|des +débits +de +boissons +et +des +mesures +contre +l['’] *alcoolisme|du +domaine +public +fluvial +et +de +la +navigation +intérieure|de +la +Légion +d['’] *honneur +et +de +la +médaille +militaire|des +relations +entre +le +public +et +l['’] *administration|de +l['’] *expropriation +pour +cause +d['’] *utilité +publique|général +de +la +propriété +des +personnes +publiques|des +postes +et +des +communications +électroniques|des +pensions +civiles +et +militaires +de +retraite|de +l['’] *Office +national +interprofessionnel +du +blé|de +déontologie +des +agents +de +police +municipale|disciplinaire +et +pénal +de +la +marine +marchande|des +instruments +monétaires +et +des +médailles|de +déontologie +des +chirurgiens-dentistes|général +des +collectivités +territoriales|de +la +construction +et +de +l['’] *habitation|de +déontologie +de +la +police +nationale|des +communes +de +la +Nouvelle-Calédonie|général +des +impôts, +annexe +2, +CGIAN2|général +des +impôts, +annexe +3, +CGIAN3|général +des +impôts, +annexe +4, +CGIAN4|général +des +impôts +annexe +1, +CGIAN1|de +l['’] *action +sociale +et +des +familles|des +procédures +civiles +d['’] *exécution|de +la +famille +et +de +l['’] *aide +sociale|de +l['’] *industrie +cinématographique|du +travail +applicable +à +Mayotte|de +déontologie +des +sages-femmes|de +déontologie +des +architectes|de +la +propriété +intellectuelle|du +cinéma +et +de +l['’] *image +animée|rural +et +de +la +pêche +maritime|de +l['’] *organisation +judiciaire|des +juridictions +financières|de +déontologie +des +médecins|de +l['’] *enseignement +technique|de +la +nationalité +française|de +déontologie +vétérinaire|de +justice +administrative|de +la +sécurité +intérieure|de +déontologie +médicale|général +des +impôts(, +CGI)?|de +la +sécurité +sociale|monétaire +et +financier|des +caisses +d['’] *épargne|de +la +voirie +routière|de +l['’] *aviation +civile|de +justice +militaire|de +la +santé +publique|du +domaine +de +l['’] *Etat|des +marchés +publics( +\(édition +(1964|2001|2004|2006)\))?|de +procédure +civile( +\(1807\))?|de +procédure +pénale|du +travail +maritime|du +service +national|des +ports +maritimes|de +l['’] *environnement|de +la +consommation|de +la +mutualité|de +la +recherche|de +l['’] *artisanat|de +l['’] *éducation|de +l['’] *urbanisme|des +assurances|des +transports|du +patrimoine|de +la +défense|des +communes|de +l['’] *énergie|des +douanes( +de +Mayotte)?|de +commerce|de +la +route|du +tourisme|du +travail|forestier( +de +Mayotte)?|électoral|du +sport|du +blé|du +vin|minier|pénal|rural|civil"i
 
 whitespace = ~"\s+"
-pronoun = ~"le"i / ~"du"i
+pronoun = ~"le"i / ~"la"i / ~"du"i / ~"de +la"i
     """)
 
     try:
         tree = grammar.match(''.join(tokens[i:]))
         i += len(alinea_lexer.tokenize(tree.text))
 
-        capture = CaptureVisitor(['code_name', 'back_reference_code_ref'])
+        capture = CaptureVisitor(['code', 'back_reference_code_ref'])
         capture.visit(tree)
 
         if 'back_reference_code_ref' in capture.captures:
             node = mark_as_lookback_reference(node)
         else:
-            node['id'] = 'code ' + capture.captures['code_name']
+            node['id'] = capture.captures['code'].lower()
 
         i = parse_reference(tokens, i, node)
     except parsimonious.exceptions.ParseError as e:

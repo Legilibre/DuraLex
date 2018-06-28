@@ -33,6 +33,20 @@ class ParseCodeReferenceTest(DuralexTestCase):
             ]}
         )
 
+    def test_code_with_name_3(self):
+        self.assertEqualAST(
+            self.call_parse_func(
+                parser.parse_code_reference,
+                "la Constitution"
+            ),
+            {'children':[
+                {
+                    'id': u'constitution',
+                    'type': u'code-reference'
+                }
+            ]}
+        )
+
     def test_the_same_code(self):
         self.assertEqualAST(
             self.call_parse_func(
