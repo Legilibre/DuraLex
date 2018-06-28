@@ -458,23 +458,48 @@ def parse_article_definition(tokens, i, parent):
     })
     debug(parent, tokens, i, 'parse_article_definition')
 
-    # un article
-    if tokens[i].lower() == u'un' and tokens[i + 2] == u'article':
-        i += 4
-    # l'article
-    elif tokens[i].lower() == u'l' and tokens[i + 2] == u'article':
-        i += 4
-    else:
+    grammar = parsimonious.Grammar("""
+rule = whitespaces an_article whitespaces
+
+an_article = ( ~"un +"i / ~"l['’] *"i ) ~"article"i (whitespace article_id (whitespace so_that_written)?)?
+
+so_that_written = ~"ainsi +rédigé"i
+
+article_id = numbered_article / named_article
+
+# Classically numbered article
+numbered_article = article_type ~"[0-9]+(er|ème|e)?" ( ~" *[-‐‑] *| *\.| +" ( ~"[A-Z0-9]+(er|ème|e)?" / multiplicative_adverb ) )*
+
+# Optional prefix
+article_type = ~"\*?\*?((L\.O|LO|L|R|D|A)\*?\*?\.? *)?"
+
+# Specific article names
+named_article = ~"annexe|ex[ée]cution|unique|(pr[ée])?liminaire|pr[ée]ambule"i
+
+multiplicative_adverb = ( multiplicative_adverb_units_before_decades? multiplicative_adverb_decades ) / multiplicative_adverb_units
+multiplicative_adverb_units = ~"semel|bis|ter|quater|(quinqu|sex|sept|oct|no[nv])ies"i
+multiplicative_adverb_units_before_decades = ~"un(de?)?|duo(de)?|ter|quater|quin|sex?|sept|octo|novo"i
+multiplicative_adverb_decades = ~"(dec|v[ei]c|tr[ei]c|quadrag|quinquag|sexag|septuag|octog|nonag)ies"i
+
+whitespace = ~"\s+"
+whitespaces = ~"\s*"
+    """)
+
+    try:
+        tree = grammar.match(''.join(tokens[i:]))
+        i += len(alinea_lexer.tokenize(tree.text))
+        capture = CaptureVisitor(['article_id', 'multiplicative_adverb'])
+        capture.visit(tree)
+        if 'article_id' in capture.captures:
+            node['id'] = capture.captures['article_id']
+        if 'multiplicative_adverb' in capture.captures:
+            node['is' + capture.captures['multiplicative_adverb'].title()] = True
+        i = alinea_lexer.skip_to_quote_start(tokens, i)
+        i = parse_for_each(parse_quote, tokens, i, node)
+    except parsimonious.exceptions.ParseError:
         debug(parent, tokens, i, 'parse_article_definition none')
         remove_node(parent, node)
         return i
-
-    i = parse_article_id(tokens, i, node)
-
-    i = alinea_lexer.skip_spaces(tokens, i)
-    if i < len(tokens) and tokens[i] == u'ainsi' and tokens[i + 2] == u'rédigé':
-        i = alinea_lexer.skip_to_quote_start(tokens, i)
-        i = parse_for_each(parse_quote, tokens, i, node)
 
     debug(parent, tokens, i, 'parse_article_definition end')
 
