@@ -673,29 +673,39 @@ def parse_header3_definition(tokens, i, parent):
     return i
 
 def parse_article_id(tokens, i, node):
-    node['id'] = ''
 
-    # article {articleId}
-    if i < len(tokens) and tokens[i] == 'L' and tokens[i + 1] == '.':
-        while not re.compile('\d+(-\d+)?').match(tokens[i]):
-            node['id'] += tokens[i]
-            i += 1
+    grammar = parsimonious.Grammar("""
+rule = whitespaces article_id whitespaces
 
-    if i < len(tokens) and re.compile('\d+(-\d+)?').match(tokens[i]):
-        node['id'] += tokens[i]
-        # skip {articleId} and the following space
-        i += 1
-        i = alinea_lexer.skip_spaces(tokens, i)
+article_id = numbered_article / named_article
 
-    # {articleId} {articleLetter}
-    # FIXME: handle the {articleLetter}{multiplicativeAdverb} case?
-    if i < len(tokens) and re.compile('^[A-Z]$').match(tokens[i]):
-        node['id'] += ' ' + tokens[i]
-        # skip {articleLetter} and the following space
-        i += 1
-        i = alinea_lexer.skip_spaces(tokens, i)
+# Classically numbered article
+numbered_article = article_type ~"[0-9]+(er|ème|e)?" ( ~" *[-‐‑] *| *\.| +" ( ~"[A-Z0-9]+(er|ème|e)?" / multiplicative_adverb ) )*
 
-    i = parse_multiplicative_adverb(tokens, i, node)
+# Optional prefix
+article_type = ~"\*?\*?((L\.O|LO|L|R|D|A)\*?\*?\.? *)?"
+
+# Specific article names
+named_article = ~"annexe|ex[ée]cution|unique|(pr[ée])?liminaire|pr[ée]ambule"i
+
+multiplicative_adverb = ( multiplicative_adverb_units_before_decades? multiplicative_adverb_decades ) / multiplicative_adverb_units
+multiplicative_adverb_units = ~"semel|bis|ter|quater|(quinqu|sex|sept|oct|no[nv])ies"i
+multiplicative_adverb_units_before_decades = ~"un(de?)?|duo(de)?|ter|quater|quin|sex?|sept|octo|novo"i
+multiplicative_adverb_decades = ~"(dec|v[ei]c|tr[ei]c|quadrag|quinquag|sexag|septuag|octog|nonag)ies"i
+
+whitespaces = ~"\s*"
+    """)
+
+    try:
+        tree = grammar.match(''.join(tokens[i:]))
+        i += len(alinea_lexer.tokenize(tree.text))
+        capture = CaptureVisitor(['article_id', 'multiplicative_adverb'])
+        capture.visit(tree)
+        node['id'] = capture.captures['article_id']
+        if 'multiplicative_adverb' in capture.captures:
+            node['is' + capture.captures['multiplicative_adverb'].title()] = True
+    except parsimonious.exceptions.ParseError:
+        return i
 
     if not node['id'] or is_space(node['id']):
         del node['id']
