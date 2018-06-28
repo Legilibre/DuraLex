@@ -248,26 +248,24 @@ def parse_law_reference(tokens, i, parent):
 
     # de la loi n° 77-729 du 7 juillet 1977
     grammar = parsimonious.Grammar( """
-texte = ( ~"(de +)?(la +|l' *)" texte_francais ) / ~"de +la +même +loi"
+texte = whitespace* ( ( ~"(de +)?(la +|l' *)" french_text ) / ~"de +la +même +loi" ) whitespace*
 
-nom_texte_francais = ~"loi( +constitutionnelle| +organique)?|ordonnance|d[ée]cret(-loi)?|arr[êe]t[ée]|circulaire"i
+french_text_name = ~"loi( +constitutionnelle| +organique)?|ordonnance|d[ée]cret(-loi)?|arr[êe]t[ée]|circulaire"i
 
-texte_francais = nom_texte_francais ( ( numtexte du_date ) / numtexte / du_date )
+french_text = french_text_name ( ( numtext du_date ) / numtext / du_date )
 
-numtexte = numero numero_annee_identifiant
+numtext = numero french_law_identifier
 
-numero_annee_identifiant = ~"[0-9]+[-‑][0-9]+"
+french_law_identifier = ~"[0-9]+[-‑][0-9]+"
 
 du_date = ~" +du +"i date
-date = jour espace mois espace annee
-jour = ~"1er|[12][0-9]|3[01]|[1-9]"i
-mois = ~"janvier|février|mars|avril|mai|juin|juillet|août|septembre|octobre|novembre|décembre"i
-annee = ~"(1[5-9]|2[0-9])[0-9]{2}"
+date = day whitespace month whitespace year
+day = ~"1er|[12][0-9]|3[01]|[1-9]"i
+month = ~"janvier|février|mars|avril|mai|juin|juillet|août|septembre|octobre|novembre|décembre"i
+year = ~"(1[5-9]|2[0-9])[0-9]{2}"
 
-espace = ~" +"
+whitespace = ~"\s+"
 numero = ~" +n° *| +no *"i
-
-nombre_cardinal = ~"[0-9]+"
     """ )
 
     node = create_node(parent, {
@@ -289,15 +287,14 @@ nombre_cardinal = ~"[0-9]+"
             node = law_ref
         else:
             i += len(alinea_lexer.tokenize(tree.text))
-            i = alinea_lexer.skip_spaces(tokens, i)
-            capture = CaptureVisitor(['nom_texte_francais', 'numero_annee_identifiant', 'annee', 'mois', 'jour'])
+            capture = CaptureVisitor(['french_text_name', 'french_law_identifier', 'year', 'month', 'day'])
             capture.visit(tree)
-            if 'nom_texte_francais' in capture.captures:
-                node['id'] = capture.captures['numero_annee_identifiant']
-            if 'nom_texte_francais' in capture.captures:
-                node['lawType'] = capture.captures['nom_texte_francais']
-            if 'annee' in capture.captures:
-                node['lawDate'] = '%s-%i-%s' % (capture.captures['annee'], month_to_number( capture.captures['mois'] ), capture.captures['jour'] )
+            if 'french_law_identifier' in capture.captures:
+                node['id'] = capture.captures['french_law_identifier']
+            if 'french_text_name' in capture.captures:
+                node['lawType'] = capture.captures['french_text_name']
+            if 'year' in capture.captures:
+                node['lawDate'] = '%s-%i-%s' % (capture.captures['year'], month_to_number( capture.captures['month'] ), capture.captures['day'] )
     except parsimonious.exceptions.ParseError:
         remove_node(parent, node)
         return i
