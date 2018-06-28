@@ -1339,21 +1339,35 @@ def parse_header3_reference(tokens, i, parent):
 def parse_header1_reference(tokens, i, parent):
     if i >= len(tokens):
         return i
+    
     node = create_node(parent, {
         'type': TYPE_HEADER1_REFERENCE,
     })
+    
     debug(parent, tokens, i, 'parse_header1_reference')
+
     j = i
     i = parse_position(tokens, i, node)
     i = parse_scope(tokens, i, node)
-    # le {romanPartNumber}
-    # du {romanPartNumber}
-    # un {romanPartNumber}
-    if tokens[i].lower() in [u'le', u'du', u'un'] and is_roman_number(tokens[i + 2]):
-        node['order'] = parse_roman_number(tokens[i + 2])
-        i += 4
-    else:
-        debug(parent, tokens, i, 'parse_header1_reference end')
+
+    grammar = parsimonious.Grammar("""
+header1_ref = whitespace* pronoun whitespace* header1_order whitespace*
+header1_order = roman_number
+
+roman_number = ~"Ier|[IVXLCDM]+(èm)?e?"
+whitespace = ~"\s+"
+pronoun = "le" / "du"
+    """)
+
+    try:
+        tree = grammar.match(''.join(tokens[i:]))
+        i += len(alinea_lexer.tokenize(tree.text))
+
+        capture = CaptureVisitor(['roman_number' ])
+        capture.visit(tree)
+
+        node['order'] = parse_roman_number(capture.captures['roman_number'])
+    except parsimonious.exceptions.ParseError as e:
         remove_node(parent, node)
         return j
 
