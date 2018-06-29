@@ -41,9 +41,11 @@ LOGGER = logging.getLogger('main')
 def decode(data):
     try:
         data = data.decode('utf-8')
+        LOGGER.info('content decoded as utf-8')
     except:
         try:
             data = data.decode('iso-8859-1')
+            LOGGER.info('content decoded as iso-8859-1')
         except:
             pass
 
@@ -78,6 +80,8 @@ def handle_data(data, args):
             amendments = json.loads(amendments)
             duralex.amendment_parser.parse(amendments, tree)
 
+    LOGGER.info('running visitors')
+
     ResolveLookbackReferencesVisitor().visit(tree)
     ForkReferenceVisitor().visit(tree)
     ResolveFullyQualifiedDefinitionsVisitor().visit(tree)
@@ -94,6 +98,8 @@ def handle_data(data, args):
     DeleteEmptyChildrenVisitor().visit(tree)
 
     if not args.quiet:
+        LOGGER.info('dumping JSON tree to stdout')
+
         json_data = json.dumps(tree, sort_keys=True, indent=2, ensure_ascii=False)
         sys.stdout.write(json_data)
 

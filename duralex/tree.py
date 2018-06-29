@@ -2,6 +2,10 @@
 
 import uuid
 
+import logging
+
+LOGGER = logging.getLogger('tree')
+
 TYPE_HEADER1        = u'header1'
 TYPE_HEADER2        = u'header2'
 TYPE_HEADER3        = u'header3'
@@ -78,13 +82,27 @@ TYPE_REFERENCE = [
     TYPE_LOOKBACK_REFERENCE,
 ]
 
+def node_to_string(node):
+    if node:
+        node = node.copy()
+        if 'parent' in node:
+            del node['parent']
+        if 'children' in node:
+            del node['children']
+
+    return str(node)
+
 def unshift_node(parent, node):
+    LOGGER.debug('unshift_node %s in %s', node_to_string(node), node_to_string(parent))
+
     node['parent'] = parent
     if 'children' not in parent:
         parent['children'] = []
     parent['children'] = [node] + parent['children']
 
 def push_node(parent, node):
+    LOGGER.debug('push_node %s in %s', node_to_string(node), node_to_string(parent))
+
     if 'parent' in node:
         remove_node(node['parent'], node)
     node['parent'] = parent
@@ -93,6 +111,8 @@ def push_node(parent, node):
     parent['children'].append(node)
 
 def create_node(parent, node):
+    LOGGER.debug('create_node %s in %s', node_to_string(node), node_to_string(parent))
+
     if 'children' not in node:
         node['children'] = []
     node['uuid'] = str(uuid.uuid4())
@@ -106,6 +126,8 @@ def compare_nodes(a, b):
     return a['uuid'] == b['uuid'] if 'uuid' in a and 'uuid' in b else a == b
 
 def remove_node(parent, node):
+    LOGGER.debug('remove_node %s from %s', node_to_string(node), node_to_string(parent))
+
     if not parent:
         raise Exception('invalid parent')
     if 'parent' not in node or node['parent'] != parent:

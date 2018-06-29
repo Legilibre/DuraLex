@@ -1088,6 +1088,20 @@ def parse_alinea_reference(tokens, i, parent):
     })
     LOGGER.debug('parse_alinea_reference %s', str(tokens[i:i+10]))
 
+    grammar = parsimonious.Grammar("""
+alinea_ref = _* ("à" _)? (pronoun _)? (explicit_alinea_ref / last_alinea_ref / before_last_alinea_ref / lookback_alinea_ref) _*
+before_last_alinea_ref = ("avant" _ "dernier" _ "alinéa" / "avant-dernier" _ "alinéa")
+last_alinea_ref = "dernier" _ "alinéa"
+explicit_alinea_ref = (ordinal_adjective_number / ) _ "alinéa"
+lookback_alinea_ref = "même" _ "alinéa"
+
+alinea_ref_list = (alinea_ref _* ",") _ "et"
+
+whitespace = ~"\s+"
+ordinal_adjective_number = ~"première|seconde|dernière|dixième|onzième|douzième|treizième|quatorzième|quinzième|seizième|(dix-|vingt-|trente-|quarante-|cinquante-|soixante-|soixante-dix-|quatre-vingt-|quatre-vingt-dix-)?(et-)?(un|deux|trois|quatr|cinqu|six|sept|huit|neuv)ième"i
+pronoun = / ~"de l'"i / ~"du"i / ~"les"i / ~"le"i / ~"au"i / ~"l'"i
+    """)
+
     j = i
     i = parse_position(tokens, i, node)
     i = parse_scope(tokens, i, node)
@@ -1144,6 +1158,9 @@ def parse_alinea_reference(tokens, i, parent):
     elif tokens[i].lower() == u'alinéa' and is_number(tokens[i + 2]):
         node['order'] = parse_int(tokens[i + 2])
         i += 4
+    # les {order} alinéas
+    elif tokens[i].lower() == u'les' and is_number_word(tokens[i].lower()) and tokens[i + 4] == u'alinéas':
+
     # les alinéas
     # des alinéas
     elif tokens[i].lower() in [u'les', u'des'] and tokens[i + 2] == u'alinéas':
@@ -1176,7 +1193,8 @@ def parse_alinea_reference(tokens, i, parent):
         remove_node(parent, node)
         return j
 
-    i = parse_article_part_reference(tokens, i, node)
+    # i = parse_article_part_reference(tokens, i, node)
+    i = parse_reference_list(tokens, i, node)
     # i = parse_quote(tokens, i, node)
 
     LOGGER.debug('parse_alinea_reference end %s', str(tokens[i:i+10]))
@@ -1372,17 +1390,19 @@ def parse_header3_reference(tokens, i, parent):
     node = create_node(parent, {
         'type': TYPE_HEADER3_REFERENCE
     })
+
     LOGGER.debug('parse_header3_reference %s', str(tokens[i:i+10]))
+
     j = i
     i = parse_position(tokens, i, node)
     i = parse_scope(tokens, i, node)
 
     grammar = parsimonious.Grammar("""
-header3_ref = whitespace* pronoun whitespace* ("même" whitespace)* header3_order whitespace*
-header3_order = ~"[a-z]" (whitespace multiplicative_adverb)*
+header3_ref = _ (pronoun _)* ("même" _)* header3_order _
+header3_order = ~"[a-z]" (_ multiplicative_adverb)*
 
-whitespace = ~"\s+"
-pronoun = ~"le"i / ~"du"i / "au"
+_ = ~"\s+"
+pronoun = ~"le"i / ~"du"i / ~"au"i
 
 multiplicative_adverb = ( multiplicative_adverb_units_before_decades? multiplicative_adverb_decades ) / multiplicative_adverb_units
 multiplicative_adverb_units = ~"semel|bis|ter|quater|(quinqu|sex|sept|oct|no[nv])ies"i
@@ -1393,12 +1413,13 @@ multiplicative_adverb_decades = ~"(dec|v[ei]c|tr[ei]c|quadrag|quinquag|sexag|sep
     try:
         tree = grammar.match(''.join(tokens[i:]))
         i += len(alinea_lexer.tokenize(tree.text))
-
+        print(tree)
         capture = CaptureVisitor(['header3_order', 'multiplicative_adverb'])
         capture.visit(tree)
 
         if 'multiplicative_adverb' in capture.captures:
             node['is' + capture.captures['multiplicative_adverb'].title()] = True
+        print(capture.captures['header3_order'])
         node['order'] = ord(capture.captures['header3_order']) - ord('a') + 1
     except parsimonious.exceptions.ParseError as e:
         remove_node(parent, node)
@@ -1741,12 +1762,16 @@ def parse_reference_list(tokens, i, parent):
     if i >= len(tokens):
         return i
 
+    LOGGER.debug('parse_reference_list %s', str(tokens[i:i+10]))    
+
     i = parse_reference(tokens, i, parent)
     i = alinea_lexer.skip_spaces(tokens, i)
-    if ((i + 2 < len(tokens) and tokens[i] == u',' and tokens[i + 2] in [u'à', u'au'])
+    if ((i + 2 < len(tokens) and tokens[i] == u',' and tokens[i + 2] in [u'à', u'au', u'l'])
         or (i + 2 < len(tokens) and tokens[i] == u'et')):
         i = parse_reference_list(tokens, i + 2, parent)
     i = alinea_lexer.skip_spaces(tokens, i)
+
+    LOGGER.debug('parse_reference_list end %s', str(tokens[i:i+10]))    
 
     return i
 
