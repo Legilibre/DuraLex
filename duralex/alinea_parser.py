@@ -1499,19 +1499,21 @@ def parse_quote(tokens, i, parent):
     LOGGER.debug('parse_quote %s', str(tokens[i:i+10]))
 
     grammar = parsimonious.Grammar("""
-quoted = whitespace* "\\"" not_a_double_quote "\\"" whitespace*
+rule = whitespaces quoted whitespaces
+quoted = "\\"" ~"[^\\n\\\"]+(\\n\\\"[^\\n\\\"]+)*" "\\""
+#quoted = "\\"" ~"[^\\n]+" "\\""
+#quoted = "\\"" not_a_double_quote "\\""
+#not_a_double_quote = ~"[^\\"]*"
 
-not_a_double_quote = ~"[^\\"]*"
-whitespace = ~"\s+"
-not_a_word = ~"\W*"
+whitespaces = ~"\s*"
     """)
 
     try:
         tree = grammar.match(''.join(tokens[i:]))
         i += len(alinea_lexer.tokenize(tree.text))
-        capture = CaptureVisitor(['not_a_double_quote' ])
+        capture = CaptureVisitor(['quoted'])
         capture.visit(tree)
-        node['words'] = capture.captures['not_a_double_quote']
+        node['words'] = capture.captures['quoted'].replace('"','') # there could be some quote inside the string in multiline strings
     except parsimonious.exceptions.ParseError as e:
         remove_node(parent, node)
         return i
