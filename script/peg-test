@@ -1,0 +1,93 @@
+#!/usr/bin/env python3
+
+import parsimonious
+import sys
+import os
+import re
+import parsimonious
+
+class DotParsimoniousVisitor(parsimonious.NodeVisitor):
+
+    def __init__(self):
+        self.count = 0
+        self.dot = []
+
+    def generic_visit(self, node, visited_children):
+        self.count += 1
+
+        colors = {
+            r'op_.*': 'orange',
+            r'.*_id': 'pink',
+            r'.*ref.*': 'skyblue'
+        }
+
+        if node.expr_name:
+            c = 'white'
+            for regex, color in colors.items():
+                if re.match(regex, node.expr_name):
+                    c = color
+            self.dot += [
+                '  %i [label="%s (%s)", style=filled, fillcolor=%s]'
+                % (self.count, node.text.strip(), node.expr_name, c)
+            ]
+        else:
+            self.dot += [
+                '  %i [label="%s (%s)", color=grey, fontcolor=grey]'
+                % (self.count, node.text.strip(), node.__class__.__name__)
+            ]
+        if len(visited_children):
+            self.dot += ['  %i -- %s' % (self.count, ' -- '.join([str(i) for i in visited_children]))]
+
+        return self.count
+
+    def get_dot(self):
+        return  'graph graphname {\n%s\n}' % (';\n'.join(self.dot))
+
+grammar = parsimonious.Grammar("""
+ref_list = (typed_ref (op_comma _ any_ref)* (_ op_and _ (ref_list / untyped_lookback_ref))+) / typed_ref
+
+any_ref = typed_ref / untyped_lookback_ref
+typed_ref = (pronoun _?)? (alinea_ref / article_ref / paragraph_ref / book_ref / title_ref / law_ref)
+untyped_lookback_ref = (ordinal_adjective_number / number)
+
+alinea_ref = "alinéa" "s"? _+ alinea_id
+alinea_id = number ""
+
+article_ref = "article" "s"? _+ article_id
+article_id = number ""
+
+paragraph_ref = "paragraphe" "s"? _+ paragraph_id
+paragraph_id = number ""
+
+book_ref = "livre" _ book_id
+book_id = roman_number ""
+
+title_ref = "titre" _ title_id
+title_id = roman_number ""
+
+law_ref = _* (explicit_law_ref / lookback_law_ref) _*
+explicit_law_ref =  law_type _ ((number_abvr _* law_id _ "du" _ date) / (number_abvr _* law_id) / ("du" _ date))
+lookback_law_ref = "même" _ law_type
+law_type = ~"loi( +constitutionnelle| +organique)?|ordonnance|d[ée]cret(-loi)?|arr[êe]t[ée]|circulaire"i
+law_id = ~"[0-9]+[-‑][0-9]+"
+
+date = day _ month _ year
+day = ~"1er|[12][0-9]|3[01]|[1-9]"i
+month = ~"janvier|février|mars|avril|mai|juin|juillet|août|septembre|octobre|novembre|décembre"i
+year = ~"(1[5-9]|2[0-9])[0-9]{2}"
+ordinal_adjective_number = ~"premièr(e)+|second(e)+|derni(er|ère)|dixième|onzième|douzième|treizième|quatorzième|quinzième|seizième|(dix-|vingt-|trente-|quarante-|cinquante-|soixante-|soixante-dix-|quatre-vingt-|quatre-vingt-dix-)?(et-)?(un|deux|trois|quatr|cinqu|six|sept|huit|neuv)ième"i
+pronoun = ~"de l'"i / ~"de la"i / ~"les"i / ~"le"i / ~"la"i / ~"l'"i / ~"du"i
+roman_number = ~"Ier|[IVXLCDM]+(èm)?e?"
+number = ~"\d+"
+number_abvr = ~"n°|no"i
+op_and = "et"
+op_comma = ","
+_ = ~"\s+"
+""")
+
+tree = grammar.match(sys.stdin.read())
+
+v = DotParsimoniousVisitor()
+v.visit(tree)
+
+print(v.get_dot())
