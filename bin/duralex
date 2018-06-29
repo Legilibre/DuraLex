@@ -27,10 +27,7 @@ from duralex.FixMissingCodeOrLawReferenceVisitor import FixMissingCodeOrLawRefer
 from duralex.SwapDefinitionAndReferenceVisitor import SwapDefinitionAndReferenceVisitor
 from duralex.ResolveLookbackReferencesVisitor import ResolveLookbackReferencesVisitor
 
-def decode(data, encoding = None):
-    if encoding:
-        return data.decode(encoding)
-
+def decode(data):
     try:
         data = data.decode('utf-8')
     except:
@@ -91,7 +88,7 @@ def handle_data(data, args):
 
 def main(argv=None):
     parser = argparse.ArgumentParser(prog='duralex')
-    parser.add_argument('--file', help='the path of the bill to process', type=argparse.FileType('r'), default='-')
+    parser.add_argument('--file', help='the path of the bill to process', type=argparse.FileType('rb'), default='-')
     parser.add_argument('--url', help='the URL of the bill to process')
     parser.add_argument('--quiet', action='store_true', help='no stdout output')
     parser.add_argument('--uuid', action='store_true', help='add a unique ID on each node')
@@ -102,7 +99,7 @@ def main(argv=None):
 
     if args.url:
         res = requests.get(args.url)
-        data = decode(res.content, res.apparent_encoding)
+        data = decode(res.content)
     elif args.file:
         data = decode(args.file.read())
 
