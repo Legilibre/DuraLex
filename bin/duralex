@@ -6,6 +6,7 @@ import os
 import json
 import sys
 import argparse
+import logging
 
 import requests
 
@@ -26,6 +27,16 @@ from duralex.RemoveQuotePrefixVisitor import RemoveQuotePrefixVisitor
 from duralex.FixMissingCodeOrLawReferenceVisitor import FixMissingCodeOrLawReferenceVisitor
 from duralex.SwapDefinitionAndReferenceVisitor import SwapDefinitionAndReferenceVisitor
 from duralex.ResolveLookbackReferencesVisitor import ResolveLookbackReferencesVisitor
+
+LOG_LEVEL = [
+    'CRITICAL',
+    'ERROR',
+    'WARNING',
+    'INFO',
+    'DEBUG',
+]
+
+LOGGER = logging.getLogger('main')
 
 def decode(data):
     try:
@@ -93,17 +104,22 @@ def main(argv=None):
     parser.add_argument('--quiet', action='store_true', help='no stdout output')
     parser.add_argument('--uuid', action='store_true', help='add a unique ID on each node')
     parser.add_argument('--amendments', nargs='?', const='-', default=False, help='fetch and parse amendements')
-    parser.add_argument('--debug', action='store_true')
+    parser.add_argument('-v', '--verbose', action='count', default=0)
 
     args = parser.parse_args()
 
+    logging.basicConfig(level=LOG_LEVEL[args.verbose], format='%(asctime)s - %(levelname)s - %(name)s - %(message)s')
+
     if args.url:
+        LOGGER.info('reading content from URL %s', args.url)
         res = requests.get(args.url)
         data = decode(res.content)
     elif args.file:
         if args.file == '-':
+            LOGGER.info('reading content from stdin')
             data = decode(sys.stdin.buffer.read())
         else:
+            LOGGER.info('reading content from file %s', args.file)
             f = open(args.file, 'rb')
             data = decode(f.read())
             f.close()

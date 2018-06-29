@@ -10,9 +10,9 @@ from duralex.tree import *
 
 import parsimonious
 
-def debug(node, tokens, i, msg):
-    if '--debug' in sys.argv:
-        print('    ' * get_node_depth(node) + msg + ' ' + str(tokens[i:i+8]))
+import logging
+
+LOGGER = logging.getLogger('alinea_parser')
 
 def is_number(token):
     return re.compile('\d+').match(token)
@@ -84,7 +84,7 @@ def parse_section_reference(tokens, i, parent):
         'children': [],
     })
 
-    debug(parent, tokens, i, 'parse_section_reference')
+    LOGGER.debug('parse_section_reference %s', str(tokens[i:i+10]))
 
     grammar = parsimonious.Grammar("""
 section_ref = ~"(de )*" "la section " section_order
@@ -103,7 +103,7 @@ section_order = ~"\d+"
 
     i = parse_reference(tokens, i, node)
 
-    debug(parent, tokens, i, 'parse_section_reference end')
+    LOGGER.debug('parse_section_reference end %s', str(tokens[i:i+10]))
 
     return i
 
@@ -116,7 +116,7 @@ def parse_subsection_reference(tokens, i, parent):
         'children': [],
     })
 
-    debug(parent, tokens, i, 'parse_subsection_reference')
+    LOGGER.debug('parse_subsection_reference %s', str(tokens[i:i+10]))
 
     grammar = parsimonious.Grammar("""
 sub_section_ref = ~"(de )*" "la sous-section " sub_section_order
@@ -135,7 +135,7 @@ sub_section_order = ~"\d+"
 
     i = parse_reference(tokens, i, node)
 
-    debug(parent, tokens, i, 'parse_subsection_reference end')
+    LOGGER.debug('parse_subsection_reference end %s', str(tokens[i:i+10]))
 
     return i
 
@@ -148,7 +148,7 @@ def parse_chapter_reference(tokens, i, parent):
         'children': [],
     })
 
-    debug(parent, tokens, i, 'parse_chapter_reference')
+    LOGGER.debug('parse_chapter_reference %s', str(tokens[i:i+10]))
 
     grammar = parsimonious.Grammar("""
 chapter_ref = ("du chapitre " chapter_order) / ("le chapitre " chapter_order)
@@ -168,7 +168,7 @@ roman_number = ~"Ier|[IVXLCDM]+(èm)?e?"
 
     i = parse_reference(tokens, i, node)
 
-    debug(parent, tokens, i, 'parse_chapter_reference end')
+    LOGGER.debug('parse_chapter_reference end %s', str(tokens[i:i+10]))
 
     return i
 
@@ -181,7 +181,7 @@ def parse_paragraph_reference(tokens, i, parent):
         'children': [],
     })
 
-    debug(parent, tokens, i, 'parse_paragraph_reference')
+    LOGGER.debug('parse_paragraph_reference %s', str(tokens[i:i+10]))
 
     grammar = parsimonious.Grammar("""
 paragraph_ref = ("du paragraphe " paragraph_order) / ("le paragraphe " paragraph_order)
@@ -200,7 +200,7 @@ paragraph_order = ~"\d+"
 
     i = parse_reference(tokens, i, node)
 
-    debug(parent, tokens, i, 'parse_paragraph_reference end')
+    LOGGER.debug('parse_paragraph_reference end %s', str(tokens[i:i+10]))
 
     return i
 
@@ -208,7 +208,7 @@ def parse_subparagraph_definition(tokens, i, parent):
     if i >= len(tokens):
         return i
 
-    debug(parent, tokens, i, 'parse_subparagraph_definition')
+    LOGGER.debug('parse_subparagraph_definition %s', str(tokens[i:i+10]))
 
     node = create_node(parent, {
         'type': TYPE_SUBPARAGRAPH_DEFINITION,
@@ -235,10 +235,10 @@ whitespaces = ~"\s*"
         i = parse_for_each(parse_quote, tokens, i, node)
     except parsimonious.exceptions.ParseError:
         remove_node(parent, node)
-        debug(parent, tokens, i, 'parse_subparagraph_definition none')
+        LOGGER.debug('parse_subparagraph_definition none %s', str(tokens[i:i+10]))
         return i
 
-    debug(parent, tokens, i, 'parse_subparagraph_definition end')
+    LOGGER.debug('parse_subparagraph_definition end %s', str(tokens[i:i+10]))
 
     return i
 
@@ -248,7 +248,7 @@ def parse_law_reference(tokens, i, parent):
 
     j = i
 
-    debug(parent, tokens, i, 'parse_law_reference')
+    LOGGER.debug('parse_law_reference %s', str(tokens[i:i+10]))
 
     grammar = parsimonious.Grammar("""
 law_ref = _* (explicit_law_ref / lookback_law_ref) _*
@@ -310,7 +310,7 @@ _ = ~"\s+"
         node
     )
 
-    debug(parent, tokens, i, 'parse_law_reference end')
+    LOGGER.debug('parse_law_reference end %s', str(tokens[i:i+10]))
 
     return i
 
@@ -369,7 +369,7 @@ def parse_sentence_definition(tokens, i, parent):
     if i >= len(tokens):
         return i
 
-    debug(parent, tokens, i, 'parse_sentence_definition')
+    LOGGER.debug('parse_sentence_definition %s', str(tokens[i:i+10]))
     j = i
 
     # {count} phrases
@@ -395,10 +395,10 @@ def parse_sentence_definition(tokens, i, parent):
         else:
             create_node(parent, {'type': TYPE_SENTENCE_DEFINITION, 'count': count})
     else:
-        debug(parent, tokens, i, 'parse_sentence_definition none')
+        LOGGER.debug('parse_sentence_definition none %s', str(tokens[i:i+10]))
         return j
 
-    debug(parent, tokens, i, 'parse_sentence_definition end')
+    LOGGER.debug('parse_sentence_definition end %s', str(tokens[i:i+10]))
 
     return i
 
@@ -409,7 +409,7 @@ def parse_word_definition(tokens, i, parent):
     node = create_node(parent, {
         'type': TYPE_WORD_DEFINITION,
     })
-    debug(parent, tokens, i, 'parse_word_definition')
+    LOGGER.debug('parse_word_definition %s', str(tokens[i:i+10]))
 
     j = i
     i = parse_position(tokens, i, node)
@@ -437,10 +437,10 @@ def parse_word_definition(tokens, i, parent):
         i = alinea_lexer.skip_to_quote_start(tokens, i)
         i = parse_quote(tokens, i, node)
     else:
-        debug(parent, tokens, i, 'parse_word_definition none')
+        LOGGER.debug('parse_word_definition none %s', str(tokens[i:i+10]))
         remove_node(parent, node)
         return j
-    debug(parent, tokens, i, 'parse_word_definition end')
+    LOGGER.debug('parse_word_definition end %s', str(tokens[i:i+10]))
     return i
 
 def parse_article_definition(tokens, i, parent):
@@ -451,7 +451,7 @@ def parse_article_definition(tokens, i, parent):
         'type': TYPE_ARTICLE_DEFINITION,
         'children': [],
     })
-    debug(parent, tokens, i, 'parse_article_definition')
+    LOGGER.debug('parse_article_definition %s', str(tokens[i:i+10]))
 
     grammar = parsimonious.Grammar("""
 rule = whitespaces an_article whitespaces
@@ -492,11 +492,11 @@ whitespaces = ~"\s*"
         i = alinea_lexer.skip_to_quote_start(tokens, i)
         i = parse_for_each(parse_quote, tokens, i, node)
     except parsimonious.exceptions.ParseError:
-        debug(parent, tokens, i, 'parse_article_definition none')
+        LOGGER.debug('parse_article_definition none %s', str(tokens[i:i+10]))
         remove_node(parent, node)
         return i
 
-    debug(parent, tokens, i, 'parse_article_definition end')
+    LOGGER.debug('parse_article_definition end %s', str(tokens[i:i+10]))
 
     return i
 
@@ -504,7 +504,7 @@ def parse_alinea_definition(tokens, i, parent):
     if i >= len(tokens):
         return i
 
-    debug(parent, tokens, i, 'parse_alinea_definition')
+    LOGGER.debug('parse_alinea_definition %s', str(tokens[i:i+10]))
 
     # {count} alinéa(s)
     if is_number_word(tokens[i]) and tokens[i + 2].startswith(u'alinéa'):
@@ -529,10 +529,10 @@ def parse_alinea_definition(tokens, i, parent):
         else:
             node = create_node(parent, {'type': TYPE_ALINEA_DEFINITION, 'count': count})
     else:
-        debug(parent, tokens, i, 'parse_alinea_definition none')
+        LOGGER.debug('parse_alinea_definition none %s', str(tokens[i:i+10]))
         return i
 
-    debug(parent, tokens, i, 'parse_alinea_definition end')
+    LOGGER.debug('parse_alinea_definition end %s', str(tokens[i:i+10]))
 
     return i
 
@@ -542,12 +542,12 @@ def parse_mention_definition(tokens, i, parent):
     node = create_node(parent, {
         'type': TYPE_MENTION_DEFINITION,
     })
-    debug(parent, tokens, i, 'parse_mention_definition')
+    LOGGER.debug('parse_mention_definition %s', str(tokens[i:i+10]))
     # la mention
     if tokens[i].lower() == u'la' and tokens[i + 2] == u'mention':
         i += 4
     else:
-        debug(parent, tokens, i, 'parse_mention_definition none')
+        LOGGER.debug('parse_mention_definition none %s', str(tokens[i:i+10]))
         remove_node(parent, node)
         return i
     # :
@@ -555,7 +555,7 @@ def parse_mention_definition(tokens, i, parent):
         i = alinea_lexer.skip_to_quote_start(tokens, i)
         i = parse_for_each(parse_quote, tokens, i, node)
 
-    debug(parent, tokens, i, 'parse_mention_definition end')
+    LOGGER.debug('parse_mention_definition end %s', str(tokens[i:i+10]))
 
     return i
 
@@ -563,7 +563,7 @@ def parse_header1_definition(tokens, i, parent):
     if i >= len(tokens):
         return i
 
-    debug(parent, tokens, i, 'parse_header1_definition')
+    LOGGER.debug('parse_header1_definition %s', str(tokens[i:i+10]))
     # un {romanPartNumber}
     if tokens[i].lower() == u'un' and is_roman_number(tokens[i + 2]):
         node = create_node(parent, {
@@ -592,7 +592,7 @@ def parse_header1_definition(tokens, i, parent):
                 lambda : create_node(parent, {'type': TYPE_HEADER1_DEFINITION, 'order': start + len(parent['children']), 'children': []})
             )
     else:
-        debug(parent, tokens, i, 'parse_header1_definition end')
+        LOGGER.debug('parse_header1_definition end %s', str(tokens[i:i+10]))
         return i
 
     return i
@@ -601,7 +601,7 @@ def parse_header2_definition(tokens, i, parent):
     if i >= len(tokens):
         return i
 
-    debug(parent, tokens, i, 'parse_header2_definition')
+    LOGGER.debug('parse_header2_definition %s', str(tokens[i:i+10]))
 
     # un ... ° ({articlePartRef})
     if tokens[i].lower() == u'un' and ''.join(tokens[i + 2:i + 5]) == u'...' and tokens[i + 6] == u'°':
@@ -648,7 +648,7 @@ def parse_header2_definition(tokens, i, parent):
                 lambda : create_node(parent, {'type': TYPE_HEADER2_DEFINITION, 'order': start + len(parent['children']), 'children': []})
             )
     else:
-        debug(parent, tokens, i, 'parse_header2_definition end')
+        LOGGER.debug('parse_header2_definition end %s', str(tokens[i:i+10]))
         return i
 
     return i
@@ -657,7 +657,7 @@ def parse_header3_definition(tokens, i, parent):
     if i >= len(tokens):
         return i
 
-    debug(parent, tokens, i, 'parse_header3_definition')
+    LOGGER.debug('parse_header3_definition %s', str(tokens[i:i+10]))
 
     # un {orderLetter}
     if tokens[i].lower() == u'un' and re.compile(u'^[a-z]$').match(tokens[i + 2]):
@@ -687,7 +687,7 @@ def parse_header3_definition(tokens, i, parent):
                 lambda : create_node(parent, {'type': TYPE_HEADER3_DEFINITION, 'order': start + len(parent['children']), 'children': []})
             )
     else:
-        debug(parent, tokens, i, 'parse_header3_definition end')
+        LOGGER.debug('parse_header3_definition end %s', str(tokens[i:i+10]))
         return i
 
     return i
@@ -741,7 +741,7 @@ def parse_title_reference(tokens, i, parent):
         'children': [],
     })
 
-    debug(parent, tokens, i, 'parse_title_reference')
+    LOGGER.debug('parse_title_reference %s', str(tokens[i:i+10]))
 
     j = i
     i = parse_position(tokens, i, node)
@@ -768,7 +768,7 @@ pronoun = ~"le"i / ~"du"i
 
     i = parse_reference(tokens, i, node)
 
-    debug(parent, tokens, i, 'parse_title_reference end')
+    LOGGER.debug('parse_title_reference end %s', str(tokens[i:i+10]))
 
     return i
 
@@ -781,7 +781,7 @@ def parse_title_definition(tokens, i, parent):
         'children': [],
     })
 
-    debug(parent, tokens, i, 'parse_title_definition')
+    LOGGER.debug('parse_title_definition %s', str(tokens[i:i+10]))
 
     grammar = parsimonious.Grammar("""
 rule = whitespaces a_title whitespaces
@@ -802,11 +802,11 @@ whitespaces = ~"\s*"
         i = alinea_lexer.skip_to_quote_start(tokens, i)
         i = parse_for_each(parse_quote, tokens, i, node)
     except parsimonious.exceptions.ParseError:
-        debug(parent, tokens, i, 'parse_title_definition none')
+        LOGGER.debug('parse_title_definition none %s', str(tokens[i:i+10]))
         remove_node(parent, node)
         return i
 
-    debug(parent, tokens, i, 'parse_title_definition end')
+    LOGGER.debug('parse_title_definition end %s', str(tokens[i:i+10]))
 
     return i
 
@@ -819,7 +819,7 @@ def parse_code_part_reference(tokens, i, parent):
         'children': [],
     })
 
-    debug(parent, tokens, i, 'parse_code_part_reference')
+    LOGGER.debug('parse_code_part_reference %s', str(tokens[i:i+10]))
 
     j = i
     i = parse_position(tokens, i, node)
@@ -847,7 +847,7 @@ whitespace = ~"\s+"
         remove_node(parent, node)
         return j
 
-    debug(parent, tokens, i, 'parse_code_part_reference end')
+    LOGGER.debug('parse_code_part_reference end %s', str(tokens[i:i+10]))
 
     return i
 
@@ -860,7 +860,7 @@ def parse_book_reference(tokens, i, parent):
         'children': [],
     })
 
-    debug(parent, tokens, i, 'parse_book_reference')
+    LOGGER.debug('parse_book_reference %s', str(tokens[i:i+10]))
 
     grammar = parsimonious.Grammar("""
 book_ref = pronoun whitespace* "livre" whitespace book_order
@@ -884,7 +884,7 @@ pronoun = ~"du"i / ~"le"i
         remove_node(parent, node)
         return i
 
-    debug(parent, tokens, i, 'parse_book_reference end')
+    LOGGER.debug('parse_book_reference end %s', str(tokens[i:i+10]))
 
     return i
 
@@ -892,7 +892,7 @@ def parse_scope(tokens, i, parent):
     if i >= len(tokens):
         return i
 
-    debug(parent, tokens, i, 'parse_scope')
+    LOGGER.debug('parse_scope %s', str(tokens[i:i+10]))
 
     grammar = parsimonious.Grammar("""
 rule = whitespaces scope_end whitespaces
@@ -910,7 +910,7 @@ whitespaces = ~"\s*"
     except parsimonious.exceptions.ParseError as e:
         return i
 
-    debug(parent, tokens, i, 'parse_scope end')
+    LOGGER.debug('parse_scope end %s', str(tokens[i:i+10]))
 
     return i
 
@@ -918,7 +918,7 @@ def parse_bill_article_reference(tokens, i, parent):
     if i >= len(tokens):
         return i
 
-    debug(parent, tokens, i, 'parse_bill_article_reference')
+    LOGGER.debug('parse_bill_article_reference %s', str(tokens[i:i+10]))
 
     # cet article
     if tokens[i] == u'cet' and tokens[i + 2] == u'article':
@@ -931,7 +931,7 @@ def parse_bill_article_reference(tokens, i, parent):
         article_ref = copy_node(article_refs[-1])
         push_node(parent, article_ref)
 
-    debug(parent, tokens, i, 'parse_bill_article_reference end')
+    LOGGER.debug('parse_bill_article_reference end %s', str(tokens[i:i+10]))
 
     return i
 
@@ -943,7 +943,7 @@ def parse_article_reference(tokens, i, parent):
         'type': TYPE_ARTICLE_REFERENCE,
     })
 
-    debug(parent, tokens, i, 'parse_article_reference')
+    LOGGER.debug('parse_article_reference %s', str(tokens[i:i+10]))
 
     j = i
     i = parse_position(tokens, i, node)
@@ -1045,7 +1045,7 @@ def parse_article_reference(tokens, i, parent):
 
     # i = parse_quote(tokens, i, node)
 
-    debug(parent, tokens, i, 'parse_article_reference end')
+    LOGGER.debug('parse_article_reference end %s', str(tokens[i:i+10]))
 
     return i
 
@@ -1086,7 +1086,7 @@ def parse_alinea_reference(tokens, i, parent):
     node = create_node(parent, {
         'type': TYPE_ALINEA_REFERENCE,
     })
-    debug(parent, tokens, i, 'parse_alinea_reference')
+    LOGGER.debug('parse_alinea_reference %s', str(tokens[i:i+10]))
 
     j = i
     i = parse_position(tokens, i, node)
@@ -1172,14 +1172,14 @@ def parse_alinea_reference(tokens, i, parent):
                     push_node(n, copy_node(c))
         return i
     else:
-        debug(parent, tokens, i, 'parse_alinea_reference none')
+        LOGGER.debug('parse_alinea_reference none %s', str(tokens[i:i+10]))
         remove_node(parent, node)
         return j
 
     i = parse_article_part_reference(tokens, i, node)
     # i = parse_quote(tokens, i, node)
 
-    debug(parent, tokens, i, 'parse_alinea_reference end')
+    LOGGER.debug('parse_alinea_reference end %s', str(tokens[i:i+10]))
 
     return i
 
@@ -1190,7 +1190,7 @@ def parse_sentence_reference(tokens, i, parent):
     node = create_node(parent, {
         'type': TYPE_SENTENCE_REFERENCE,
     })
-    debug(parent, tokens, i, 'parse_sentence_reference')
+    LOGGER.debug('parse_sentence_reference %s', str(tokens[i:i+10]))
 
     j = i
     i = parse_position(tokens, i, node)
@@ -1216,13 +1216,13 @@ whitespace = ~" +"
         if 'cardinal_adjective_number' in capture.captures and capture.captures['cardinal_adjective_number']:
             node['order'] = [0, word_to_number(capture.captures['cardinal_adjective_number'])]
     except parsimonious.exceptions.ParseError as e:
-        debug(parent, tokens, i, 'parse_sentence_reference none')
+        LOGGER.debug('parse_sentence_reference none %s', str(tokens[i:i+10]))
         remove_node(parent, node)
         return j
 
     i = parse_article_part_reference(tokens, i, node)
 
-    debug(parent, tokens, i, 'parse_sentence_reference end')
+    LOGGER.debug('parse_sentence_reference end %s', str(tokens[i:i+10]))
 
     fix_incomplete_references(parent, node)
 
@@ -1279,7 +1279,7 @@ def parse_word_reference(tokens, i, parent):
         'type': TYPE_WORD_REFERENCE
     })
 
-    debug(parent, tokens, i, 'parse_word_reference')
+    LOGGER.debug('parse_word_reference %s', str(tokens[i:i+10]))
 
     grammar = parsimonious.Grammar("""
 word_ref = not_a_word* (positional_conjunction whitespace)* pronoun whitespace* word_ref_type not_double_quote*
@@ -1316,7 +1316,7 @@ not_a_word = ~"\W*"
     i = alinea_lexer.skip_to_next_word(tokens, i)
     i = parse_reference(tokens, i, node)
     
-    debug(parent, tokens, i, 'parse_word_reference end')
+    LOGGER.debug('parse_word_reference end %s', str(tokens[i:i+10]))
 
     return i
 
@@ -1327,7 +1327,7 @@ def parse_header2_reference(tokens, i, parent):
     node = create_node(parent, {
         'type': TYPE_HEADER2_REFERENCE
     })
-    debug(parent, tokens, i, 'parse_header2_reference')
+    LOGGER.debug('parse_header2_reference %s', str(tokens[i:i+10]))
     j = i
     i = parse_position(tokens, i, node)
     i = parse_scope(tokens, i, node)
@@ -1361,7 +1361,7 @@ multiplicative_adverb_decades = ~"(dec|v[ei]c|tr[ei]c|quadrag|quinquag|sexag|sep
         remove_node(parent, node)
         return j
     
-    debug(parent, tokens, i, 'parse_header2_reference end')
+    LOGGER.debug('parse_header2_reference end %s', str(tokens[i:i+10]))
     
     return i
 
@@ -1372,7 +1372,7 @@ def parse_header3_reference(tokens, i, parent):
     node = create_node(parent, {
         'type': TYPE_HEADER3_REFERENCE
     })
-    debug(parent, tokens, i, 'parse_header3_reference')
+    LOGGER.debug('parse_header3_reference %s', str(tokens[i:i+10]))
     j = i
     i = parse_position(tokens, i, node)
     i = parse_scope(tokens, i, node)
@@ -1406,7 +1406,7 @@ multiplicative_adverb_decades = ~"(dec|v[ei]c|tr[ei]c|quadrag|quinquag|sexag|sep
 
     i = parse_article_part_reference(tokens, i, node)
     
-    debug(parent, tokens, i, 'parse_header3_reference end')
+    LOGGER.debug('parse_header3_reference end %s', str(tokens[i:i+10]))
     
     return i
 
@@ -1418,7 +1418,7 @@ def parse_header1_reference(tokens, i, parent):
         'type': TYPE_HEADER1_REFERENCE,
     })
     
-    debug(parent, tokens, i, 'parse_header1_reference')
+    LOGGER.debug('parse_header1_reference %s', str(tokens[i:i+10]))
 
     j = i
     i = parse_position(tokens, i, node)
@@ -1455,7 +1455,7 @@ multiplicative_adverb_decades = ~"(dec|v[ei]c|tr[ei]c|quadrag|quinquag|sexag|sep
     i = parse_article_part_reference(tokens, i, node)
     # i = parse_quote(tokens, i, node)
 
-    debug(parent, tokens, i, 'parse_header1_reference end')
+    LOGGER.debug('parse_header1_reference end %s', str(tokens[i:i+10]))
 
     return i
 
@@ -1491,7 +1491,7 @@ def parse_quote(tokens, i, parent):
         'words': '',
     })
 
-    debug(parent, tokens, i, 'parse_quote')
+    LOGGER.debug('parse_quote %s', str(tokens[i:i+10]))
 
     grammar = parsimonious.Grammar("""
 quoted = whitespace* "\\"" not_a_double_quote "\\"" whitespace*
@@ -1511,7 +1511,7 @@ not_a_word = ~"\W*"
         remove_node(parent, node)
         return i
 
-    debug(parent, tokens, i, 'parse_quote end')
+    LOGGER.debug('parse_quote end %s', str(tokens[i:i+10]))
 
     return i
 
@@ -1524,7 +1524,7 @@ def parse_edit(tokens, i, parent):
         'type': TYPE_EDIT
     })
 
-    debug(parent, tokens, i, 'parse_edit')
+    LOGGER.debug('parse_edit %s', str(tokens[i:i+10]))
 
     # Supprimer {reference}
     if tokens[i] == u'Supprimer':
@@ -1543,14 +1543,14 @@ def parse_edit(tokens, i, parent):
     # if we didn't find any reference as a subject and the subject/verb are not reversed
     if len(node['children']) == 0 and tokens[i] != 'Est' and tokens[i] != 'Sont':
         remove_node(parent, node)
-        debug(parent, tokens, i, 'parse_edit none')
+        LOGGER.debug('parse_edit none %s', str(tokens[i:i+10]))
         return i
     # i = r
 
     i = alinea_lexer.skip_tokens(tokens, i, lambda t: t.lower() not in [u'est', u'sont', u'devient'] and not t == u'.')
     if i + 2 >= len(tokens):
         remove_node(parent, node)
-        debug(parent, tokens, i, 'parse_edit eof')
+        LOGGER.debug('parse_edit eof %s', str(tokens[i:i+10]))
         return r
 
     # sont supprimés
@@ -1630,7 +1630,7 @@ def parse_edit(tokens, i, parent):
         i += 4
     else:
         i = r
-        debug(parent, tokens, i, 'parse_edit remove')
+        LOGGER.debug('parse_edit remove %s', str(tokens[i:i+10]))
         remove_node(parent, node)
         i = parse_raw_article_content(tokens, i, parent)
         i = alinea_lexer.skip_to_end_of_line(tokens, i)
@@ -1642,7 +1642,7 @@ def parse_edit(tokens, i, parent):
     # the line.
     i = alinea_lexer.skip_to_end_of_line(tokens, i)
 
-    debug(parent, tokens, i, 'parse_edit end')
+    LOGGER.debug('parse_edit end %s', str(tokens[i:i+10]))
 
     return i
 
@@ -1652,7 +1652,7 @@ def parse_raw_article_content(tokens, i, parent):
         'content': ''
     })
 
-    debug(parent, tokens, i, 'parse_raw_article_content')
+    LOGGER.debug('parse_raw_article_content %s', str(tokens[i:i+10]))
 
     while i < len(tokens) and tokens[i] != alinea_lexer.TOKEN_NEW_LINE:
         node['content'] += tokens[i]
@@ -1661,7 +1661,7 @@ def parse_raw_article_content(tokens, i, parent):
     if node['content'] == '' or is_space(node['content']):
         remove_node(parent, node)
 
-    debug(parent, tokens, i, 'parse_raw_article_content end')
+    LOGGER.debug('parse_raw_article_content end %s', str(tokens[i:i+10]))
 
     return i
 
@@ -1676,7 +1676,7 @@ def parse_code_reference(tokens, i, parent):
         'type': TYPE_CODE_REFERENCE,
     })
 
-    debug(parent, tokens, i, 'parse_code_reference')
+    LOGGER.debug('parse_code_reference %s', str(tokens[i:i+10]))
 
     grammar = parsimonious.Grammar("""
 code_ref = named_code_ref / back_reference_code_ref
@@ -1706,7 +1706,7 @@ pronoun = ~"le"i / ~"la"i / ~"du"i / ~"de +la"i
         remove_node(parent, node)
         return i
 
-    debug(parent, tokens, i, 'parse_code_reference end')
+    LOGGER.debug('parse_code_reference end %s', str(tokens[i:i+10]))
 
     return i
 
@@ -1812,11 +1812,11 @@ def parse_header1(tokens, i, parent):
         'type': TYPE_HEADER1,
     })
 
-    debug(parent, tokens, i, 'parse_header1')
+    LOGGER.debug('parse_header1 %s', str(tokens[i:i+10]))
 
     # skip '{romanNumber}.'
     if is_roman_number(tokens[i]) and tokens[i + 1] == u'.':
-        debug(parent, tokens, i, 'parse_header1 found article header-1')
+        LOGGER.debug('parse_header1 found article header-1 %s', str(tokens[i:i+10]))
         node['order'] = parse_roman_number(tokens[i])
         i = alinea_lexer.skip_to_next_word(tokens, i + 2)
     else:
@@ -1833,7 +1833,7 @@ def parse_header1(tokens, i, parent):
     if len(node['children']) == 0 and parent != node:
         remove_node(parent, node)
 
-    debug(parent, tokens, i, 'parse_header1 end')
+    LOGGER.debug('parse_header1 end %s', str(tokens[i:i+10]))
 
     return i
 
@@ -1847,11 +1847,11 @@ def parse_header2(tokens, i, parent):
         'type': TYPE_HEADER2,
     })
 
-    debug(parent, tokens, i, 'parse_header2')
+    LOGGER.debug('parse_header2 %s', str(tokens[i:i+10]))
 
     i = alinea_lexer.skip_spaces(tokens, i)
     if i < len(tokens) and re.compile(u'\d+°').match(tokens[i]):
-        debug(parent, tokens, i, 'parse_header2 found article header-2')
+        LOGGER.debug('parse_header2 found article header-2 %s', str(tokens[i:i+10]))
 
         node['order'] = parse_int(tokens[i])
         # skip {number}°
@@ -1871,7 +1871,7 @@ def parse_header2(tokens, i, parent):
     if node != parent and len(node['children']) == 0:
         remove_node(parent, node)
 
-    debug(parent, tokens, i, 'parse_header2 end')
+    LOGGER.debug('parse_header2 end %s', str(tokens[i:i+10]))
 
     return i
 
@@ -1885,7 +1885,7 @@ def parse_header3(tokens, i, parent):
         'type': TYPE_HEADER3,
     })
 
-    debug(parent, tokens, i, 'parse_header3')
+    LOGGER.debug('parse_header3 %s', str(tokens[i:i+10]))
 
     i = alinea_lexer.skip_spaces(tokens, i)
     if i >= len(tokens):
@@ -1913,7 +1913,7 @@ def parse_header3(tokens, i, parent):
     if node != parent and len(node['children']) == 0:
         remove_node(parent, node)
 
-    debug(parent, tokens, i, 'parse_header3 end')
+    LOGGER.debug('parse_header3 end %s', str(tokens[i:i+10]))
 
     return i
 
