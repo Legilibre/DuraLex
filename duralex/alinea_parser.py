@@ -427,6 +427,11 @@ def parse_word_definition(tokens, i, parent):
     elif tokens[i].lower() == u'le' and tokens[i + 2] in [u'nombre', u'chiffre', u'taux']:
         i = alinea_lexer.skip_to_quote_start(tokens, i)
         i = parse_quote(tokens, i, node)
+    # les dispositions suivantes \n "
+    elif tokens[i].lower() == u'les' and tokens[i+2] == 'dispositions' and tokens[i+4] == u'suivantes':
+        i = alinea_lexer.skip_to_quote_start(tokens, i)
+        i = parse_for_each(parse_quote, tokens, i, node)
+        i = alinea_lexer.skip_spaces(tokens, i)
     # "
     elif tokens[i] == alinea_lexer.TOKEN_DOUBLE_QUOTE_OPEN:
         i = parse_for_each(parse_quote, tokens, i, node)
