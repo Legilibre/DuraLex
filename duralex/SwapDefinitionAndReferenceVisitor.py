@@ -4,6 +4,9 @@ import duralex.tree as tree
 
 class SwapDefinitionAndReferenceVisitor(AbstractVisitor):
     def visit_edit_node(self, node, post):
+        if post:
+            return
+        
         defs = filter(lambda n: tree.is_definition(n), node['children'])
 
         for d in defs:
