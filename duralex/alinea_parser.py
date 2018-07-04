@@ -451,17 +451,33 @@ def parse_word_definition(tokens, i, parent):
 def parse_article_definition(tokens, i, parent):
     if i >= len(tokens):
         return i
-
-    node = create_node(parent, {
-        'type': TYPE_ARTICLE_DEFINITION,
-        'children': [],
-    })
     LOGGER.debug('parse_article_definition %s', str(tokens[i:i+10]))
+
+    #node = create_node(parent, {
+    #    'type': TYPE_ARTICLE_DEFINITION,
+    #    'children': [],
+    #})
+
+    # Small-scale experiment of a function transforming a “Parsimonious syntactic tree” into a “DuraLex semantic tree”
+    # Previous code is commented (until 64ff59b) - but both methods work
+    tableToSemanticTree = {
+        'article_id': {
+            'type': TYPE_ARTICLE_DEFINITION,
+            'property': 'id',
+            'dynamic': 'childrify',
+        },
+        'quoted': {
+            'type': TYPE_QUOTE,
+            'property': 'words',
+            'replace': [('"', '')],
+        },
+    }
+    toSemanticTree = ToSemanticTreeVisitor(tableToSemanticTree, parent)
 
     grammar = parsimonious.Grammar("""
 rule = whitespaces an_article whitespaces
 
-an_article = ( ~"un +"i / ~"l['’] *"i ) ~"article"i (whitespace article_id (whitespace so_that_written)?)?
+an_article = ( ~"un +"i / ~"l['’] *"i ) ~"article"i (_ article_id (_ so_that_written not_a_quote quoted)?)?
 
 so_that_written = ~"ainsi +rédigé"i
 
@@ -476,29 +492,38 @@ article_type = ~"\*?\*?((L\.O|LO|L|R|D|A)\*?\*?\.? *)?"
 # Specific article names
 named_article = ~"annexe|ex[ée]cution|unique|(pr[ée])?liminaire|pr[ée]ambule"i
 
+not_a_quote = ~"[^\\\"]*"
+quoted = "\\"" ~"[^\\n\\\"]+(\\n\\\"[^\\n\\\"]+)*" "\\""
+
 multiplicative_adverb = ( multiplicative_adverb_units_before_decades? multiplicative_adverb_decades ) / multiplicative_adverb_units
 multiplicative_adverb_units = ~"semel|bis|ter|quater|(quinqu|sex|sept|oct|no[nv])ies"i
 multiplicative_adverb_units_before_decades = ~"un(de?)?|duo(de)?|ter|quater|quin|sex?|sept|octo|novo"i
 multiplicative_adverb_decades = ~"(dec|v[ei]c|tr[ei]c|quadrag|quinquag|sexag|septuag|octog|nonag)ies"i
 
-whitespace = ~"\s+"
+_ = ~"\s+"
 whitespaces = ~"\s*"
     """)
 
     try:
         tree = grammar.match(''.join(tokens[i:]))
         i += len(alinea_lexer.tokenize(tree.text))
-        capture = CaptureVisitor(['article_id', 'multiplicative_adverb'])
-        capture.visit(tree)
-        if 'article_id' in capture.captures:
-            node['id'] = capture.captures['article_id']
-        if 'multiplicative_adverb' in capture.captures:
-            node['is' + capture.captures['multiplicative_adverb'].title()] = True
-        i = alinea_lexer.skip_to_quote_start(tokens, i)
-        i = parse_for_each(parse_quote, tokens, i, node)
+        toSemanticTree.visit(tree)
+        if toSemanticTree.node == None: # should be improved or possibly deleted: are there definitions without quotes?
+            create_node(parent, {
+                'type': TYPE_ARTICLE_DEFINITION,
+                'children': [],
+            })
+        #capture = CaptureVisitor(['article_id', 'multiplicative_adverb'])
+        #capture.visit(tree)
+        #if 'article_id' in capture.captures:
+        #    node['id'] = capture.captures['article_id']
+        #if 'multiplicative_adverb' in capture.captures:
+        #    node['is' + capture.captures['multiplicative_adverb'].title()] = True
+        #i = alinea_lexer.skip_to_quote_start(tokens, i)
+        #i = parse_for_each(parse_quote, tokens, i, node)
     except parsimonious.exceptions.ParseError:
         LOGGER.debug('parse_article_definition none %s', str(tokens[i:i+10]))
-        remove_node(parent, node)
+        #remove_node(parent, node)
         return i
 
     LOGGER.debug('parse_article_definition end %s', str(tokens[i:i+10]))
@@ -1522,9 +1547,6 @@ def parse_quote(tokens, i, parent):
     grammar = parsimonious.Grammar("""
 rule = whitespaces quoted whitespaces
 quoted = "\\"" ~"[^\\n\\\"]+(\\n\\\"[^\\n\\\"]+)*" "\\""
-#quoted = "\\"" ~"[^\\n]+" "\\""
-#quoted = "\\"" not_a_double_quote "\\""
-#not_a_double_quote = ~"[^\\"]*"
 
 whitespaces = ~"\s*"
     """)
@@ -2023,5 +2045,34 @@ class CaptureVisitor(parsimonious.NodeVisitor):
 
             rule_name = node.expr_name
             self.captures[rule_name] = node.text
+
+
+class ToSemanticTreeVisitor(parsimonious.NodeVisitor):
+
+    def __init__( self, table, parent ):
+
+        self.table = table
+        self.parent = parent
+        self.node = None
+
+    def generic_visit( self, node, visited_children ):
+
+        if node.expr_name in self.table:
+
+            rule_name = node.expr_name
+            rule = self.table[rule_name]
+            node_type = rule['type']
+            self.node = create_node(self.parent, {
+                'type': node_type,
+                'children': [],
+            })
+            text = node.text
+            if 'replace' in rule:
+                for r in rule['replace']:
+                    text = text.replace(r[0], r[1])
+            if 'property' in rule:
+                self.node[rule['property']] = text
+            if 'dynamic' in rule and rule['dynamic'] == 'childrify':
+                self.parent = self.node
 
 # vim: set ts=4 sw=4 sts=4 et:
