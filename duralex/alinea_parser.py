@@ -1118,19 +1118,20 @@ def parse_alinea_reference(tokens, i, parent):
     })
     LOGGER.debug('parse_alinea_reference %s', str(tokens[i:i+10]))
 
-    grammar = parsimonious.Grammar("""
-alinea_ref = _* ("à" _)? (pronoun _)? (explicit_alinea_ref / last_alinea_ref / before_last_alinea_ref / lookback_alinea_ref) _*
-before_last_alinea_ref = ("avant" _ "dernier" _ "alinéa" / "avant-dernier" _ "alinéa")
-last_alinea_ref = "dernier" _ "alinéa"
-explicit_alinea_ref = (ordinal_adjective_number / ) _ "alinéa"
-lookback_alinea_ref = "même" _ "alinéa"
-
-alinea_ref_list = (alinea_ref _* ",") _ "et"
-
-whitespace = ~"\s+"
-ordinal_adjective_number = ~"première|seconde|dernière|dixième|onzième|douzième|treizième|quatorzième|quinzième|seizième|(dix-|vingt-|trente-|quarante-|cinquante-|soixante-|soixante-dix-|quatre-vingt-|quatre-vingt-dix-)?(et-)?(un|deux|trois|quatr|cinqu|six|sept|huit|neuv)ième"i
-pronoun = / ~"de l'"i / ~"du"i / ~"les"i / ~"le"i / ~"au"i / ~"l'"i
-    """)
+# introduced in c2eb094 but unused and there is a grammar syntax error -> to be improved
+#    grammar = parsimonious.Grammar("""
+#alinea_ref = _* ("à" _)? (pronoun _)? (explicit_alinea_ref / last_alinea_ref / before_last_alinea_ref / lookback_alinea_ref) _*
+#before_last_alinea_ref = ("avant" _ "dernier" _ "alinéa" / "avant-dernier" _ "alinéa")
+#last_alinea_ref = "dernier" _ "alinéa"
+#explicit_alinea_ref = (ordinal_adjective_number / ) _ "alinéa"
+#lookback_alinea_ref = "même" _ "alinéa"
+#
+#alinea_ref_list = (alinea_ref _* ",") _ "et"
+#
+#whitespace = ~"\s+"
+#ordinal_adjective_number = ~"première|seconde|dernière|dixième|onzième|douzième|treizième|quatorzième|quinzième|seizième|(dix-|vingt-|trente-|quarante-|cinquante-|soixante-|soixante-dix-|quatre-vingt-|quatre-vingt-dix-)?(et-)?(un|deux|trois|quatr|cinqu|six|sept|huit|neuv)ième"i
+#pronoun = / ~"de l'"i / ~"du"i / ~"les"i / ~"le"i / ~"au"i / ~"l'"i
+#    """)
 
     j = i
     i = parse_position(tokens, i, node)
@@ -1189,8 +1190,9 @@ pronoun = / ~"de l'"i / ~"du"i / ~"les"i / ~"le"i / ~"au"i / ~"l'"i
         node['order'] = parse_int(tokens[i + 2])
         i += 4
     # les {order} alinéas
-    elif tokens[i].lower() == u'les' and is_number_word(tokens[i].lower()) and tokens[i + 4] == u'alinéas':
-
+    elif tokens[i].lower() == u'les' and is_number_word(tokens[i+2].lower()) and tokens[i + 4] == u'alinéas':
+        node['order'] = parse_int(tokens[i + 2])
+        i += 6
     # les alinéas
     # des alinéas
     elif tokens[i].lower() in [u'les', u'des'] and tokens[i + 2] == u'alinéas':
@@ -1428,10 +1430,11 @@ def parse_header3_reference(tokens, i, parent):
     i = parse_scope(tokens, i, node)
 
     grammar = parsimonious.Grammar("""
-header3_ref = _ (pronoun _)* ("même" _)* header3_order _
+header3_ref = whitespaces pronoun _ ("même" _)* header3_order whitespaces
 header3_order = ~"[a-z]" (_ multiplicative_adverb)*
 
 _ = ~"\s+"
+whitespaces = ~"\s*"
 pronoun = ~"le"i / ~"du"i / ~"au"i
 
 multiplicative_adverb = ( multiplicative_adverb_units_before_decades? multiplicative_adverb_decades ) / multiplicative_adverb_units
@@ -1443,13 +1446,11 @@ multiplicative_adverb_decades = ~"(dec|v[ei]c|tr[ei]c|quadrag|quinquag|sexag|sep
     try:
         tree = grammar.match(''.join(tokens[i:]))
         i += len(alinea_lexer.tokenize(tree.text))
-        print(tree)
         capture = CaptureVisitor(['header3_order', 'multiplicative_adverb'])
         capture.visit(tree)
 
         if 'multiplicative_adverb' in capture.captures:
             node['is' + capture.captures['multiplicative_adverb'].title()] = True
-        print(capture.captures['header3_order'])
         node['order'] = ord(capture.captures['header3_order']) - ord('a') + 1
     except parsimonious.exceptions.ParseError as e:
         remove_node(parent, node)
