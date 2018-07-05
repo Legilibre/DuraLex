@@ -778,11 +778,14 @@ def parse_title_reference(tokens, i, parent):
     i = parse_scope(tokens, i, node)
 
     grammar = parsimonious.Grammar("""
-title_ref = pronoun whitespace* "titre" whitespace* title_order
+rule = whitespaces title_ref whitespaces
+
+title_ref = pronoun _ "titre" _ title_order
 title_order = roman_number
 
 roman_number = ~"Ier|[IVXLCDM]+(èm)?e?"
-whitespace = ~"\s+"
+_ = ~"\s+"
+whitespaces = ~"\s*"
 pronoun = ~"le"i / ~"du"i
     """)
 
@@ -856,12 +859,15 @@ def parse_code_part_reference(tokens, i, parent):
     i = parse_scope(tokens, i, node)
 
     grammar = parsimonious.Grammar("""
-code_part_ref = pronoun whitespace+ code_part_order whitespace+ "partie" whitespace+
+rule = whitespaces code_part_ref whitespaces
+
+code_part_ref = pronoun _ code_part_order _ "partie"
 code_part_order = number_word
 
 pronoun = ~"la"i / ~"de la"i
 number_word = "une" / "un" / "première" / "premier" / "deuxième" / "deux" / "seconde" / "second" / "troisième" / "trois" / "quatrième" / "quatre" / "cinquième" / "cinq" / "sixième" / "six" / "septième" / "sept" / "huitième" / "huit" / "neuvième" / "neuf" / "dixième" / "dix" / "onzième" / "onze" / "douzième" / "douze" / "treizième" / "treize" / "quatorzième" / "quatorze" / "quinzième" / "quinze" / "seizième" / "seize"
-whitespace = ~"\s+"
+_ = ~"\s+"
+whitespaces = ~"\s*"
     """)
 
     try:
@@ -893,11 +899,14 @@ def parse_book_reference(tokens, i, parent):
     LOGGER.debug('parse_book_reference %s', str(tokens[i:i+10]))
 
     grammar = parsimonious.Grammar("""
-book_ref = pronoun whitespace* "livre" whitespace book_order
+rule = whitespaces book_ref whitespaces
+
+book_ref = pronoun _ "livre" _ book_order
 book_order = roman_number
 
 roman_number = ~"Ier|[IVXLCDM]+(èm)?e?"
-whitespace = ~"\s+"
+_ = ~"\s+"
+whitespaces = ~"\s*"
 pronoun = ~"du"i / ~"le"i
     """)
 
@@ -1128,7 +1137,7 @@ def parse_alinea_reference(tokens, i, parent):
 #
 #alinea_ref_list = (alinea_ref _* ",") _ "et"
 #
-#whitespace = ~"\s+"
+#_ = ~"\s+"
 #ordinal_adjective_number = ~"première|seconde|dernière|dixième|onzième|douzième|treizième|quatorzième|quinzième|seizième|(dix-|vingt-|trente-|quarante-|cinquante-|soixante-|soixante-dix-|quatre-vingt-|quatre-vingt-dix-)?(et-)?(un|deux|trois|quatr|cinqu|six|sept|huit|neuv)ième"i
 #pronoun = / ~"de l'"i / ~"du"i / ~"les"i / ~"le"i / ~"au"i / ~"l'"i
 #    """)
@@ -1247,13 +1256,16 @@ def parse_sentence_reference(tokens, i, parent):
     i = parse_scope(tokens, i, node)
 
     grammar = parsimonious.Grammar("""
-entry = ( ( ( ~"de"i / ~"à"i ) whitespace )? ( ~"la"i / ~"une"i ) whitespace ordinal_adjective_number whitespace ~"phrase"i ) / ( ( ~"des +"i / ~"les +"i ) ( cardinal_adjective_number whitespace )? ordinal_adjective_number ~"s"? whitespace ~"phrases" )
+rule = whitespaces entry whitespaces
+
+entry = ( ( ( ~"de"i / ~"à"i ) _ )? ( ~"la"i / ~"une"i ) _ ordinal_adjective_number _ ~"phrase"i ) / ( ( ~"des +"i / ~"les +"i ) ( cardinal_adjective_number _ )? ordinal_adjective_number ~"s"? _ ~"phrases" )
 
 ordinal_adjective_number = ~"première|seconde|dernière|dixième|onzième|douzième|treizième|quatorzième|quinzième|seizième|(dix-|vingt-|trente-|quarante-|cinquante-|soixante-|soixante-dix-|quatre-vingt-|quatre-vingt-dix-)?(et-)?(un|deux|trois|quatr|cinqu|six|sept|huit|neuv)ième"i
 
 cardinal_adjective_number = ~"(vingt|trente|quarante|cinquante|soixante|septante|quatre-vingt|huitante|octante|nonante)(-et-un|-deux|-trois|-quatre|-cinq|-six|-sept|-huit|-neuf)?|(soixante|quatre-vingt)(-et-onze|-douze|-treize|-quatorze|-quinze|-seize|-dix-sept|-dix-huit|-dix-neuf)?|zéro|un|deux|trois|quatre|cinq|six|sept|huit|neuf|dix|onze|douze|treize|quatorze|quinze|seize|dix-sept|dix-huit|dix-neuf|quatre-vingt-un|quatre-vingt-onze"i
 
-whitespace = ~" +"
+_ = ~"\s+"
+whitespaces = ~"\s*"
 """)
 
     try:
@@ -1332,11 +1344,14 @@ def parse_word_reference(tokens, i, parent):
     LOGGER.debug('parse_word_reference %s', str(tokens[i:i+10]))
 
     grammar = parsimonious.Grammar("""
-word_ref = not_a_word* (positional_conjunction whitespace)* pronoun whitespace* word_ref_type not_double_quote*
+rule = whitespaces word_ref whitespaces
+
+word_ref = not_a_word* (positional_conjunction _)* pronoun _ word_ref_type not_double_quote*
 word_ref_type = "mots" / "mot" / "nombre" / "chiffre" / "taux" / "références" / "référence"
 
 pronoun = ~"les"i / ~"le"i / ~"des"i / ~"la"i / ~"l'"i
-whitespace = ~"\s+"
+_ = ~"\s+"
+whitespaces = ~"\s*"
 not_double_quote = ~"[^\\"]*"
 positional_conjunction = ~"après"i / ~"avant"i / ~"au début"i / ~"à la fin"i
 not_a_word = ~"\W*"
@@ -1383,10 +1398,12 @@ def parse_header2_reference(tokens, i, parent):
     i = parse_scope(tokens, i, node)
 
     grammar = parsimonious.Grammar("""
-header2_ref = whitespace* pronoun whitespace* ("même" whitespace)* header2_order whitespace*
-header2_order = ~"\d+" "°" (whitespace multiplicative_adverb)*
+rule = whitespaces header2_ref whitespaces
+header2_ref = pronoun _ ("même" _)* header2_order
+header2_order = ~"\d+" "°" (_ multiplicative_adverb)*
 
-whitespace = ~"\s+"
+_ = ~"\s+"
+whitespaces = ~"\s*"
 pronoun = ~"le"i / ~"du"i / "au"
 
 multiplicative_adverb = ( multiplicative_adverb_units_before_decades? multiplicative_adverb_decades ) / multiplicative_adverb_units
@@ -1430,7 +1447,8 @@ def parse_header3_reference(tokens, i, parent):
     i = parse_scope(tokens, i, node)
 
     grammar = parsimonious.Grammar("""
-header3_ref = whitespaces pronoun _ ("même" _)* header3_order whitespaces
+rule = whitespaces header3_ref whitespaces
+header3_ref = pronoun _ ("même" _)* header3_order
 header3_order = ~"[a-z]" (_ multiplicative_adverb)*
 
 _ = ~"\s+"
@@ -1477,11 +1495,13 @@ def parse_header1_reference(tokens, i, parent):
     i = parse_scope(tokens, i, node)
 
     grammar = parsimonious.Grammar("""
-header1_ref = whitespace* pronoun whitespace* header1_order whitespace*
-header1_order = roman_number (whitespace multiplicative_adverb)*
+rule = whitespaces header1_ref whitespaces
+header1_ref = pronoun _ header1_order
+header1_order = roman_number (_ multiplicative_adverb)*
 
 roman_number = ~"Ier|[IVXLCDM]+(èm)?e?"
-whitespace = ~"\s+"
+_ = ~"\s+"
+whitespaces = ~"\s*"
 pronoun = ~"le"i / ~"du"i
 
 multiplicative_adverb = ( multiplicative_adverb_units_before_decades? multiplicative_adverb_decades ) / multiplicative_adverb_units
@@ -1730,13 +1750,15 @@ def parse_code_reference(tokens, i, parent):
     LOGGER.debug('parse_code_reference %s', str(tokens[i:i+10]))
 
     grammar = parsimonious.Grammar("""
+rule = whitespaces code_ref whitespaces
 code_ref = named_code_ref / back_reference_code_ref
-named_code_ref = whitespace* (pronoun whitespace)* code whitespace*
-code = ( ~"code"i whitespace+ code_name ) / ~"constitution"i
-back_reference_code_ref = whitespace* (pronoun whitespace)* "même" whitespace+ "code" whitespace*
+named_code_ref = (pronoun _)* code
+code = ( ~"code"i _ code_name ) / ~"constitution"i
+back_reference_code_ref = (pronoun _)* "même" _ "code"
 code_name = ~"de +la +consommation +des +boissons +et +des +mesures +contre +l['’] *alcoolisme +applicable +dans +la +collectivité +territoriale +de +Mayotte|du +domaine +de +l['’] *Etat +et +des +collectivités +publiques +applicable +à +la +collectivité +territoriale +de +Mayotte|des +pensions +de +retraite +des +marins +français +du +commerce, +de +pêche +ou +de +plaisance|des +pensions +militaires +d['’] *invalidité +et +des +victimes +de +la +guerre|des +tribunaux +administratifs +et +des +cours +administratives +d['’] *appel|des +pensions +militaires +d['’] *invalidité +et +des +victimes +de +guerre|de +déontologie +des +professionnels +de +l['’] *expertise +comptable|de +déontologie +de +la +profession +de +commissaire +aux +comptes|de +l['’] *entrée +et +du +séjour +des +étrangers +et +du +droit +d['’] *asile|des +débits +de +boissons +et +des +mesures +contre +l['’] *alcoolisme|du +domaine +public +fluvial +et +de +la +navigation +intérieure|de +la +Légion +d['’] *honneur +et +de +la +médaille +militaire|des +relations +entre +le +public +et +l['’] *administration|de +l['’] *expropriation +pour +cause +d['’] *utilité +publique|général +de +la +propriété +des +personnes +publiques|des +postes +et +des +communications +électroniques|des +pensions +civiles +et +militaires +de +retraite|de +l['’] *Office +national +interprofessionnel +du +blé|de +déontologie +des +agents +de +police +municipale|disciplinaire +et +pénal +de +la +marine +marchande|des +instruments +monétaires +et +des +médailles|de +déontologie +des +chirurgiens-dentistes|général +des +collectivités +territoriales|de +la +construction +et +de +l['’] *habitation|de +déontologie +de +la +police +nationale|des +communes +de +la +Nouvelle-Calédonie|général +des +impôts, +annexe +2, +CGIAN2|général +des +impôts, +annexe +3, +CGIAN3|général +des +impôts, +annexe +4, +CGIAN4|général +des +impôts +annexe +1, +CGIAN1|de +l['’] *action +sociale +et +des +familles|des +procédures +civiles +d['’] *exécution|de +la +famille +et +de +l['’] *aide +sociale|de +l['’] *industrie +cinématographique|du +travail +applicable +à +Mayotte|de +déontologie +des +sages-femmes|de +déontologie +des +architectes|de +la +propriété +intellectuelle|du +cinéma +et +de +l['’] *image +animée|rural +et +de +la +pêche +maritime|de +l['’] *organisation +judiciaire|des +juridictions +financières|de +déontologie +des +médecins|de +l['’] *enseignement +technique|de +la +nationalité +française|de +déontologie +vétérinaire|de +justice +administrative|de +la +sécurité +intérieure|de +déontologie +médicale|général +des +impôts(, +CGI)?|de +la +sécurité +sociale|monétaire +et +financier|des +caisses +d['’] *épargne|de +la +voirie +routière|de +l['’] *aviation +civile|de +justice +militaire|de +la +santé +publique|du +domaine +de +l['’] *Etat|des +marchés +publics( +\(édition +(1964|2001|2004|2006)\))?|de +procédure +civile( +\(1807\))?|de +procédure +pénale|du +travail +maritime|du +service +national|des +ports +maritimes|de +l['’] *environnement|de +la +consommation|de +la +mutualité|de +la +recherche|de +l['’] *artisanat|de +l['’] *éducation|de +l['’] *urbanisme|des +assurances|des +transports|du +patrimoine|de +la +défense|des +communes|de +l['’] *énergie|des +douanes( +de +Mayotte)?|de +commerce|de +la +route|du +tourisme|du +travail|forestier( +de +Mayotte)?|électoral|du +sport|du +blé|du +vin|minier|pénal|rural|civil"i
 
-whitespace = ~"\s+"
+_ = ~"\s+"
+whitespaces = ~"\s*"
 pronoun = ~"le"i / ~"la"i / ~"du"i / ~"de +la"i
     """)
 
