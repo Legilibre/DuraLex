@@ -461,10 +461,11 @@ def parse_article_definition(tokens, i, parent):
     # Small-scale experiment of a function transforming a “Parsimonious syntactic tree” into a “DuraLex semantic tree”
     # Previous code is commented (until 64ff59b) - but both methods work
     tableToSemanticTree = {
-        'article_id': {
+        'article_def': {
             'type': TYPE_ARTICLE_DEFINITION,
+        },
+        'article_id': {
             'property': 'id',
-            'dynamic': 'childrify',
         },
         'quoted': {
             'type': TYPE_QUOTE,
@@ -472,12 +473,12 @@ def parse_article_definition(tokens, i, parent):
             'replace': [('"', '')],
         },
     }
-    toSemanticTree = ToSemanticTreeVisitor(tableToSemanticTree, parent)
+    toSemanticTree = ToSemanticTreeVisitor(tableToSemanticTree)
 
     grammar = parsimonious.Grammar("""
-rule = whitespaces an_article whitespaces
+rule = whitespaces article_def whitespaces
 
-an_article = ( ~"un +"i / ~"l['’] *"i ) ~"article"i (_ article_id (_ so_that_written not_a_quote quoted)?)?
+article_def = ( ~"un +"i / ~"l['’] *"i ) ~"article"i (_ article_id (_ so_that_written not_a_quote quoted)?)?
 
 so_that_written = ~"ainsi +rédigé"i
 
@@ -507,12 +508,11 @@ whitespaces = ~"\s*"
     try:
         tree = grammar.match(''.join(tokens[i:]))
         i += len(alinea_lexer.tokenize(tree.text))
-        toSemanticTree.visit(tree)
-        if toSemanticTree.node == None: # should be improved or possibly deleted: are there definitions without quotes?
-            create_node(parent, {
-                'type': TYPE_ARTICLE_DEFINITION,
-                'children': [],
-            })
+        dtree = toSemanticTree.visit(tree)
+        if dtree:
+            push_node(parent, dtree)
+        else:
+            raise Exception('No node added')
         #capture = CaptureVisitor(['article_id', 'multiplicative_adverb'])
         #capture.visit(tree)
         #if 'article_id' in capture.captures:
@@ -2072,30 +2072,77 @@ class CaptureVisitor(parsimonious.NodeVisitor):
 
 class ToSemanticTreeVisitor(parsimonious.NodeVisitor):
 
-    def __init__( self, table, parent ):
+    """
+    Translate a Parsimonious tree into a DuraLex tree.
+
+    This translation is described in the dict table, in which the keys are the
+    rules names in Parsimonious and the values are dicts describing DuraLex
+    nodes. When this dict has a key 'type', it is create a new DuraLex node,
+    else the properties set are added to the parent DuraLex node. It can be
+    set some property in DuraLex node with the key 'property' and the value
+    the name of the property. The value of the property set is by default the
+    text of the Parsimonious node, but it can be set some fixed text with the
+    property 'value'. Some replacements on this text can be achived.
+
+    The relative order of the DuraLex tree remains the same than the
+    Parsimonious tree, i.e. if a node B is a child of node A in Parsimonious,
+    the corresponding node of B in DuraLex tree will be a child of the
+    corresponding node of A in DuraLex tree.
+
+    Internally, nodes are created bottom-up and the parent declares its
+    children as children. A side-effect is: some child nodes only contain
+    properties whithout type: these nodes should be merged into the parent
+    because properties are carried on the parent and then these nodes should
+    be deleted.
+
+    TODO: check if sub-sub-nodes containing only properties (in DuraLex tree),
+    when mixed with real (typed) sub-nodes will be all collected by the parent
+    node: the question is: does it remains non-typed nodes.
+    """
+
+    def __init__( self, table ):
 
         self.table = table
-        self.parent = parent
-        self.node = None
 
     def generic_visit( self, node, visited_children ):
 
-        if node.expr_name in self.table:
+        rule_name = node.expr_name
+        children = [child for child in visited_children if child]
 
-            rule_name = node.expr_name
-            rule = self.table[rule_name]
-            node_type = rule['type']
-            self.node = create_node(self.parent, {
-                'type': node_type,
-                'children': [],
-            })
+        if rule_name in self.table or len(children) > 1:
+
+            rule = {}
+            if rule_name in self.table:
+                rule = self.table[rule_name]
+
+            dnode = create_node({}, {})
+            for child in children:
+                if 'type' in child or ('children' in child and len(child['children'])):
+                    push_node(dnode, child)
+                else:
+                    for p in child:
+                        if p != 'children' and p != 'parent' and p != 'uuid':
+                            dnode[p] = child[p]
+            
+            if 'type' in rule:
+                dnode['type'] = rule['type']
+
             text = node.text
+            if 'value' in rule:
+                text = rule['value']
+
             if 'replace' in rule:
                 for r in rule['replace']:
                     text = text.replace(r[0], r[1])
+
             if 'property' in rule:
-                self.node[rule['property']] = text
-            if 'dynamic' in rule and rule['dynamic'] == 'childrify':
-                self.parent = self.node
+                dnode[rule['property']] = text
+
+            return dnode
+
+        elif len(children) == 1:
+            return children[0]
+
+        return None
 
 # vim: set ts=4 sw=4 sts=4 et:
