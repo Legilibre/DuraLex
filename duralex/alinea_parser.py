@@ -526,13 +526,6 @@ def parse_article_definition(tokens, i, parent):
         return i
     LOGGER.debug('parse_article_definition %s', str(tokens[i:i+10]))
 
-    #node = create_node(parent, {
-    #    'type': TYPE_ARTICLE_DEFINITION,
-    #    'children': [],
-    #})
-
-    # Small-scale experiment of a function transforming a “Parsimonious syntactic tree” into a “DuraLex semantic tree”
-    # Previous code is commented (until 64ff59b) - but both methods work
     grammar = parsimonious.Grammar("""
 rule = whitespaces article_def whitespaces
 
@@ -567,17 +560,8 @@ whitespaces = ~"\s*"
         tree = grammar.match(''.join(tokens[i:]))
         i += len(alinea_lexer.tokenize(tree.text))
         toSemanticTree.attach(parent, tree)
-        #capture = CaptureVisitor(['article_id', 'multiplicative_adverb'])
-        #capture.visit(tree)
-        #if 'article_id' in capture.captures:
-        #    node['id'] = capture.captures['article_id']
-        #if 'multiplicative_adverb' in capture.captures:
-        #    node['is' + capture.captures['multiplicative_adverb'].title()] = True
-        #i = alinea_lexer.skip_to_quote_start(tokens, i)
-        #i = parse_for_each(parse_quote, tokens, i, node)
     except parsimonious.exceptions.ParseError:
         LOGGER.debug('parse_article_definition none %s', str(tokens[i:i+10]))
-        #remove_node(parent, node)
         return i
 
     LOGGER.debug('parse_article_definition end %s', str(tokens[i:i+10]))
