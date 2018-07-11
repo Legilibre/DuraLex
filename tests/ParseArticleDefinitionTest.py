@@ -8,7 +8,7 @@ class ParseArticleDefinitionTest(DuralexTestCase):
     def test_an_article(self):
         self.assertEqualAST(
             self.call_parse_func(
-                parser.parse_article_definition,
+                parser.parse_definition,
                 "un article"
             ),
             {'children':[
@@ -21,7 +21,7 @@ class ParseArticleDefinitionTest(DuralexTestCase):
     def test_an_article_2(self):
         self.assertEqualAST(
             self.call_parse_func(
-                parser.parse_article_definition,
+                parser.parse_definition,
                 "l'article"
             ),
             {'children':[
@@ -34,7 +34,7 @@ class ParseArticleDefinitionTest(DuralexTestCase):
     def test_an_article_with_id(self):
         self.assertEqualAST(
             self.call_parse_func(
-                parser.parse_article_definition,
+                parser.parse_definition,
                 "un article 42"
             ),
             {'children':[
@@ -48,7 +48,7 @@ class ParseArticleDefinitionTest(DuralexTestCase):
     def test_an_article_with_id_2(self):
         self.assertEqualAST(
             self.call_parse_func(
-                parser.parse_article_definition,
+                parser.parse_definition,
                 "l'article 42"
             ),
             {'children':[
