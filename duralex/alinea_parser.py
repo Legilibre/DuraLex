@@ -14,6 +14,24 @@ import logging
 
 LOGGER = logging.getLogger('alinea_parser')
 
+# Translation table from Parsimonious to DuraLex
+# This imposes the rules names in the grammars, leading to uniformisation of rules names
+tableToSemanticTree = {
+    # DuraLex nodes
+    'article_def': {
+        'type': TYPE_ARTICLE_DEFINITION,
+    },
+    'quoted': {
+        'type': TYPE_QUOTE,
+        'property': 'words',
+        'replace': [('"', '')],
+    },
+    # DuraLex properties
+    'article_id': {
+        'property': 'id',
+    },
+}
+
 def is_number(token):
     return re.compile('\d+').match(token)
 
@@ -394,28 +412,13 @@ _ = ~"\s+"
 whitespaces = ~"\s*"
     """)
 
-        tableToSemanticTree = {
-            'article_def': {
-                'type': TYPE_ARTICLE_DEFINITION,
-            },
-            'article_id': {
-                'property': 'id',
-            },
-            'quoted': {
-                'type': TYPE_QUOTE,
-                'property': 'words',
-                'replace': [('"', '')],
-            },
-        }
-        toSemanticTree = ToSemanticTreeVisitor(tableToSemanticTree)
-
         try:
             tree = grammar.match(''.join(tokens[i:]))
             i += len(alinea_lexer.tokenize(tree.text))
             dtree = toSemanticTree.visit(tree)
             push_node(parent, dtree)
         except parsimonious.exceptions.ParseError:
-            LOGGER.debug('parse_article_definition none %s', str(tokens[i:i+10]))
+            pass
 
     return i
 
@@ -2196,5 +2199,8 @@ class ToSemanticTreeVisitor(parsimonious.NodeVisitor):
             return children[0]
 
         return None
+
+# Global instance of ToSemanticTreeVisitor given this class has no internal state and there is a global translation table
+toSemanticTree = ToSemanticTreeVisitor(tableToSemanticTree)
 
 # vim: set ts=4 sw=4 sts=4 et:
