@@ -415,8 +415,7 @@ whitespaces = ~"\s*"
         try:
             tree = grammar.match(''.join(tokens[i:]))
             i += len(alinea_lexer.tokenize(tree.text))
-            dtree = toSemanticTree.visit(tree)
-            push_node(parent, dtree)
+            toSemanticTree.attach(parent, tree)
         except parsimonious.exceptions.ParseError:
             pass
 
@@ -518,21 +517,6 @@ def parse_article_definition(tokens, i, parent):
 
     # Small-scale experiment of a function transforming a “Parsimonious syntactic tree” into a “DuraLex semantic tree”
     # Previous code is commented (until 64ff59b) - but both methods work
-    tableToSemanticTree = {
-        'article_def': {
-            'type': TYPE_ARTICLE_DEFINITION,
-        },
-        'article_id': {
-            'property': 'id',
-        },
-        'quoted': {
-            'type': TYPE_QUOTE,
-            'property': 'words',
-            'replace': [('"', '')],
-        },
-    }
-    toSemanticTree = ToSemanticTreeVisitor(tableToSemanticTree)
-
     grammar = parsimonious.Grammar("""
 rule = whitespaces article_def whitespaces
 
@@ -566,8 +550,7 @@ whitespaces = ~"\s*"
     try:
         tree = grammar.match(''.join(tokens[i:]))
         i += len(alinea_lexer.tokenize(tree.text))
-        dtree = toSemanticTree.visit(tree)
-        push_node(parent, dtree)
+        toSemanticTree.attach(parent, tree)
         #capture = CaptureVisitor(['article_id', 'multiplicative_adverb'])
         #capture.visit(tree)
         #if 'article_id' in capture.captures:
@@ -2149,56 +2132,56 @@ class ToSemanticTreeVisitor(parsimonious.NodeVisitor):
     properties whithout type: these nodes should be merged into the parent
     because properties are carried on the parent and then these nodes should
     be deleted.
-
-    TODO: check if sub-sub-nodes containing only properties (in DuraLex tree),
-    when mixed with real (typed) sub-nodes will be all collected by the parent
-    node: the question is: does it remains non-typed nodes.
     """
 
-    def __init__( self, table ):
+    def __init__(self, table):
 
         self.table = table
 
-    def generic_visit( self, node, visited_children ):
+    def attach(self, dparent, ptree):
 
-        rule_name = node.expr_name
-        children = [child for child in visited_children if child]
+        dtree, properties = self.visit(ptree)
+        dparent.update(properties)
+        if dtree:
+            push_node(dparent, dtree)
 
-        if rule_name in self.table or len(children) > 1:
+    def generic_visit(self, pnode, children):
 
-            rule = {}
-            if rule_name in self.table:
-                rule = self.table[rule_name]
+        rule_name = pnode.expr_name
 
-            dnode = create_node({}, {})
-            for child in children:
-                if 'type' in child or ('children' in child and len(child['children'])):
-                    push_node(dnode, child)
-                else:
-                    for p in child:
-                        if p != 'children' and p != 'parent' and p != 'uuid':
-                            dnode[p] = child[p]
-            
-            if 'type' in rule:
-                dnode['type'] = rule['type']
+        dnode = None
+        dchildren = [child[0] for child in children if child[0]]
+        dproperties = {p: child[1][p] for child in children for p in child[1]}
 
-            text = node.text
+        if rule_name in self.table:
+
+            rule = self.table[rule_name]
+
+            text = pnode.text
             if 'value' in rule:
                 text = rule['value']
-
             if 'replace' in rule:
                 for r in rule['replace']:
                     text = text.replace(r[0], r[1])
-
             if 'property' in rule:
-                dnode[rule['property']] = text
+                dproperties[rule['property']] = text
 
-            return dnode
+            if 'type' in rule:
+                dproperties['type'] = rule['type']
+                dnode = create_node(None, dproperties)
+                for dchild in dchildren:
+                    push_node(dnode, dchild)
+                dproperties = {}
 
-        elif len(children) == 1:
-            return children[0]
+        elif len(dchildren) > 1:
+            dnode = create_node(None, {})
+            for dchild in dchildren:
+                push_node(dnode, dchild)
 
-        return None
+        elif len(dchildren) == 1:
+            dnode = dchildren[0]
+
+        return (dnode, dproperties)
 
 # Global instance of ToSemanticTreeVisitor given this class has no internal state and there is a global translation table
 toSemanticTree = ToSemanticTreeVisitor(tableToSemanticTree)
