@@ -30,6 +30,22 @@ tableToSemanticTree = {
     'article_id': {
         'property': 'id',
     },
+    'after': {
+        'property': 'position',
+        'value': 'after',
+    },
+    'before': {
+        'property': 'position',
+        'value': 'before',
+    },
+    'beginning': {
+        'property': 'position',
+        'value': 'beginning',
+    },
+    'end': {
+        'property': 'position',
+        'value': 'end',
+    },
 }
 
 def is_number(token):
@@ -1133,7 +1149,11 @@ def parse_position(tokens, i, node):
     grammar = parsimonious.Grammar("""
 rule = whitespaces position whitespaces
 
-position = ~"après|avant|au +début|à +la +fin"i
+position = after / before / beginning / end
+after = ~"après"i
+before = ~"avant"i
+beginning = ~"au +début"i
+end = ~"à +la +fin"i
 
 whitespaces = ~"\s*"
 """)
@@ -1141,18 +1161,9 @@ whitespaces = ~"\s*"
     try:
         tree = grammar.match(''.join(tokens[i:]))
         i += len(alinea_lexer.tokenize(tree.text))
-        capture = CaptureVisitor(['position'])
-        capture.visit(tree)
-        if re.fullmatch( r' *après *', tree.text, flags=re.IGNORECASE ):
-            node['position'] = 'after'
-        elif re.fullmatch( r' *avant *', tree.text, flags=re.IGNORECASE ):
-            node['position'] = 'before'
-        elif re.fullmatch( r' *à +la +fin *', tree.text, flags=re.IGNORECASE ):
-            node['position'] = 'beginning'
-        elif re.fullmatch( r' *au +début *', tree.text, flags=re.IGNORECASE ):
-            node['position'] = 'end'
-    except parsimonious.exceptions.ParseError as e:
-        return i
+        toSemanticTree.attach(node, tree)
+    except parsimonious.exceptions.ParseError:
+        pass
 
     return i
 
