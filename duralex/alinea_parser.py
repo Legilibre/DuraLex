@@ -2149,7 +2149,7 @@ class ToSemanticTreeVisitor(parsimonious.NodeVisitor):
 
         dnode = None
         dchildren = [child[0] for child in children if child[0]]
-        dproperties = {p: child[1][p] for child in children for p in child[1]}
+        dproperties = {k: v for child in children for k, v in child[1].items()}
 
         if rule_name in self.table:
 
