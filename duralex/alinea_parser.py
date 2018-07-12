@@ -46,6 +46,10 @@ tableToSemanticTree = {
         'property': 'position',
         'value': 'end',
     },
+    'scope_end': {
+        'property': 'scope',
+        'value': 'end',
+    },
 }
 
 def is_number(token):
@@ -979,11 +983,10 @@ _ = ~"\s+"
 whitespaces = ~"\s*"
     """)
 
-    node = None
     try:
         tree = grammar.match(''.join(tokens[i:]))
         i += len(alinea_lexer.tokenize(tree.text))
-        parent['scope'] = 'end'
+        toSemanticTree.attach(parent, tree)
     except parsimonious.exceptions.ParseError as e:
         return i
 
