@@ -1092,15 +1092,7 @@ def parse_article_reference(tokens, i, parent):
     # du même article
     elif tokens[i].lower() in [u'le', u'du'] and tokens[i + 2] == u'même' and tokens[i + 4] == u'article':
         i += 6
-        article_refs = filter_nodes(
-            get_root(parent),
-            lambda n: 'type' in n and n['type'] == TYPE_ARTICLE_REFERENCE
-        )
-        # the last one in order of traversal is the previous one in order of syntax
-        # don't forget the current node is in the list too => -2 instead of -1
-        article_ref = copy_node(article_refs[-2])
-        push_node(parent, article_ref)
-        remove_node(parent, node)
+        mark_as_lookback_reference(node)
     else:
         remove_node(parent, node)
         return j
