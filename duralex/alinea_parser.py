@@ -1849,6 +1849,8 @@ def parse_reference_list(tokens, i, parent):
     if ((i + 2 < len(tokens) and tokens[i] == u',' and tokens[i + 2] in [u'à', u'au', u'l'])
         or (i + 2 < len(tokens) and tokens[i] == u'et')):
         i = parse_reference_list(tokens, i + 2, parent)
+    if i + 4 < len(tokens) and tokens[i] == u',' and tokens[i+2] == u'et':
+        i = parse_reference_list(tokens, i + 4, parent)
     i = alinea_lexer.skip_spaces(tokens, i)
 
     LOGGER.debug('parse_reference_list end %s', str(tokens[i:i+10]))    
