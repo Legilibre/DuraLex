@@ -14,44 +14,6 @@ import logging
 
 LOGGER = logging.getLogger('alinea_parser')
 
-# Translation table from Parsimonious to DuraLex
-# This imposes the rules names in the grammars, leading to uniformisation of rules names
-tableToSemanticTree = {
-    # DuraLex nodes
-    'article_def': {
-        'type': TYPE_ARTICLE_DEFINITION,
-    },
-    'quoted': {
-        'type': TYPE_QUOTE,
-        'property': 'words',
-        'replace': [('"', '')],
-    },
-    # DuraLex properties
-    'article_id': {
-        'property': 'id',
-    },
-    'after': {
-        'property': 'position',
-        'value': 'after',
-    },
-    'before': {
-        'property': 'position',
-        'value': 'before',
-    },
-    'beginning': {
-        'property': 'position',
-        'value': 'beginning',
-    },
-    'end': {
-        'property': 'position',
-        'value': 'end',
-    },
-    'scope_end': {
-        'property': 'scope',
-        'value': 'end',
-    },
-}
-
 def is_number(token):
     return re.compile('\d+').match(token)
 
@@ -112,6 +74,48 @@ def word_to_number(word):
 
 def month_to_number(month):
     return alinea_lexer.TOKEN_MONTH_NAMES.index(month) + 1
+
+
+# Translation table from Parsimonious to DuraLex
+# This imposes the rules names in the grammars, leading to uniformisation of rules names
+tableToSemanticTree = {
+    # DuraLex nodes
+    'article_def': {
+        'type': TYPE_ARTICLE_DEFINITION,
+    },
+    'quoted': {
+        'type': TYPE_QUOTE,
+        'property': 'words',
+        'replace': lambda x: x.replace('"', ''),
+    },
+    # DuraLex properties
+    'article_id': {
+        'property': 'id',
+    },
+    'after': {
+        'property': 'position',
+        'value': 'after',
+    },
+    'before': {
+        'property': 'position',
+        'value': 'before',
+    },
+    'beginning': {
+        'property': 'position',
+        'value': 'beginning',
+    },
+    'end': {
+        'property': 'position',
+        'value': 'end',
+    },
+    'scope_end': {
+        'property': 'scope',
+        'value': 'end',
+    },
+}
+
+
+## Parsing functions
 
 def parse_section_reference(tokens, i, parent):
     if i >= len(tokens):
@@ -2153,8 +2157,7 @@ class ToSemanticTreeVisitor(parsimonious.NodeVisitor):
             if 'value' in rule:
                 text = rule['value']
             if 'replace' in rule:
-                for r in rule['replace']:
-                    text = text.replace(r[0], r[1])
+                text = rule['replace'](text)
             if 'property' in rule:
                 dproperties[rule['property']] = text
 
