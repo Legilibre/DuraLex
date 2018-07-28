@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import uuid
+import json as jsonlib
 
 import logging
 
@@ -82,7 +83,14 @@ TYPE_REFERENCE = [
     TYPE_LOOKBACK_REFERENCE,
 ]
 
-def node_to_string(node):
+def node_to_string(node, json=False):
+    if json:
+        if node:
+            node = copy_node(node)
+            for n in filter_nodes(node, lambda x: 'parent' in x):
+                del n['parent']
+        return jsonlib.dumps(node, sort_keys=True, indent=2, ensure_ascii=False)
+
     if node:
         node = node.copy()
         if 'parent' in node:
@@ -200,3 +208,5 @@ def get_node_ancestors(node):
         a.append(node)
         node = node['parent'] if 'parent' in node else None
     return a
+
+# vim: set ts=4 sw=4 sts=4 et:
