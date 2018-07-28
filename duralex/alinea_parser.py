@@ -1377,7 +1377,7 @@ rule = whitespaces word_ref whitespaces
 word_ref = not_a_word* (positional_conjunction _)* pronoun _ word_ref_type not_double_quote*
 word_ref_type = "mots" / "mot" / "nombre" / "chiffre" / "taux" / "références" / "référence"
 
-pronoun = ~"les"i / ~"le"i / ~"des"i / ~"la"i / ~"l'"i
+pronoun = ~"les"i / ~"le"i / ~"des"i / ~"la"i / ~"l'"i / ~"aux"i / ~"au"i
 _ = ~"\s+"
 whitespaces = ~"\s*"
 not_double_quote = ~"[^\\"]*"
@@ -1646,7 +1646,7 @@ def parse_edit(tokens, i, parent):
         return i
     # i = r
 
-    i = alinea_lexer.skip_tokens(tokens, i, lambda t: t.lower() not in [u'est', u'sont', u'devient'] and not t == u'.')
+    i = alinea_lexer.skip_tokens(tokens, i, lambda t: t.lower() not in [u'est', u'sont', u'devient', u'remplacer'] and not t == u'.')
     if i + 2 >= len(tokens):
         remove_node(parent, node)
         LOGGER.debug('parse_edit eof %s', str(tokens[i:i+10]))
