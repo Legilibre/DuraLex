@@ -86,7 +86,7 @@ TYPE_REFERENCE = [
 def node_to_string(node, json=False):
     if json:
         if node:
-            node = copy_node(node)
+            node = copy_node(node, True, False)
             for n in filter_nodes(node, lambda x: 'parent' in x):
                 del n['parent']
         return jsonlib.dumps(node, sort_keys=True, indent=2, ensure_ascii=False)
@@ -149,16 +149,16 @@ def remove_node(parent, node):
 
     return False
 
-def copy_node(node, recursive=True):
+def copy_node(node, recursive=True, change_uuid=True):
     c = node.copy()
-    if 'uuid' in c:
+    if 'uuid' in c and change_uuid:
         c['uuid'] = str(uuid.uuid4())
     if 'parent' in c:
         del c['parent']
     c['children'] = []
     if 'children' in node and recursive:
         for child in node['children']:
-            push_node(c, copy_node(child))
+            push_node(c, copy_node(child, recursive, change_uuid))
     return c
 
 def get_node_depth(node):

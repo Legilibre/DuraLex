@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from duralex.AbstractVisitor import AbstractVisitor
-
-from duralex.alinea_parser import *
+from duralex import *
 
 class ResolveLookbackReferencesVisitor(AbstractVisitor):
     def visit_lookback_reference_node(self, node, post):
@@ -27,3 +25,5 @@ class ResolveLookbackReferencesVisitor(AbstractVisitor):
                 push_node(resolved_ref, child)
         push_node(node['parent'], resolved_ref)
         remove_node(node['parent'], node)
+
+# vim: set ts=4 sw=4 sts=4 et:
