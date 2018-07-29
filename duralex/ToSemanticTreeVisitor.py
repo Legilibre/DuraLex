@@ -3,7 +3,7 @@
 import logging
 import parsimonious
 
-from duralex.tree import *
+from duralex import *
 
 LOGGER = logging.getLogger('ToSemanticTreeVisitor')
 
@@ -32,6 +32,12 @@ class ToSemanticTreeVisitor(parsimonious.NodeVisitor):
     properties whithout type: these nodes should be merged into the parent
     because properties are carried on the parent and then these nodes should
     be deleted.
+
+    WIP: the special key '_priority' is used to wrap some DuraLex instead of
+    creating a list, e.g. for the expression "le deuxième alinéa et la
+    troisième phrase du quatrième alinéa" where "troisième phrase" must be
+    wrapped in "quatrième alinéa"; this specific case is (for now) triggered
+    by a rule with key '_priority' (here "du" can carry such key).
     """
 
     def __init__(self, table):
@@ -40,10 +46,22 @@ class ToSemanticTreeVisitor(parsimonious.NodeVisitor):
 
     def attach(self, dparent, ptree):
 
+        """
+        Main method to attach a new node in a DuraLex semantic tree when reading a Parsimonious syntactic tree.
+
+        :param dparent:
+            (dict) Parent DuraLex node where will be attached the new DuraLex node.
+        :param ptree:
+            (parsimonious.Node) Parsimonious tree; there should be some matching rules declared in the table.
+        :returns:
+            (dict|None) New DuraLex node if any, or None.
+        """
+
         dtree, properties = self.visit(ptree)
         dparent.update(properties)
         if dtree:
             push_node(dparent, dtree)
+        return dtree
 
     def generic_visit(self, pnode, children):
 
@@ -64,18 +82,45 @@ class ToSemanticTreeVisitor(parsimonious.NodeVisitor):
                 text = rule['replace'](text)
             if 'property' in rule:
                 dproperties[rule['property']] = text
+            if '_priority' in rule and rule['_priority'] == True:
+                dproperties['_priority'] = True
 
             if 'type' in rule:
                 dproperties['type'] = rule['type']
                 dnode = create_node(None, dproperties)
+                first = True
+                hierarchical = False
                 for dchild in dchildren:
-                    push_node(dnode, dchild)
+                    if '_priority' in dchild:
+                        if first:
+                            raise Exception('hierarchical item without base item: unknown behaviour')
+                        del dchild['_priority']
+                        push_node(dchild, dnode)
+                        dnode = dchild
+                        hierarchical = True
+                    else:
+                        if hierarchical:
+                            raise Exception('base item after a hierarchical item: unknown behaviour')
+                        push_node(dnode, dchild)
+                        first = False
                 dproperties = {}
 
         elif len(dchildren) > 1:
             dnode = create_node(None, {})
+            first = True
+            hierarchical = False
             for dchild in dchildren:
-                push_node(dnode, dchild)
+                if '_priority' in dchild and not first:
+                    if first:
+                        raise Exception('hierarchical item without base item: unknown behaviour')
+                    del dchild['_priority']
+                    push_node(dchild, dnode)
+                    dnode = dchild
+                else:
+                    if hierarchical:
+                        raise Exception('base item after a hierarchical item: unknown behaviour')
+                    push_node(dnode, dchild)
+                    first = False
 
         elif len(dchildren) == 1:
             dnode = dchildren[0]
