@@ -40,36 +40,41 @@ def is_roman_number(token):
     return re.compile(r"[IVXCLDM]+(er)?").match(token)
 
 def is_number_word(word):
-    return word_to_number(word) >= 0
+    return word_to_number(word) != None
 
 def word_to_number(word):
     words = [
-        [u'un', u'une', u'premier', u'première'],
-        [u'deux', u'deuxième', u'second', u'seconde'],
-        [u'trois', u'troisième'],
-        [u'quatre', u'quatrième'],
-        [u'cinq', u'cinquième'],
-        [u'six', u'sixième'],
-        [u'sept', u'septième'],
-        [u'huit', u'huitième'],
-        [u'neuf', u'neuvième'],
-        [u'dix', u'dixième'],
-        [u'onze', u'onzième'],
-        [u'douze', u'douzième'],
-        [u'treize', u'treizième'],
-        [u'quatorze', u'quatorzième'],
-        [u'quinze', u'quinzième'],
-        [u'seize', u'seizième'],
+        ['un', 'une', 'premier', 'première'],
+        ['deux', 'deuxième', 'second', 'seconde'],
+        ['trois', 'troisième'],
+        ['quatre', 'quatrième'],
+        ['cinq', 'cinquième'],
+        ['six', 'sixième'],
+        ['sept', 'septième'],
+        ['huit', 'huitième'],
+        ['neuf', 'neuvième'],
+        ['dix', 'dixième'],
+        ['onze', 'onzième'],
+        ['douze', 'douzième'],
+        ['treize', 'treizième'],
+        ['quatorze', 'quatorzième'],
+        ['quinze', 'quinzième'],
+        ['seize', 'seizième'],
     ]
 
     word = word.lower()
-    word = word.replace(u'È', u'è')
 
     for i in range(0, len(words)):
         if word in words[i]:
             return i + 1
 
-    return -1
+    if word in ['dernier', 'dernière']:
+        return -1
+
+    if word in ['avant-dernier', 'avant-dernière', 'avant dernier', 'avant dernière']:
+        return -2
+
+    return None
 
 def month_to_number(month):
     return alinea_lexer.TOKEN_MONTH_NAMES.index(month) + 1
@@ -1172,7 +1177,7 @@ def parse_alinea_reference(tokens, i, parent):
 #alinea_ref_list = (alinea_ref _* ",") _ "et"
 #
 #_ = ~"\s+"
-#ordinal_adjective_number = ~"première|seconde|dernière|dixième|onzième|douzième|treizième|quatorzième|quinzième|seizième|(dix-|vingt-|trente-|quarante-|cinquante-|soixante-|soixante-dix-|quatre-vingt-|quatre-vingt-dix-)?(et-)?(un|deux|trois|quatr|cinqu|six|sept|huit|neuv)ième"i
+#ordinal_adjective_number = ~"première|premier|seconde?|avant[- ]dernière|avant[- ]dernier|dixième|onzième|douzième|treizième|quatorzième|quinzième|seizième|(dix-|vingt-|trente-|quarante-|cinquante-|soixante-|soixante-dix-|quatre-vingt-|quatre-vingt-dix-)?(et-)?(un|deux|trois|quatr|cinqu|six|sept|huit|neuv)ième"i
 #pronoun = / ~"de l'"i / ~"du"i / ~"les"i / ~"le"i / ~"au"i / ~"l'"i
 #    """)
 
@@ -1294,7 +1299,7 @@ rule = whitespaces entry whitespaces
 
 entry = ( ( ( ~"de"i / ~"à"i ) _ )? ( ~"la"i / ~"une"i ) _ ordinal_adjective_number _ ~"phrase"i ) / ( ( ~"des +"i / ~"les +"i ) ( cardinal_adjective_number _ )? ordinal_adjective_number ~"s"? _ ~"phrases" )
 
-ordinal_adjective_number = ~"première|seconde|dernière|dixième|onzième|douzième|treizième|quatorzième|quinzième|seizième|(dix-|vingt-|trente-|quarante-|cinquante-|soixante-|soixante-dix-|quatre-vingt-|quatre-vingt-dix-)?(et-)?(un|deux|trois|quatr|cinqu|six|sept|huit|neuv)ième"i
+ordinal_adjective_number = ~"première|premier|seconde?|avant[- ]dernière|avant[- ]dernier|dixième|onzième|douzième|treizième|quatorzième|quinzième|seizième|(dix-|vingt-|trente-|quarante-|cinquante-|soixante-|soixante-dix-|quatre-vingt-|quatre-vingt-dix-)?(et-)?(un|deux|trois|quatr|cinqu|six|sept|huit|neuv)ième"i
 
 cardinal_adjective_number = ~"(vingt|trente|quarante|cinquante|soixante|septante|quatre-vingt|huitante|octante|nonante)(-et-un|-deux|-trois|-quatre|-cinq|-six|-sept|-huit|-neuf)?|(soixante|quatre-vingt)(-et-onze|-douze|-treize|-quatorze|-quinze|-seize|-dix-sept|-dix-huit|-dix-neuf)?|zéro|un|deux|trois|quatre|cinq|six|sept|huit|neuf|dix|onze|douze|treize|quatorze|quinze|seize|dix-sept|dix-huit|dix-neuf|quatre-vingt-un|quatre-vingt-onze"i
 
