@@ -14,6 +14,7 @@ class ResolveLookbackReferencesVisitor(AbstractVisitor):
             )
         else:
             refs = filter_nodes(get_root(node), is_reference)
+        # FIXME: check the resolve algorithm over multiple situations, particularly with the undefined lookback reference "Il est ajouté" in hierarchical amendements (with headers).
 
         for i in range(0, len(refs)):
             if compare_nodes(refs[i], node):
