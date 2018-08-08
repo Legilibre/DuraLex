@@ -8,7 +8,7 @@
 		"children": {
 			"type": "array",
 			"items": {
-				"$ref": "#/definitions/child"
+				"$ref": "#/definitions/node"
 			}
 		},
 		"date": {
@@ -39,11 +39,11 @@
 			"enum": ["law-project", "law-proposal"]
 		},
 		"url": {
-			"type": "string"
+			"type": ["string","null"]
 		}
 	},
 	"definitions": {
-		"child": {
+		"node": {
 			"anyOf": [{
 				"type": "object",
 				"required": ["type"],
@@ -52,15 +52,26 @@
 					"type": {
 						"type": "string",
 						"description": "Child type.",
-						"enum": ["bill-article-reference", "code-reference", "code-part-reference", "book-reference", "law-reference", "title-reference", "chapter-reference", "section-reference", "subsection-reference", "paragraph-reference", "article-reference", "header1-reference", "header2-reference", "header3-reference", "alinea-reference", "sentence-reference", "word-reference", "incomplete-reference", "title-definition", "article-definition", "header1-definition", "header2-definition", "header3-definition", "subparagraph-definition", "alinea-definition", "sentence-definition", "mention-definition", "word-definition", "header1", "header2", "header3", "bill-article", "amendment", "edit", "quote", "law-project", "law-proposal"]
+						"enum": ["bill-article-reference", "code-reference", "code-part-reference", "book-reference", "law-reference", "title-reference", "chapter-reference", "section-reference", "subsection-reference", "paragraph-reference", "article-reference", "header1-reference", "header2-reference", "header3-reference", "alinea-reference", "sentence-reference", "word-reference", "incomplete-reference", "title-definition", "article-definition", "header1-definition", "header2-definition", "header3-definition", "subparagraph-definition", "alinea-definition", "sentence-definition", "mention-definition", "word-definition", "header1", "header2", "header3", "bill-article", "amendment", "edit", "quote", "law-project", "law-proposal",  "raw-content"]
 					},
 					"children": {
-						"$ref": "#/properties/children",
-						"description": "Child children."
+						"type": "array",
+						"description": "Node children.",
+						"items": {
+							"$ref": "#/definitions/node"
+						}
+					},
+					"parent": {
+						"$ref": "#/definitions/node",
+						"description": "Parent node. This property is never present in DuraLex exported trees, but is always present in internal treatments."
+					},
+					"uuid": {
+						"type": "string",
+						"description": "Node unique identifier. This property is not useful and generally not present in DuraLex exported trees, but is always present in internal treatments."
 					},
 					"id": {
 						"type": "string",
-						"description": "Child ID."
+						"description": "Node ID, often used in article, law, or code nodes."
 					},
 					"editType": {
 						"type": "string",
@@ -79,11 +90,16 @@
 					"order": {
 						"type": "integer",
 						"description": "Order in the list.",
-						"minimum": 0
+						"minimum": -2
 					},
 					"words": {
 						"type": "string",
 						"description": "Words, used in definitions."
+					},
+					"position": {
+						"type": "string",
+						"description": "Position of the word, used in definitions.",
+						"enum": ["before", "after", "end", "beginning"]
 					},
 					"content": {
 						"type": "string",
@@ -91,7 +107,7 @@
 					},
 					"isNew": {
 						"type": "boolean",
-						"description": "This child is new."
+						"description": "This node is a new article."
 					}
 				},
 				"patternProperties": {

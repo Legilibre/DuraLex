@@ -98,6 +98,8 @@ The parsing operation of an amendment has three major steps:
 
 The details of the visitors are explained in a separate document.
 
+When the first operation does not succeed, it can be either because the grammar is not enough complete either because the text is not an amendment (in this case it is a real disposition in normal French, not modifying another disposition). In this case, a node of type "raw-content" is created with the sentence until the next newline.
+
 Constraints
 -----------
 
@@ -107,3 +109,8 @@ Although there are currently no explicit constraints on DuraLex trees, we can ob
 * reference-type nodes have either reference-type or quote-type nodes as recursive children,
 * definition-type nodes have either definition-type or quote-type nodes as recursive children,
 * edit-type nodes have only reference-type or definition-type nodes as direct children.
+
+Properties
+----------
+
+Except the property "type" discussed above, some nodes have specific properties. These are described in the JSON schema in `docs/schema.json`.
