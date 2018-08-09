@@ -84,6 +84,14 @@ FIXME:
 
 * Check the resolve algorithm over multiple situations, particularly with the undefined lookback reference "Il est ajouté" in hierarchical amendements (with headers).
 
+#### ForkReferenceVisitor
+
+This visitor operates on reference-type nodes. It is an idempotent visitor.
+
+It splites (direct children) lists of references in a reference-type node, and transforms this into a list of reference-subreferences (with the same relative order).
+
+Typically it is an introductory sentence says to modify some large-scale part (e.g. an article) and then are enumerated smaller-scale parts (e.g. sentences).
+
 #### ResolveFullyQualifiedDefinitionsVisitor
 
 This visitor operates on edit-type nodes. It is an idempotent visitor.
@@ -134,14 +142,6 @@ It removes the string `"Art. {articleId}. -"` at the beginning of the lines cont
 This visitor operates on edit-type nodes. It is an idempotent visitor.
 
 It splites (direct children) lists of references and definitions by creating edit-type nodes each with a single reference and definition (if there are definitions). At the end, there are len(references) x max(len(definitions),1) edit-type nodes.
-
-#### ForkReferenceVisitor
-
-This visitor operates on reference-type nodes. It is an idempotent visitor.
-
-It splites (direct children) lists of references in a reference-type node, and transforms this into a list of reference-subreferences (with the same relative order).
-
-Typically it is an introductory sentence says to modify some large-scale part (e.g. an article) and then are enumerated smaller-scale parts (e.g. sentences).
 
 
 Parsimonious visitors
