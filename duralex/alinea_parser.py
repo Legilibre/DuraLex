@@ -1194,6 +1194,10 @@ def parse_alinea_reference(tokens, i, parent):
     elif tokens[i].lower() == u'l' and tokens[i + 2].startswith(u'alinéa'):
         node['order'] = parse_int(tokens[i + 4])
         i += 6
+    # à l'alinéa
+    elif tokens[i].lower() == u'à' and tokens[i + 2] == u'l' and tokens[i + 4].startswith(u'alinéa'):
+        node['order'] = parse_int(tokens[i + 6])
+        i += 8
     # de l'alinéa
     elif tokens[i] == 'de' and tokens[i + 2].lower() == [u'l'] and tokens[i + 4].startswith(u'alinéa'):
         i += 6
