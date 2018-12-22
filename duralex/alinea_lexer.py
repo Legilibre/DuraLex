@@ -2,7 +2,7 @@
 
 import re
 
-TOKEN_DELIMITERS = re.compile(u'(\xa0|\s|\(|\)|\.|\!|\'|,|")')
+TOKEN_DELIMITERS = re.compile(u'(\xa0|\s|\(|\)|\.|\!|\'|’|,|")')
 TOKEN_NEW_LINE = '\n'
 TOKEN_SINGLE_QUOTE = u'\''
 TOKEN_DOUBLE_QUOTE_OPEN = u'"'
