@@ -95,6 +95,10 @@ tableToSemanticTree = {
         'property': 'words',
         'replace': lambda x: x.replace('"', ''),
     },
+    'free_quoted': {
+        'type': TYPE_QUOTE,
+        'property': 'words',
+    },
     # DuraLex properties
     'article_id': {
         'property': 'id',
@@ -425,10 +429,10 @@ def parse_definition(tokens, i, parent):
 rule = whitespaces ( article_def / alinea_def ) whitespaces
 
 # [DuraLex] create node of type "article-definition"
-article_def = ( ~"un +"i / ~"l['’] *"i ) ~"article"i (_ article_id)? (_ so_that_written)? not_a_quote quoted
+article_def = ( ~"un +"i / ~"l['’] *"i ) ~"article"i (_ article_id)? (_ so_that_written)? ( ( before_quote quoted ) / ( before_free_quote free_quoted ) )
 
 # [DuraLex] create node of type "alinea-definition"
-alinea_def = ( ( ~"les +"i? cardinal_adjective_number _) / ~"l['’] *|les +"i ) ~"alin[ée]as?"i (_ so_that_written)? not_a_quote quoted
+alinea_def = ( ( ~"les +"i? cardinal_adjective_number _) / ~"l['’] *|les +"i ) ~"alin[ée]as?"i (_ so_that_written)? ( ( before_quote quoted ) / ( before_free_quote free_quoted ) )
 
 so_that_written = ~"ainsi +rédigée?s?|suivante?s?"i
 
@@ -444,10 +448,14 @@ article_type = ~"\*?\*?((L\.O|LO|L|R|D|A)\*?\*?\.? *)?"
 # Specific article names
 named_article = ~"annexe|ex[ée]cution|unique|(pr[ée])?liminaire|pr[ée]ambule"i
 
-not_a_quote = ~"[^\\\"]*"
+before_quote = ~"[^\\\"\\n]*\\n*"
+before_free_quote = ~" *:?\\n"
 
 # [DuraLex] create node of type "quote"
 quoted = "\\"" ~"[^\\n\\\"]+(\\n\\\"[^\\n\\\"]+)*" "\\""
+
+# [DuraLex] create node of type "quote"
+free_quoted = ~"[^\\n]+"
 
 # [DuraLex] define property "count"
 cardinal_adjective_number = ~"(vingt|trente|quarante|cinquante|soixante|septante|quatre-vingt|huitante|octante|nonante)(-et-un|-deux|-trois|-quatre|-cinq|-six|-sept|-huit|-neuf)?|(soixante|quatre-vingt)(-et-onze|-douze|-treize|-quatorze|-quinze|-seize|-dix-sept|-dix-huit|-dix-neuf)?|zéro|un|deux|trois|quatre|cinq|six|sept|huit|neuf|dix|onze|douze|treize|quatorze|quinze|seize|dix-sept|dix-huit|dix-neuf|quatre-vingt-un|quatre-vingt-onze"i
@@ -1321,15 +1329,15 @@ def parse_word_reference(tokens, i, parent):
     LOGGER.debug('parse_word_reference %s', str(tokens[i:i+10]))
 
     grammar = parsimonious.Grammar("""
-rule = whitespaces word_ref whitespaces
+# Exceptionally do not add whitespaces at the end to be able to recognise free_quoted
+rule = whitespaces word_ref
 
-word_ref = not_a_word* (positional_conjunction _)* pronoun _ word_ref_type not_double_quote*
+word_ref = not_a_word* (positional_conjunction _)* pronoun _ word_ref_type
 word_ref_type = "mots" / "mot" / "nombre" / "chiffre" / "taux" / "références" / "référence"
 
 pronoun = ~"les"i / ~"le"i / ~"des"i / ~"la"i / ~"l'"i / ~"aux"i / ~"au"i
 _ = ~"\s+"
 whitespaces = ~"\s*"
-not_double_quote = ~"[^\\"]*"
 positional_conjunction = ~"après"i / ~"avant"i / ~"au début"i / ~"à la fin"i
 not_a_word = ~"\W*"
     """)
@@ -1543,8 +1551,14 @@ def parse_quote(tokens, i, parent):
     LOGGER.debug('parse_quote %s', str(tokens[i:i+10]))
 
     grammar = parsimonious.Grammar("""
-rule = whitespaces quoted whitespaces
+# Exceptionally do not add whitespaces at the beginning to be able to recognise free_quoted
+rule = ( ( before_quote quoted ) / ( before_free_quote free_quoted ) ) whitespaces
+
 quoted = "\\"" ~"[^\\n\\\"]+(\\n\\\"[^\\n\\\"]+)*" "\\""
+free_quoted = ~"[^\\n]+"
+
+before_quote = ~"[^\\\"\\n]*\\n*"
+before_free_quote = ~" *:?\\n"
 
 whitespaces = ~"\s*"
     """)
@@ -1552,9 +1566,12 @@ whitespaces = ~"\s*"
     try:
         tree = grammar.match(''.join(tokens[i:]))
         i += len(alinea_lexer.tokenize(tree.text))
-        capture = CaptureVisitor(['quoted'])
+        capture = CaptureVisitor(['quoted', 'free_quoted'])
         capture.visit(tree)
-        node['words'] = capture.captures['quoted'].replace('"','') # there could be some quote inside the string in multiline strings
+        if 'quoted' in capture.captures:
+            node['words'] = capture.captures['quoted'].replace('"','') # there could be some quote inside the string in multiline strings
+        else:
+            node['words'] = capture.captures['free_quoted']
     except parsimonious.exceptions.ParseError as e:
         remove_node(parent, node)
         return i
