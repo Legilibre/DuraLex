@@ -52,3 +52,39 @@ whitespaces = ~"\s*"
 
     return i
 
+def parse_alinea_definition(tokens, i, parent):
+    if i >= len(tokens):
+        return i
+
+    LOGGER.debug('parse_alinea_definition %s', str(tokens[i:i+10]))
+
+    # {count} alinéa(s)
+    if is_number_word(tokens[i]) and tokens[i + 2].startswith(u'alinéa'):
+        count = word_to_number(tokens[i])
+        i += 4
+        # ainsi rédigé
+        # est rédigé
+        # est ainsi rédigé
+        if (i + 2 < len(tokens) and tokens[i + 2].startswith(u'rédigé')
+            or (i + 4 < len(tokens) and tokens[i + 4].startswith(u'rédigé'))):
+            # we expect {count} definitions => {count} quotes
+            # but they don't always match, so for now we parse all of the available contents
+            # FIXME: issue a warning because the expected count doesn't match?
+            i = alinea_lexer.skip_spaces(tokens, i)
+            i = alinea_lexer.skip_to_quote_start(tokens, i)
+            i = parse_for_each(
+                parse_quote,
+                tokens,
+                i,
+                lambda: create_node(parent, {'type': TYPE_ALINEA_DEFINITION, 'children': []})
+            )
+        else:
+            node = create_node(parent, {'type': TYPE_ALINEA_DEFINITION, 'count': count})
+    else:
+        LOGGER.debug('parse_alinea_definition none %s', str(tokens[i:i+10]))
+        return i
+
+    LOGGER.debug('parse_alinea_definition end %s', str(tokens[i:i+10]))
+
+    return i
+

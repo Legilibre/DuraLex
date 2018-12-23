@@ -87,6 +87,9 @@ tableToSemanticTree = {
     'article_def': {
         'type': TYPE_ARTICLE_DEFINITION,
     },
+    'alinea_def': {
+        'type': TYPE_ALINEA_DEFINITION,
+    },
     'quoted': {
         'type': TYPE_QUOTE,
         'property': 'words',
@@ -95,6 +98,10 @@ tableToSemanticTree = {
     # DuraLex properties
     'article_id': {
         'property': 'id',
+    },
+    'cardinal_adjective_number': {
+        'property': 'count',
+        'replace': word_to_number,
     },
     'after': {
         'property': 'position',
@@ -398,7 +405,7 @@ def parse_definition(tokens, i, parent):
     i = parse_one_of(
         [
             #parse_article_definition,
-            parse_alinea_definition,
+            #parse_alinea_definition,
             parse_mention_definition,
             parse_header1_definition,
             parse_header2_definition,
@@ -415,10 +422,13 @@ def parse_definition(tokens, i, parent):
 
     if i == j:
         grammar = parsimonious.Grammar("""
-rule = whitespaces article_def whitespaces
+rule = whitespaces ( article_def / alinea_def ) whitespaces
 
 # [DuraLex] create node of type "article-definition"
 article_def = ( ~"un +"i / ~"l['’] *"i ) ~"article"i (_ article_id)? (_ so_that_written)? not_a_quote quoted
+
+# [DuraLex] create node of type "alinea-definition"
+alinea_def = ( ( ~"les +"i? cardinal_adjective_number _) / ~"l['’] *|les +"i ) ~"alin[ée]as?"i (_ so_that_written)? not_a_quote quoted
 
 so_that_written = ~"ainsi +rédigée?s?|suivante?s?"i
 
@@ -438,6 +448,9 @@ not_a_quote = ~"[^\\\"]*"
 
 # [DuraLex] create node of type "quote"
 quoted = "\\"" ~"[^\\n\\\"]+(\\n\\\"[^\\n\\\"]+)*" "\\""
+
+# [DuraLex] define property "count"
+cardinal_adjective_number = ~"(vingt|trente|quarante|cinquante|soixante|septante|quatre-vingt|huitante|octante|nonante)(-et-un|-deux|-trois|-quatre|-cinq|-six|-sept|-huit|-neuf)?|(soixante|quatre-vingt)(-et-onze|-douze|-treize|-quatorze|-quinze|-seize|-dix-sept|-dix-huit|-dix-neuf)?|zéro|un|deux|trois|quatre|cinq|six|sept|huit|neuf|dix|onze|douze|treize|quatorze|quinze|seize|dix-sept|dix-huit|dix-neuf|quatre-vingt-un|quatre-vingt-onze"i
 
 multiplicative_adverb = ( multiplicative_adverb_units_before_decades? multiplicative_adverb_decades ) / multiplicative_adverb_units
 multiplicative_adverb_units = ~"semel|bis|ter|quater|(quinqu|sex|sept|oct|no[nv])ies"i
@@ -538,42 +551,6 @@ def parse_word_definition(tokens, i, parent):
         remove_node(parent, node)
         return j
     LOGGER.debug('parse_word_definition end %s', str(tokens[i:i+10]))
-    return i
-
-def parse_alinea_definition(tokens, i, parent):
-    if i >= len(tokens):
-        return i
-
-    LOGGER.debug('parse_alinea_definition %s', str(tokens[i:i+10]))
-
-    # {count} alinéa(s)
-    if is_number_word(tokens[i]) and tokens[i + 2].startswith(u'alinéa'):
-        count = word_to_number(tokens[i])
-        i += 4
-        # ainsi rédigé
-        # est rédigé
-        # est ainsi rédigé
-        if (i + 2 < len(tokens) and tokens[i + 2].startswith(u'rédigé')
-            or (i + 4 < len(tokens) and tokens[i + 4].startswith(u'rédigé'))):
-            # we expect {count} definitions => {count} quotes
-            # but they don't always match, so for now we parse all of the available contents
-            # FIXME: issue a warning because the expected count doesn't match?
-            i = alinea_lexer.skip_spaces(tokens, i)
-            i = alinea_lexer.skip_to_quote_start(tokens, i)
-            i = parse_for_each(
-                parse_quote,
-                tokens,
-                i,
-                lambda: create_node(parent, {'type': TYPE_ALINEA_DEFINITION, 'children': []})
-            )
-        else:
-            node = create_node(parent, {'type': TYPE_ALINEA_DEFINITION, 'count': count})
-    else:
-        LOGGER.debug('parse_alinea_definition none %s', str(tokens[i:i+10]))
-        return i
-
-    LOGGER.debug('parse_alinea_definition end %s', str(tokens[i:i+10]))
-
     return i
 
 def parse_mention_definition(tokens, i, parent):
