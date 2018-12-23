@@ -531,8 +531,7 @@ def parse_word_definition(tokens, i, parent):
     # les mots
     # des mots
     if tokens[i].lower() in [u'le', u'les', u'des'] and tokens[i + 2].startswith(u'mot'):
-        i = alinea_lexer.skip_to_quote_start(tokens, i)
-        i = parse_for_each(parse_quote, tokens, i, node)
+        i = parse_for_each(parse_quote, tokens, i+3, node)
         # i = alinea_lexer.skip_spaces(tokens, i)
     # le nombre
     # le chiffre
@@ -1592,7 +1591,7 @@ def parse_edit(tokens, i, parent):
     LOGGER.debug('parse_edit %s', str(tokens[i:i+10]))
 
     # Supprimer {reference}
-    if tokens[i] == u'Supprimer':
+    if tokens[i].lower() == u'supprimer':
         i += 2
         node['editType'] = 'delete'
         i = parse_reference(tokens, i, node)
@@ -1604,6 +1603,13 @@ def parse_edit(tokens, i, parent):
     # if we did not parse a reference
 
     i = alinea_lexer.skip_spaces(tokens, i)
+
+    # Supprimer {reference}
+    if tokens[i].lower() == u'supprimer':
+        i += 2
+        node['editType'] = 'delete'
+        i = parse_reference(tokens, i, node)
+        return i
 
     # if we didn't find any reference as a subject and the subject/verb are not reversed
     if len(node['children']) == 0 and tokens[i] != 'Est' and tokens[i] != 'Sont':
@@ -1652,7 +1658,11 @@ def parse_edit(tokens, i, parent):
         node['editType'] = 'replace'
         i += 2
         # i = parse_definition(tokens, i, node)
-        i = parse_reference(tokens, i, node)
+        ref_nodes = filter_nodes(node, is_reference)
+        if len(ref_nodes) == 1:
+            i = parse_reference(tokens, i, ref_nodes[0])
+        else:
+            i = parse_reference(tokens, i, node)
         i = alinea_lexer.skip_to_end_of_line(tokens, i)
         if tokens[i].lower() == 'par':
             i += 2
