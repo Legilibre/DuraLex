@@ -418,9 +418,9 @@ def parse_definition(tokens, i, parent):
 rule = whitespaces article_def whitespaces
 
 # [DuraLex] create node of type "article-definition"
-article_def = ( ~"un +"i / ~"l['’] *"i ) ~"article"i (_ article_id (_ so_that_written not_a_quote quoted)?)?
+article_def = ( ~"un +"i / ~"l['’] *"i ) ~"article"i (_ article_id)? (_ so_that_written)? not_a_quote quoted
 
-so_that_written = ~"ainsi +rédigé"i
+so_that_written = ~"ainsi +rédigée?s?|suivante?s?"i
 
 # [DuraLex] define property "id"
 article_id = numbered_article / named_article
