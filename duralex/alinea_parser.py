@@ -1242,7 +1242,7 @@ def parse_sentence_reference(tokens, i, parent):
     grammar = parsimonious.Grammar("""
 rule = whitespaces entry whitespaces
 
-entry = ( ( ( ~"de"i / ~"à"i ) _ )? ( ~"la"i / ~"une"i ) _ ordinal_adjective_number _ ~"phrase"i ) / ( ( ~"des +"i / ~"les +"i ) ( cardinal_adjective_number _ )? ordinal_adjective_number ~"s"? _ ~"phrases" )
+entry = ( ( ~"de +"i / ~"à +"i )? ( ~"la +"i / ~"une +"i )? ordinal_adjective_number _ ~"phrase"i ) / ( ( ~"des +"i / ~"les +"i )? ( cardinal_adjective_number _ )? ordinal_adjective_number ~"s"? _ ~"phrases" )
 
 ordinal_adjective_number = ~"première|premier|seconde?|avant[- ]dernière|avant[- ]dernier|dixième|onzième|douzième|treizième|quatorzième|quinzième|seizième|(dix-|vingt-|trente-|quarante-|cinquante-|soixante-|soixante-dix-|quatre-vingt-|quatre-vingt-dix-)?(et-)?(un|deux|trois|quatr|cinqu|six|sept|huit|neuv)ième"i
 
