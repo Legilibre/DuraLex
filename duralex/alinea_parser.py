@@ -429,7 +429,7 @@ def parse_definition(tokens, i, parent):
 rule = whitespaces ( article_def / alinea_def ) whitespaces
 
 # [DuraLex] create node of type "article-definition"
-article_def = ( ~"un +"i / ~"l['’] *"i ) ~"article"i (_ article_id)? (_ so_that_written)? ( ( before_quote quoted ) / ( before_free_quote free_quoted ) )
+article_def = ( ~"un +"i / ~"l['’] *"i ) ~"article"i ( ( _ article_id ) / ( ~" +additionnel"i ) )? (_ so_that_written)? ( ( before_quote quoted ) / ( before_free_quote free_quoted ) )
 
 # [DuraLex] create node of type "alinea-definition"
 alinea_def = ( ( ~"les +"i? cardinal_adjective_number _) / ~"l['’] *|les +"i ) ~"alin[ée]as?"i (_ so_that_written)? ( ( before_quote quoted ) / ( before_free_quote free_quoted ) )
@@ -1618,7 +1618,7 @@ def parse_edit(tokens, i, parent):
         return i
     # i = r
 
-    i = alinea_lexer.skip_tokens(tokens, i, lambda t: t.lower() not in [u'est', u'sont', u'devient', u'remplacer'] and not t == u'.')
+    i = alinea_lexer.skip_tokens(tokens, i, lambda t: t.lower() not in [u'est', u'sont', u'devient', u'remplacer', u'insérer', u'ajouter'] and not t == u'.')
     if i + 2 >= len(tokens):
         remove_node(parent, node)
         LOGGER.debug('parse_edit eof %s', str(tokens[i:i+10]))
@@ -1679,6 +1679,13 @@ def parse_edit(tokens, i, parent):
     elif i + 2 < len(tokens) and (tokens[i + 2].startswith(u'inséré') or tokens[i + 2].startswith(u'ajouté')):
         node['editType'] = 'add'
         i += 4
+        i = parse_definition(tokens, i, node)
+        i = alinea_lexer.skip_to_end_of_line(tokens, i)
+    # insérer
+    # ajouter
+    elif tokens[i].lower() == u'insérer' or tokens[i].lower() == u'ajouter':
+        node['editType'] = 'add'
+        i += 2
         i = parse_definition(tokens, i, node)
         i = alinea_lexer.skip_to_end_of_line(tokens, i)
     # est ainsi rétabli

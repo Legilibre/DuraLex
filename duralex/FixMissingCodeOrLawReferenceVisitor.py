@@ -35,4 +35,5 @@ class FixMissingCodeOrLawReferenceVisitor(AbstractVisitor):
             # we find the leaf in this subtree
             while len(node['children']) != 0:
                 node = node['children'][0]
-            tree.push_node(node, tree.copy_node(self.law_or_code_ref, False))
+            if self.law_or_code_ref:
+                tree.push_node(node, tree.copy_node(self.law_or_code_ref, False))
