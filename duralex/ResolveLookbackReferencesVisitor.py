@@ -7,6 +7,19 @@ class ResolveLookbackReferencesVisitor(AbstractVisitor):
         if post:
             return
 
+        # If there are more than two same-type references in the parent (one in
+        # the lookback-reference and one elsewhere), the lookback-reference is
+        # unuseful and can be removed
+        if len(node['children']) > 0 and not is_root(node):
+            parent = node['parent']
+            same_type_nodes = filter_nodes(
+                parent,
+                lambda n: 'type' in n and n['type'] == node['children'][0]['type']
+            )
+            if len(same_type_nodes) >= 2:
+                remove_node(parent, node)
+                return
+
         if len(node['children']) > 0:
             refs = filter_nodes(
                 get_root(node),

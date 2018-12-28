@@ -497,8 +497,7 @@ def parse_sentence_definition(tokens, i, parent):
             # we expect {count} definitions => {count} quotes
             # but they don't always match, so for now we parse all of the available contents
             # FIXME: issue a warning because the expected count doesn't match?
-            i = alinea_lexer.skip_spaces(tokens, i)
-            i = alinea_lexer.skip_to_quote_start(tokens, i)
+            i += 3 if tokens[i+2].startswith(u'rédigé') else 5
             i = parse_for_each(
                 parse_quote,
                 tokens,
@@ -1242,11 +1241,13 @@ def parse_sentence_reference(tokens, i, parent):
     grammar = parsimonious.Grammar("""
 rule = whitespaces entry whitespaces
 
-entry = ( ( ~"de +"i / ~"à +"i )? ( ~"la +"i / ~"une +"i )? ordinal_adjective_number _ ~"phrase"i ) / ( ( ~"des +"i / ~"les +"i )? ( cardinal_adjective_number _ )? ordinal_adjective_number ~"s"? _ ~"phrases" )
+entry = ( ( ( ( ~"de +"i / ~"à +"i )? ( ~"la +"i / ~"une +"i )? ordinal_adjective_number ) / lookback_sentence_ref ) _ ~"phrase"i ) / ( ( ~"des +"i / ~"les +"i )? ( cardinal_adjective_number _ )? ordinal_adjective_number ~"s"? _ ~"phrases" )
 
 ordinal_adjective_number = ~"première|premier|seconde?|(avant[- ])?dernière|(avant[- ])?dernier|dixième|onzième|douzième|treizième|quatorzième|quinzième|seizième|(dix-|vingt-|trente-|quarante-|cinquante-|soixante-|soixante-dix-|quatre-vingt-|quatre-vingt-dix-)?(et-)?(un|deux|trois|quatr|cinqu|six|sept|huit|neuv)ième"i
 
 cardinal_adjective_number = ~"(vingt|trente|quarante|cinquante|soixante|septante|quatre-vingt|huitante|octante|nonante)(-et-un|-deux|-trois|-quatre|-cinq|-six|-sept|-huit|-neuf)?|(soixante|quatre-vingt)(-et-onze|-douze|-treize|-quatorze|-quinze|-seize|-dix-sept|-dix-huit|-dix-neuf)?|zéro|un|deux|trois|quatre|cinq|six|sept|huit|neuf|dix|onze|douze|treize|quatorze|quinze|seize|dix-sept|dix-huit|dix-neuf|quatre-vingt-un|quatre-vingt-onze"i
+
+lookback_sentence_ref = ~"cet(te)?"i
 
 _ = ~"\s+"
 whitespaces = ~"\s*"
@@ -1256,9 +1257,12 @@ whitespaces = ~"\s*"
         tree = grammar.match(''.join(tokens[i:]))
         i += len(alinea_lexer.tokenize(tree.text))
         i = alinea_lexer.skip_spaces(tokens, i)
-        capture = CaptureVisitor(['cardinal_adjective_number', 'ordinal_adjective_number'])
+        capture = CaptureVisitor(['cardinal_adjective_number', 'ordinal_adjective_number', 'lookback_sentence_ref'])
         capture.visit(tree)
-        node['order'] = word_to_number(capture.captures['ordinal_adjective_number'])
+        if 'lookback_sentence_ref' in capture.captures and capture.captures['lookback_sentence_ref']:
+            node = mark_as_lookback_reference(node)
+        if 'ordinal_adjective_number' in capture.captures and capture.captures['ordinal_adjective_number']:
+            node['order'] = word_to_number(capture.captures['ordinal_adjective_number'])
         if 'cardinal_adjective_number' in capture.captures and capture.captures['cardinal_adjective_number']:
             node['order'] = [0, word_to_number(capture.captures['cardinal_adjective_number'])]
     except parsimonious.exceptions.ParseError as e:
@@ -1663,7 +1667,7 @@ def parse_edit(tokens, i, parent):
             i = parse_reference(tokens, i, ref_nodes[0])
         else:
             i = parse_reference(tokens, i, node)
-        i = alinea_lexer.skip_to_end_of_line(tokens, i)
+        i = alinea_lexer.skip_spaces(tokens, i)
         if tokens[i].lower() == 'par':
             i += 2
             i = parse_definition(tokens, i, node)
