@@ -551,7 +551,7 @@ def parse_word_definition(tokens, i, parent):
     # la référence
     # les références
     elif tokens[i].lower() in [u'la', u'les'] and tokens[i + 2].startswith(u'référence'):
-        i = alinea_lexer.skip_to_quote_start(tokens, i)
+        i += 3
         i = parse_quote(tokens, i, node)
     else:
         LOGGER.debug('parse_word_definition none %s', str(tokens[i:i+10]))
