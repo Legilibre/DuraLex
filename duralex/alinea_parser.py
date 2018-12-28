@@ -1618,7 +1618,7 @@ def parse_edit(tokens, i, parent):
         return i
     # i = r
 
-    i = alinea_lexer.skip_tokens(tokens, i, lambda t: t.lower() not in [u'est', u'sont', u'devient', u'remplacer', u'insérer', u'ajouter'] and not t == u'.')
+    i = alinea_lexer.skip_tokens(tokens, i, lambda t: t.lower() not in [u'est', u'sont', u'devient', u'remplacer', u'substituer', u'insérer', u'ajouter'] and not t == u'.')
     if i + 2 >= len(tokens):
         remove_node(parent, node)
         LOGGER.debug('parse_edit eof %s', str(tokens[i:i+10]))
@@ -1655,6 +1655,30 @@ def parse_edit(tokens, i, parent):
         i = alinea_lexer.skip_to_end_of_line(tokens, i)
     # remplacer
     elif tokens[i].lower() == u'remplacer':
+        node['editType'] = 'replace'
+        i += 2
+        # i = parse_definition(tokens, i, node)
+        ref_nodes = filter_nodes(node, is_reference)
+        if len(ref_nodes) == 1:
+            i = parse_reference(tokens, i, ref_nodes[0])
+        else:
+            i = parse_reference(tokens, i, node)
+        i = alinea_lexer.skip_to_end_of_line(tokens, i)
+        if tokens[i].lower() == 'par':
+            i += 2
+            i = parse_definition(tokens, i, node)
+            i = alinea_lexer.skip_to_end_of_line(tokens, i)
+    # est substitué par
+    # est substituée par
+    # sont substitués par
+    # sont substituées par
+    elif i + 2 < len(tokens) and (tokens[i + 2].startswith(u'substitué')):
+        node['editType'] = 'replace'
+        i += 6
+        i = parse_definition(tokens, i, node)
+        i = alinea_lexer.skip_to_end_of_line(tokens, i)
+    # substituer
+    elif tokens[i].lower() == u'substituer':
         node['editType'] = 'replace'
         i += 2
         # i = parse_definition(tokens, i, node)
