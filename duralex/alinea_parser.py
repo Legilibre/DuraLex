@@ -981,18 +981,18 @@ def parse_article_reference(tokens, i, parent):
     i = parse_scope(tokens, i, node)
     # de l'article
     # à l'article
-    if tokens[i].lower() in [u'de', u'à'] and tokens[i + 2] == u'l' and tokens[i + 4] == u'article':
+    if tokens[i].lower() in [u'de', u'à'] and tokens[i + 2].lower() == u'l' and tokens[i + 4].lower() == u'article':
         i += 5
         i = alinea_lexer.skip_spaces(tokens, i)
         i = parse_article_id(tokens, i, node)
     # l'article
-    elif tokens[i].lower() == u'l' and tokens[i + 2].startswith(u'article'):
+    elif tokens[i].lower() == u'l' and tokens[i + 2].lower().startswith(u'article'):
         i += 3
         i = alinea_lexer.skip_spaces(tokens, i)
         i = parse_article_id(tokens, i, node)
     # les articles
     # des articles
-    elif tokens[i].lower() in [u'des', u'les'] and tokens[i + 2].startswith(u'article'):
+    elif tokens[i].lower() in [u'des', u'les'] and tokens[i + 2].lower().startswith(u'article'):
         i += 3
         i = alinea_lexer.skip_spaces(tokens, i)
         i = parse_article_id(tokens, i, node)
@@ -1041,7 +1041,7 @@ def parse_article_reference(tokens, i, parent):
         i = parse_article_id(tokens, i, node)
     # le même article
     # du même article
-    elif tokens[i].lower() in [u'le', u'du'] and tokens[i + 2] == u'même' and tokens[i + 4] == u'article':
+    elif tokens[i].lower() in [u'le', u'du'] and tokens[i + 2].lower() == u'même' and tokens[i + 4].lower() == u'article':
         i += 6
         mark_as_lookback_reference(node)
     else:
