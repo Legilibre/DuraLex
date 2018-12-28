@@ -1561,7 +1561,7 @@ quoted = "\\"" ~"[^\\n\\\"]+(\\n\\\"[^\\n\\\"]+)*" "\\""
 free_quoted = ~"[^\\n]+"
 
 before_quote = ~"[^\\\"\\n]*\\n*"
-before_free_quote = ~" *:?\\n"
+before_free_quote = ~" *:? *\\n"
 
 whitespaces = ~"\s*"
     """)
@@ -1622,7 +1622,7 @@ def parse_edit(tokens, i, parent):
         return i
     # i = r
 
-    i = alinea_lexer.skip_tokens(tokens, i, lambda t: t.lower() not in [u'est', u'sont', u'devient', u'remplacer', u'substituer', u'insérer', u'ajouter'] and not t == u'.')
+    i = alinea_lexer.skip_tokens(tokens, i, lambda t: t.lower() not in [u'est', u'sont', u'devient', u'remplacer', u'substituer', u'insérer', u'ajouter', u'compléter'] and not t == u'.')
     if i + 2 >= len(tokens):
         remove_node(parent, node)
         LOGGER.debug('parse_edit eof %s', str(tokens[i:i+10]))
@@ -1692,6 +1692,20 @@ def parse_edit(tokens, i, parent):
         else:
             i = parse_reference(tokens, i, node)
         i = alinea_lexer.skip_to_end_of_line(tokens, i)
+        if tokens[i].lower() == 'par':
+            i += 2
+            i = parse_definition(tokens, i, node)
+            i = alinea_lexer.skip_to_end_of_line(tokens, i)
+    # compléter
+    elif tokens[i].lower() == u'compléter':
+        node['editType'] = 'add'
+        i += 2
+        ref_nodes = filter_nodes(node, is_reference)
+        if len(ref_nodes) == 1:
+            i = parse_reference(tokens, i, ref_nodes[0])
+        else:
+            i = parse_reference(tokens, i, node)
+        i = alinea_lexer.skip_spaces(tokens, i)
         if tokens[i].lower() == 'par':
             i += 2
             i = parse_definition(tokens, i, node)
