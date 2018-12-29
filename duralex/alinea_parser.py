@@ -960,9 +960,16 @@ def parse_bill_article_reference(tokens, i, parent):
             get_root(parent),
             lambda n: 'type' in n and n['type'] == TYPE_BILL_ARTICLE_REFERENCE
         )
-        # the last one in order of traversal is the previous one in order of syntax
-        article_ref = copy_node(article_refs[-1])
-        push_node(parent, article_ref)
+        bill_articles = filter_nodes(
+            get_root(parent),
+            lambda n: 'type' in n and n['type'] == TYPE_BILL_ARTICLE
+        )
+        if len(article_refs):
+            # the last one in order of traversal is the previous one in order of syntax
+            article_ref = copy_node(article_refs[-1])
+            push_node(parent, article_ref)
+        elif len(bill_articles):
+            create_node(parent, {'type': TYPE_BILL_ARTICLE_REFERENCE, 'order': bill_articles[-1]['order']})
 
     LOGGER.debug('parse_bill_article_reference end %s', str(tokens[i:i+10]))
 
