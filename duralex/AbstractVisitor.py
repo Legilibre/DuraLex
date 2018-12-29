@@ -20,6 +20,7 @@ class AbstractVisitor(object):
             tree.TYPE_QUOTE: self.visit_quote_node,
             tree.TYPE_BILL_ARTICLE_REFERENCE: self.visit_bill_article_reference_node,
             tree.TYPE_BILL_ARTICLE: self.visit_bill_article_node,
+            tree.TYPE_AMENDMENT: self.visit_amendment_node,
             tree.TYPE_LOOKBACK_REFERENCE: self.visit_lookback_reference_node,
         }
 
@@ -72,6 +73,9 @@ class AbstractVisitor(object):
         pass
 
     def visit_bill_article_node(self, node, post):
+        pass
+
+    def visit_amendment_node(self, node, post):
         pass
 
     def visit_lookback_reference_node(self, node, post):
