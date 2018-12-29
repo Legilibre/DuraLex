@@ -93,7 +93,7 @@ tableToSemanticTree = {
     'quoted': {
         'type': TYPE_QUOTE,
         'property': 'words',
-        'replace': lambda x: x.replace('"', ''),
+        'replace': lambda x: re.sub('"[ \n]*$', '', re.sub('^"[ \n]*', '', x.replace('\n"', '\n'))),
     },
     'free_quoted': {
         'type': TYPE_QUOTE,
@@ -452,7 +452,7 @@ before_quote = ~"[^\\\"\\n]*\\n*"
 before_free_quote = ~" *:?\\n"
 
 # [DuraLex] create node of type "quote"
-quoted = "\\"" ~"[^\\n\\\"]+(\\n\\\"[^\\n\\\"]+)*" "\\""
+quoted = ~'"[^"]*("(?= *([^\\n]|\\n"))[^"]*)*"[ \\n]*'
 
 # [DuraLex] create node of type "quote"
 free_quoted = ~"[^\\n]+"
@@ -1557,7 +1557,7 @@ def parse_quote(tokens, i, parent):
 # Exceptionally do not add whitespaces at the beginning to be able to recognise free_quoted
 rule = ( ( before_quote quoted ) / ( before_free_quote free_quoted ) ) whitespaces
 
-quoted = "\\"" ~"[^\\n\\\"]+(\\n\\\"[^\\n\\\"]+)*" "\\""
+quoted = ~'"[^"]*("(?= *([^\\n]|\\n"))[^"]*)*"[ \\n]*'
 free_quoted = ~"[^\\n]+"
 
 before_quote = ~"[^\\\"\\n]*\\n*"
@@ -1572,7 +1572,7 @@ whitespaces = ~"\s*"
         capture = CaptureVisitor(['quoted', 'free_quoted'])
         capture.visit(tree)
         if 'quoted' in capture.captures:
-            node['words'] = capture.captures['quoted'].replace('"','') # there could be some quote inside the string in multiline strings
+            node['words'] = re.sub('"[ \n]*$', '', re.sub('^"[ \n]*', '', capture.captures['quoted'].replace('\n"', '\n')))
         else:
             node['words'] = capture.captures['free_quoted']
     except parsimonious.exceptions.ParseError as e:
