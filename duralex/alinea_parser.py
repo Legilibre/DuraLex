@@ -452,7 +452,9 @@ before_quote = ~"[^\\\"\\n]*\\n*"
 before_free_quote = ~" *:?\\n"
 
 # [DuraLex] create node of type "quote"
-quoted = ~'"[^"]*("(?= *([^\\n]|\\n"))[^"]*)*"[ \\n]*'
+quoted = singleline_quoted / multiline_quoted
+singleline_quoted = ~'"[^"]*"[ \\n]*'
+multiline_quoted = ~'"[^"]*("(?= *([^\\n]|\\n"))[^"]*)*"[ \\n]*'
 
 # [DuraLex] create node of type "quote"
 free_quoted = ~"[^\\n]+"
@@ -1557,7 +1559,9 @@ def parse_quote(tokens, i, parent):
 # Exceptionally do not add whitespaces at the beginning to be able to recognise free_quoted
 rule = ( ( before_quote quoted ) / ( before_free_quote free_quoted ) ) whitespaces
 
-quoted = ~'"[^"]*("(?= *([^\\n]|\\n"))[^"]*)*"[ \\n]*'
+quoted = singleline_quoted / multiline_quoted
+singleline_quoted = ~'"[^"]*"[ \\n]*'
+multiline_quoted = ~'"[^"]*("(?= *([^\\n]|\\n"))[^"]*)*"[ \\n]*'
 free_quoted = ~"[^\\n]+"
 
 before_quote = ~"[^\\\"\\n]*\\n*"
