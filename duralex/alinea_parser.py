@@ -1196,9 +1196,15 @@ def parse_alinea_reference(tokens, i, parent):
         i += 6
     # les alinéas
     # des alinéas
-    elif tokens[i].lower() in [u'les', u'des'] and tokens[i + 2] == u'alinéas':
-        node['order'] = parse_int(tokens[i + 4])
-        i += 5
+    # alinéas
+    # alinéas
+    elif (tokens[i].lower() in [u'les', u'des'] and tokens[i + 2].lower() == u'alinéas') or tokens[i].lower() == u'alinéas':
+        if tokens[i + 2].lower() == u'alinéas':
+            node['order'] = parse_int(tokens[i + 4])
+            i += 5
+        else:
+            node['order'] = parse_int(tokens[i + 2])
+            i += 3
         i = alinea_lexer.skip_spaces(tokens, i)
         nodes = []
         while tokens[i] == u',':
