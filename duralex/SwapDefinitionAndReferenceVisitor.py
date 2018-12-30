@@ -7,8 +7,10 @@ class SwapDefinitionAndReferenceVisitor(AbstractVisitor):
         if post:
             return
         
-        defs = filter(lambda n: tree.is_definition(n), node['children'])
+        defs = list(filter(tree.is_definition, node['children']))
 
         for d in defs:
             tree.remove_node(node, d)
             tree.push_node(node, d)
+
+# vim: set ts=4 sw=4 sts=4 et:
