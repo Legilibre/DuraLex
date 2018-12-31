@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from DuralexTestCase import DuralexTestCase
+from DuralexTestCase import DuralexTestCase, main
 
 import duralex.alinea_parser as parser
 
@@ -9,62 +9,43 @@ class ParseDefinitionListTest(DuralexTestCase):
         self.assertEqualAST(
             self.call_parse_func(
                 parser.parse_definition_list,
-                (u"cinq phrases et cinq alinéas ainsi rédigés : \n"
-                u"\"alinéa 1\"\n"
-                u"\"alinéa 2\"\n"
-                u"\"alinéa 3\"\n"
-                u"\"alinéa 4\"\n"
-                u"\"alinéa 5\"\n")
+                ("cinq phrases et cinq alinéas ainsi rédigés : \n"
+                "\"alinéa 1\"\n"
+                "\"alinéa 2\"\n"
+                "\"alinéa 3\"\n"
+                "\"alinéa 4\"\n"
+                "\"alinéa 5\"\n")
             ),
             {'children': [
                 {
+                    'type': 'sentence-definition',
+                    'count': 5
+                },
+                {
+                    'type': 'alinea-definition',
                     'count': 5,
-                    'type': u'sentence-definition'
-                },
-                {
                     'children': [
                         {
-                            'type': u'quote',
-                            'words': u'alinéa 1'
-                        }
-                    ],
-                    'type': u'alinea-definition'
-                },
-                {
-                    'children': [
+                            'type': 'quote',
+                            'words': 'alinéa 1'
+                        },
                         {
-                            'type': u'quote',
-                            'words': u'alinéa 2'
-                        }
-                    ],
-                    'type': u'alinea-definition'
-                },
-                {
-                    'children': [
+                            'type': 'quote',
+                            'words': 'alinéa 2'
+                        },
                         {
-                            'type': u'quote',
-                            'words': u'alinéa 3'
-                        }
-                    ],
-                    'type': u'alinea-definition'
-                },
-                {
-                    'children': [
+                            'type': 'quote',
+                            'words': 'alinéa 3'
+                        },
                         {
-                            'type': u'quote',
-                            'words': u'alinéa 4'
-                        }
-                    ],
-                    'type': u'alinea-definition'
-                },
-                {
-                    'children': [
+                            'type': 'quote',
+                            'words': 'alinéa 4'
+                        },
                         {
-                            'type': u'quote',
-                            'words': u'alinéa 5'
+                            'type': 'quote',
+                            'words': 'alinéa 5'
                         }
-                    ],
-                    'type': u'alinea-definition'
+                    ]
                 }
             ]}
         )
@@ -137,39 +118,34 @@ class ParseDefinitionListTest(DuralexTestCase):
         self.assertEqualAST(
             self.call_parse_func(
                 parser.parse_definition_list,
-                (u"trois alinéas ainsi rédigés : \n"
-                u"\"alinéa 1\"\n"
-                u"\"alinéa 2\"\n"
-                u"\"alinéa 3\"")
+                ("trois alinéas ainsi rédigés : \n"
+                "\"alinéa 1\"\n"
+                "\"alinéa 2\"\n"
+                "\"alinéa 3\"")
             ),
             {'children': [
                 {
+                    'type': 'alinea-definition',
+                    'count': 3,
                     'children': [
                         {
-                            'type': u'quote',
-                            'words': u'alinéa 1'
-                        }
-                    ],
-                    'type': u'alinea-definition'
-                },
-                {
-                    'children': [
+                            'type': 'quote',
+                            'words': 'alinéa 1'
+                        },
                         {
-                            'type': u'quote',
-                            'words': u'alinéa 2'
-                        }
-                    ],
-                    'type': u'alinea-definition'
-                },
-                {
-                    'children': [
+                            'type': 'quote',
+                            'words': 'alinéa 2'
+                        },
                         {
-                            'type': u'quote',
-                            'words': u'alinéa 3'
+                            'type': 'quote',
+                            'words': 'alinéa 3'
                         }
                     ],
-                    'type': u'alinea-definition'
                 }
             ]}
         )
-    
+
+if __name__ == '__main__':
+    main()
+
+# vim: set ts=4 sw=4 sts=4 et:

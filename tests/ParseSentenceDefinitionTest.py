@@ -14,13 +14,14 @@ class ParseSentenceDefinitionTest(DuralexTestCase):
             ),
             {'children':[
                 {
+                    'type': 'sentence-definition',
+                    'count': 1,
                     'children': [
                         {
                             'type': 'quote',
                             'words': 'phrase 1'
                         }
-                    ],
-                    'type': 'sentence-definition'
+                    ]
                 }
             ]}
         )

@@ -15,6 +15,7 @@ class ParseAlineaDefinitionTest(DuralexTestCase):
             {'children': [
                 {
                     'type': 'alinea-definition',
+                    'count': 1,
                     'children': [
                         {
                             'type': 'quote',
@@ -35,6 +36,7 @@ class ParseAlineaDefinitionTest(DuralexTestCase):
             {'children': [
                 {
                     'type': 'alinea-definition',
+                    'count': 1,
                     'children': [
                         {
                             'type': 'quote',
@@ -102,6 +104,7 @@ class ParseAlineaDefinitionTest(DuralexTestCase):
             {'children': [
                 {
                     'type': 'alinea-definition',
+                    'count': 4,
                     'children': [
                         {
                             'type': 'quote',

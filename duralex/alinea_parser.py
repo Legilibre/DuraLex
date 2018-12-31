@@ -89,12 +89,16 @@ tableToSemanticTree = {
     },
     'sentence_def': {
         'type': TYPE_SENTENCE_DEFINITION,
+        'property': 'count',
+        'value': 1,
     },
     'sentences_def': {
         'type': TYPE_SENTENCE_DEFINITION,
     },
     'alinea_def': {
         'type': TYPE_ALINEA_DEFINITION,
+        'property': 'count',
+        'value': 1,
     },
     'alineas_def': {
         'type': TYPE_ALINEA_DEFINITION,
@@ -438,19 +442,19 @@ def parse_definition(tokens, i, parent):
 rule = whitespaces ( article_def / sentence_def / sentences_def / alinea_def / alineas_def ) whitespaces
 
 # [DuraLex] create node of type "article-definition"
-article_def = ( ~"un +|l['’] *"i ) ~"article"i ( ( _ article_id ) / ( ~" +additionnel"i ) )? (_ so_that_written)? ( ( before_quote quoted ) / ( before_free_quote free_quoted ) )
+article_def = ( ~"un +|l['’] *"i ) ~"article"i ( ( _ article_id ) / ( ~" +additionnel"i ) )? (_ so_that_written)? ( ( before_quote quoted ) / ( before_free_quote free_quoted ) )?
 
 # [DuraLex] create node of type "sentence-definition"
-sentence_def = ~"(une +|la +)?" ~"phrase"i ( _ so_that_written )? ( ( before_quote quoted ) / ( before_free_quote free_quoted ) )
+sentence_def = ~"(une +|la +)?" ~"phrase"i ( _ so_that_written )? ( ( before_quote quoted ) / ( before_free_quote free_quoted ) )?
 
 # [DuraLex] create node of type "sentence-definition"
-sentences_def = ~"(les +)?" ( cardinal_adjective_number _ )? ~"phrases"i ( _ so_that_written )? ( ( before_quote quoted ) / ( before_free_quote free_quoted ) )+
+sentences_def = ~"(les +)?" ( cardinal_adjective_number _ )? ~"phrases"i ( _ so_that_written )? ( ( before_quote quoted ) / ( before_free_quote free_quoted ) )*
 
 # [DuraLex] create node of type "alinea-definition"
 alinea_def = ~"(l['’] *|un +)"i ~"alin[ée]a"i (_ so_that_written)? ( ( before_quote quoted ) / ( before_free_quote free_quoted ) )
 
 # [DuraLex] create node of type "alinea-definition"
-alineas_def = ~"(les +|des +)?"i ( cardinal_adjective_number _ ) ? ~"alin[ée]as"i (_ so_that_written)? ( ( before_quote quoted ) / ( before_free_quote free_quoted ) )+
+alineas_def = ~"(les +|des +)?"i ( cardinal_adjective_number _ ) ? ~"alin[ée]as"i (_ so_that_written)? ( ( before_quote quoted ) / ( before_free_quote free_quoted ) )*
 
 
 so_that_written = ~"ainsi +rédigée?s?|suivante?s?"i

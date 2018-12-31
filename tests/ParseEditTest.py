@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from DuralexTestCase import DuralexTestCase
+from DuralexTestCase import DuralexTestCase, main
 
 import duralex.alinea_parser as parser
 
@@ -153,19 +153,20 @@ class ParseEditTest(DuralexTestCase):
             ),
             {'children': [
                 {
-                    'type': u'edit',
-                    'editType': u'add',
+                    'type': 'edit',
+                    'editType': 'add',
                     'children': [
                         {
-                            'type': u'article-reference',
-                            'id': u'42'
+                            'type': 'article-reference',
+                            'id': '42'
                         },
                         {
-                            'type': u'alinea-definition',
+                            'type': 'alinea-definition',
+                            'count': 1,
                             'children': [
                                 {
-                                    'type': u'quote',
-                                    'words': u'ceci est un test'
+                                    'type': 'quote',
+                                    'words': 'ceci est un test'
                                 }
                             ]
                         }
@@ -292,35 +293,31 @@ class ParseEditTest(DuralexTestCase):
         self.assertEqualAST(
             self.call_parse_func(
                 parser.parse_edit,
-                (u"Avant le dernier alinéa, sont insérés deux alinéas ainsi rédigés :\n"
-                u"\"alinéa 1\"\n"
-                u"\"alinéa 2\"\n")
+                ("Avant le dernier alinéa, sont insérés deux alinéas ainsi rédigés :\n"
+                "\"alinéa 1\"\n"
+                "\"alinéa 2\"\n")
             ),
             {'children':[
                 {
-                    'editType': u'add',
-                    'type': u'edit',
+                    'type': 'edit',
+                    'editType': 'add',
                     'children': [
                         {
-                            'type': u'alinea-reference',
-                            'position': u'before',
+                            'type': 'alinea-reference',
+                            'position': 'before',
                             'order': -1
                         },
                         {
-                            'type': u'alinea-definition',
+                            'type': 'alinea-definition',
+                            'count': 2,
                             'children': [
                                 {
-                                    'type': u'quote',
-                                    'words': u'alinéa 1'
-                                }
-                            ]
-                        },
-                        {
-                            'type': u'alinea-definition',
-                            'children': [
+                                    'type': 'quote',
+                                    'words': 'alinéa 1'
+                                },
                                 {
-                                    'type': u'quote',
-                                    'words': u'alinéa 2'
+                                    'type': 'quote',
+                                    'words': 'alinéa 2'
                                 }
                             ]
                         }
@@ -333,34 +330,30 @@ class ParseEditTest(DuralexTestCase):
         self.assertEqualAST(
             self.call_parse_func(
                 parser.parse_edit,
-                (u"à l'article 42 sont insérées deux phrases ainsi rédigées :\n"
-                u"\"phrase 1\"\n"
-                u"\"phrase 2\"\n")
+                ("à l'article 42 sont insérées deux phrases ainsi rédigées :\n"
+                "\"phrase 1\"\n"
+                "\"phrase 2\"\n")
             ),
             {'children':[
                 {
-                    'editType': u'add',
-                    'type': u'edit',
+                    'type': 'edit',
+                    'editType': 'add',
                     'children': [
                         {
-                            'type': u'article-reference',
-                            'id': u'42'
+                            'type': 'article-reference',
+                            'id': '42'
                         },
                         {
-                            'type': u'sentence-definition',
+                            'type': 'sentence-definition',
+                            'count': 2,
                             'children': [
                                 {
-                                    'type': u'quote',
-                                    'words': u'phrase 1'
-                                }
-                            ]
-                        },
-                        {
-                            'type': u'sentence-definition',
-                            'children': [
+                                    'type': 'quote',
+                                    'words': 'phrase 1'
+                                },
                                 {
-                                    'type': u'quote',
-                                    'words': u'phrase 2'
+                                    'type': 'quote',
+                                    'words': 'phrase 2'
                                 }
                             ]
                         }
@@ -423,20 +416,21 @@ class ParseEditTest(DuralexTestCase):
         self.assertEqualAST(
             self.call_parse_func(
                 parser.parse_edit,
-                (u"Est ajoutée une phrase ainsi rédigée :\n"
+                ("Est ajoutée une phrase ainsi rédigée :\n"
                 "\"ceci est une phrase\"")
             ),
             {'children':[
                 {
-                    'editType': u'add',
-                    'type': u'edit',
+                    'type': 'edit',
+                    'editType': 'add',
                     'children': [
                         {
-                            'type': u'sentence-definition',
+                            'type': 'sentence-definition',
+                            'count': 1,
                             'children': [
                                 {
-                                    'type': u'quote',
-                                    'words': u'ceci est une phrase'
+                                    'type': 'quote',
+                                    'words': 'ceci est une phrase'
                                 }
                             ]
                         }
@@ -599,3 +593,8 @@ class ParseEditTest(DuralexTestCase):
                 }
             ]}
         )
+
+if __name__ == '__main__':
+    main()
+
+# vim: set ts=4 sw=4 sts=4 et:
