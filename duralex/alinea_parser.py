@@ -1590,49 +1590,31 @@ whitespaces = ~"\s*"
 
 # Parse the verb to determine the corresponding action (one of 'add', 'delete', 'edit' or 'replace').
 def parse_edit(tokens, i, parent):
-    if i >= len(tokens):
+    if i + 2 >= len(tokens):
         return i
 
     node = create_node(parent, {
         'type': TYPE_EDIT
     })
 
+    r = i
+    # This search about a reference could be external to this function (see parse_header1), but for
+    # backward compatibility further visitors expect to find a reference inside the edit node
+    i = parse_reference_list(tokens, i, node)
+
     LOGGER.debug('parse_edit %s', str(tokens[i:i+10]))
 
-    # Supprimer {reference}
-    if tokens[i].lower() == u'supprimer':
-        i += 2
-        node['editType'] = 'delete'
-        i = parse_reference(tokens, i, node)
-        return i
-
-    r = i
-    # i = parse_for_each(parse_reference, tokens, i, node)
-    i = parse_reference_list(tokens, i, node)
-    # if we did not parse a reference
-
-    i = alinea_lexer.skip_spaces(tokens, i)
-
-    # Supprimer {reference}
-    if tokens[i].lower() == u'supprimer':
-        i += 2
-        node['editType'] = 'delete'
-        i = parse_reference(tokens, i, node)
-        return i
-
-    # if we didn't find any reference as a subject and the subject/verb are not reversed
-    if len(node['children']) == 0 and tokens[i] != 'Est' and tokens[i] != 'Sont':
-        remove_node(parent, node)
-        LOGGER.debug('parse_edit none %s', str(tokens[i:i+10]))
-        return i
-    # i = r
-
-    i = alinea_lexer.skip_tokens(tokens, i, lambda t: t.lower() not in [u'est', u'sont', u'devient', u'remplacer', u'substituer', u'insérer', u'ajouter', u'compléter'] and not t == u'.')
-    if i + 2 >= len(tokens):
+    if tokens[i].lower() not in [u'est', u'sont', u'devient', u'remplacer', u'substituer', u'insérer', u'ajouter', u'compléter', 'supprimer']:
         remove_node(parent, node)
         LOGGER.debug('parse_edit eof %s', str(tokens[i:i+10]))
         return r
 
+    # supprimer
+    if i + 2 < len(tokens) and tokens[i].lower() == 'supprimer':
+        node['editType'] = 'delete'
+        i += 2
+        j = i
+        i = parse_reference(tokens, i, node)
     # sont supprimés
     # sont supprimées
     # est supprimé
@@ -1641,14 +1623,14 @@ def parse_edit(tokens, i, parent):
     # est abrogée
     # sont abrogés
     # sont abrogées
-    if i + 2 < len(tokens) and (tokens[i + 2].startswith(u'supprimé') or tokens[i + 2].startswith(u'abrogé')):
+    elif tokens[i].lower() in ['est', 'sont'] and (tokens[i + 2].startswith(u'supprimé') or tokens[i + 2].startswith(u'abrogé')):
         node['editType'] = 'delete'
         i = alinea_lexer.skip_to_end_of_line(tokens, i)
     # est ainsi rédigé
     # est ainsi rédigée
     # est ainsi modifié
     # est ainsi modifiée
-    elif i + 4 < len(tokens) and (tokens[i + 4].startswith(u'rédigé') or tokens[i + 4].startswith(u'modifié')):
+    elif i + 4 < len(tokens) and tokens[i].lower() in ['est', 'sont'] and (tokens[i + 4].startswith(u'rédigé') or tokens[i + 4].startswith(u'modifié')):
         node['editType'] = 'edit'
         i = alinea_lexer.skip_to_end_of_line(tokens, i)
         i = alinea_lexer.skip_spaces(tokens, i)
@@ -1657,7 +1639,7 @@ def parse_edit(tokens, i, parent):
     # est remplacée par
     # sont remplacés par
     # sont remplacées par
-    elif i + 2 < len(tokens) and (tokens[i + 2].startswith(u'remplacé')):
+    elif tokens[i].lower() in ['est', 'sont'] and (tokens[i + 2].startswith(u'remplacé')):
         node['editType'] = 'replace'
         i += 6
         i = parse_definition(tokens, i, node)
@@ -1681,7 +1663,7 @@ def parse_edit(tokens, i, parent):
     # est substituée par
     # sont substitués par
     # sont substituées par
-    elif i + 2 < len(tokens) and (tokens[i + 2].startswith(u'substitué')):
+    elif tokens[i].lower() in ['est', 'sont'] and (tokens[i + 2].startswith(u'substitué')):
         node['editType'] = 'replace'
         i += 6
         i = parse_definition(tokens, i, node)
@@ -1723,7 +1705,7 @@ def parse_edit(tokens, i, parent):
     # est ajoutée
     # sont ajoutés
     # sont ajoutées
-    elif i + 2 < len(tokens) and (tokens[i + 2].startswith(u'inséré') or tokens[i + 2].startswith(u'ajouté')):
+    elif tokens[i].lower() in ['est', 'sont'] and (tokens[i + 2].startswith(u'inséré') or tokens[i + 2].startswith(u'ajouté')):
         node['editType'] = 'add'
         i += 4
         i = parse_definition(tokens, i, node)
@@ -1736,13 +1718,13 @@ def parse_edit(tokens, i, parent):
         i = parse_definition(tokens, i, node)
         i = alinea_lexer.skip_to_end_of_line(tokens, i)
     # est ainsi rétabli
-    elif i + 4 < len(tokens) and tokens[i + 4].startswith(u'rétabli'):
+    elif i + 4 < len(tokens) and tokens[i].lower() in ['est', 'sont'] and tokens[i + 4].startswith(u'rétabli'):
         node['editType'] = 'add'
         i = alinea_lexer.skip_to_end_of_line(tokens, i)
         i = alinea_lexer.skip_spaces(tokens, i)
         i = parse_definition(tokens, i, node)
     # est complété par
-    elif i + 2 < len(tokens) and tokens[i + 2] == u'complété':
+    elif i + 2 < len(tokens) and tokens[i].lower() in ['est', 'sont'] and tokens[i + 2] == u'complété':
         node['editType'] = 'add'
         i += 6
         # i = parse_definition(tokens, i, node)
@@ -1754,7 +1736,7 @@ def parse_edit(tokens, i, parent):
         i += 2
         i = parse_definition(tokens, i, node)
     # est ratifié:
-    elif i + 2 < len(tokens) and (tokens[i].lower() == u'est' and tokens[i + 2] == u'ratifié'):
+    elif tokens[i].lower() in ['est', 'sont'] and (tokens[i].lower() == u'est' and tokens[i + 2] == u'ratifié'):
         node['editType']= 'ratified'
         i += 4
     else:
@@ -1962,6 +1944,10 @@ def parse_header1(tokens, i, parent):
 
     j = i
     i = parse_edit(tokens, i, node)
+    if i == j:
+        # In some amendments in Sénat, there is a header "Alinéa 3, première phrase" without verb then header2
+        i = parse_reference_list(tokens, i, node)
+        i = parse_edit(tokens, i, node)
     i = parse_for_each(parse_header2, tokens, i, node)
     if len(node['children']) == 0:
         i = parse_raw_article_content(tokens, i, node)
@@ -2000,6 +1986,9 @@ def parse_header2(tokens, i, parent):
 
     j = i
     i = parse_edit(tokens, i, node)
+    if i == j:
+        i = parse_reference_list(tokens, i, node)
+        i = parse_edit(tokens, i, node)
     i = parse_for_each(parse_header3, tokens, i, node)
     if len(node['children']) == 0 and 'order' in node:
         i = parse_raw_article_content(tokens, i, node)
@@ -2044,6 +2033,9 @@ def parse_header3(tokens, i, parent):
 
     j = i
     i = parse_edit(tokens, i, node)
+    if i == j:
+        i = parse_reference_list(tokens, i, node)
+        i = parse_edit(tokens, i, node)
     if len(node['children']) == 0 and 'order' in node:
         i = parse_raw_article_content(tokens, i, node)
 
