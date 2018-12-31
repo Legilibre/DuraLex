@@ -87,6 +87,12 @@ tableToSemanticTree = {
     'article_def': {
         'type': TYPE_ARTICLE_DEFINITION,
     },
+    'sentence_def': {
+        'type': TYPE_SENTENCE_DEFINITION,
+    },
+    'sentences_def': {
+        'type': TYPE_SENTENCE_DEFINITION,
+    },
     'alinea_def': {
         'type': TYPE_ALINEA_DEFINITION,
     },
@@ -417,7 +423,7 @@ def parse_definition(tokens, i, parent):
             parse_header1_definition,
             parse_header2_definition,
             parse_header3_definition,
-            parse_sentence_definition,
+            #parse_sentence_definition,
             parse_word_definition,
             parse_title_definition,
             parse_subparagraph_definition
@@ -429,10 +435,16 @@ def parse_definition(tokens, i, parent):
 
     if i == j:
         grammar = parsimonious.Grammar("""
-rule = whitespaces ( article_def / alinea_def / alineas_def ) whitespaces
+rule = whitespaces ( article_def / sentence_def / sentences_def / alinea_def / alineas_def ) whitespaces
 
 # [DuraLex] create node of type "article-definition"
-article_def = ( ~"un +"i / ~"l['’] *"i ) ~"article"i ( ( _ article_id ) / ( ~" +additionnel"i ) )? (_ so_that_written)? ( ( before_quote quoted ) / ( before_free_quote free_quoted ) )
+article_def = ( ~"un +|l['’] *"i ) ~"article"i ( ( _ article_id ) / ( ~" +additionnel"i ) )? (_ so_that_written)? ( ( before_quote quoted ) / ( before_free_quote free_quoted ) )
+
+# [DuraLex] create node of type "sentence-definition"
+sentence_def = ~"(une +|la +)?" ~"phrase"i ( _ so_that_written )? ( ( before_quote quoted ) / ( before_free_quote free_quoted ) )
+
+# [DuraLex] create node of type "sentence-definition"
+sentences_def = ~"(les +)?" ( cardinal_adjective_number _ )? ~"phrases"i ( _ so_that_written )? ( ( before_quote quoted ) / ( before_free_quote free_quoted ) )+
 
 # [DuraLex] create node of type "alinea-definition"
 alinea_def = ~"(l['’] *|un +)"i ~"alin[ée]a"i (_ so_that_written)? ( ( before_quote quoted ) / ( before_free_quote free_quoted ) )
@@ -467,7 +479,7 @@ multiline_quoted = ~'("[^"]*("(?= *([^\\n]|\\n"))[^"]*)*"|«[^«»]*(«(?= *([^\
 free_quoted = ~"[^\\n]+"
 
 # [DuraLex] define property "count"
-cardinal_adjective_number = ~"(vingt|trente|quarante|cinquante|soixante|septante|quatre-vingt|huitante|octante|nonante)(-et-un|-deux|-trois|-quatre|-cinq|-six|-sept|-huit|-neuf)?|(soixante|quatre-vingt)(-et-onze|-douze|-treize|-quatorze|-quinze|-seize|-dix-sept|-dix-huit|-dix-neuf)?|zéro|un|deux|trois|quatre|cinq|six|sept|huit|neuf|dix|onze|douze|treize|quatorze|quinze|seize|dix-sept|dix-huit|dix-neuf|quatre-vingt-un|quatre-vingt-onze"i
+cardinal_adjective_number = ~"(vingt|trente|quarante|cinquante|soixante|septante|quatre-vingt|huitante|octante|nonante)(-et-un|-deux|-trois|-quatre|-cinq|-six|-sept|-huit|-neuf)?|(soixante|quatre-vingt)(-et-onze|-douze|-treize|-quatorze|-quinze|-seize|-dix-sept|-dix-huit|-dix-neuf)?|zéro|une?|deux|trois|quatre|cinq|six|sept|huit|neuf|dix|onze|douze|treize|quatorze|quinze|seize|dix-sept|dix-huit|dix-neuf|quatre-vingt-un|quatre-vingt-onze"i
 
 multiplicative_adverb = ( multiplicative_adverb_units_before_decades? multiplicative_adverb_decades ) / multiplicative_adverb_units
 multiplicative_adverb_units = ~"semel|bis|ter|quater|(quinqu|sex|sept|oct|no[nv])ies"i
@@ -484,42 +496,6 @@ whitespaces = ~"\s*"
             toSemanticTree.attach(parent, tree)
         except parsimonious.exceptions.ParseError:
             pass
-
-    return i
-
-def parse_sentence_definition(tokens, i, parent):
-    if i >= len(tokens):
-        return i
-
-    LOGGER.debug('parse_sentence_definition %s', str(tokens[i:i+10]))
-    j = i
-
-    # {count} phrases
-    if is_number_word(tokens[i]) and tokens[i + 2].startswith(u'phrase'):
-        count = word_to_number(tokens[i])
-        i += 4
-        # ainsi rédigé
-        # est rédigé
-        # est ainsi rédigé
-        if (i + 2 < len(tokens) and tokens[i + 2].startswith(u'rédigé')
-            or (i + 4 < len(tokens) and tokens[i + 4].startswith(u'rédigé'))):
-            # we expect {count} definitions => {count} quotes
-            # but they don't always match, so for now we parse all of the available contents
-            # FIXME: issue a warning because the expected count doesn't match?
-            i += 3 if tokens[i+2].startswith(u'rédigé') else 5
-            i = parse_for_each(
-                parse_quote,
-                tokens,
-                i,
-                lambda : create_node(parent, {'type': TYPE_SENTENCE_DEFINITION, 'children': []})
-            )
-        else:
-            create_node(parent, {'type': TYPE_SENTENCE_DEFINITION, 'count': count})
-    else:
-        LOGGER.debug('parse_sentence_definition none %s', str(tokens[i:i+10]))
-        return j
-
-    LOGGER.debug('parse_sentence_definition end %s', str(tokens[i:i+10]))
 
     return i
 

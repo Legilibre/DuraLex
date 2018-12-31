@@ -4,6 +4,42 @@
 # Old unitary grammars now merged/unified into a bigger grammar
 #
 
+def parse_sentence_definition(tokens, i, parent):
+    if i >= len(tokens):
+        return i
+
+    LOGGER.debug('parse_sentence_definition %s', str(tokens[i:i+10]))
+    j = i
+
+    # {count} phrases
+    if is_number_word(tokens[i]) and tokens[i + 2].startswith(u'phrase'):
+        count = word_to_number(tokens[i])
+        i += 4
+        # ainsi rédigé
+        # est rédigé
+        # est ainsi rédigé
+        if (i + 2 < len(tokens) and tokens[i + 2].startswith(u'rédigé')
+            or (i + 4 < len(tokens) and tokens[i + 4].startswith(u'rédigé'))):
+            # we expect {count} definitions => {count} quotes
+            # but they don't always match, so for now we parse all of the available contents
+            # FIXME: issue a warning because the expected count doesn't match?
+            i += 3 if tokens[i+2].startswith(u'rédigé') else 5
+            i = parse_for_each(
+                parse_quote,
+                tokens,
+                i,
+                lambda : create_node(parent, {'type': TYPE_SENTENCE_DEFINITION, 'children': []})
+            )
+        else:
+            create_node(parent, {'type': TYPE_SENTENCE_DEFINITION, 'count': count})
+    else:
+        LOGGER.debug('parse_sentence_definition none %s', str(tokens[i:i+10]))
+        return j
+
+    LOGGER.debug('parse_sentence_definition end %s', str(tokens[i:i+10]))
+
+    return i
+
 def parse_article_definition(tokens, i, parent):
     # Transfered to parse_definition
     if i >= len(tokens):

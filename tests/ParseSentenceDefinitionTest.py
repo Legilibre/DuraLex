@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from DuralexTestCase import DuralexTestCase
+from DuralexTestCase import DuralexTestCase, main
 
 import duralex.alinea_parser as parser
 
@@ -8,7 +8,7 @@ class ParseSentenceDefinitionTest(DuralexTestCase):
     def test_one_sentence_with_quotes(self):
         self.assertEqualAST(
             self.call_parse_func(
-                parser.parse_sentence_definition,
+                parser.parse_definition,
                 ("une phrase ainsi rédigée :\n"
                 "\"phrase 1\"\n")
             ),
@@ -28,7 +28,7 @@ class ParseSentenceDefinitionTest(DuralexTestCase):
     def test_three_sentences_with_quotes(self):
         self.assertEqualAST(
             self.call_parse_func(
-                parser.parse_sentence_definition,
+                parser.parse_definition,
                 ("trois phrases ainsi rédigées :\n"
                 "\"phrase 1\"\n"
                 "\"phrase 2\"\n"
@@ -60,7 +60,13 @@ class ParseSentenceDefinitionTest(DuralexTestCase):
                             'words': 'phrase 3'
                         }
                     ],
+                    'count': 3,
                     'type': 'sentence-definition'
                 }
             ]}
         )
+
+if __name__ == '__main__':
+    main()
+
+# vim: set ts=4 sw=4 sts=4 et:
