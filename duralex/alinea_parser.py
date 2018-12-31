@@ -475,7 +475,7 @@ one_quote = ( ( before_quoted_quote quoted_quote ~"\s*[;.]?\s*" ) / ( before_fre
 many_quotes = ( ( ( before_quoted_quote quoted_quote ~"\s*[;.]?\s*" ) + ) / ( before_free_quote free_quote ) ) ?
 
 before_quoted_quote = ~'[^"«\\n]*\\n*'
-before_free_quote = ~" *:?\\n"
+before_free_quote = ~" *:? *\\n"
 
 # [DuraLex] create node of type "quote"
 quoted_quote = singleline_quoted_quote / multiline_quoted_quote
