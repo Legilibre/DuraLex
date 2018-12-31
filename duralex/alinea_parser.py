@@ -90,10 +90,13 @@ tableToSemanticTree = {
     'alinea_def': {
         'type': TYPE_ALINEA_DEFINITION,
     },
+    'alineas_def': {
+        'type': TYPE_ALINEA_DEFINITION,
+    },
     'quoted': {
         'type': TYPE_QUOTE,
         'property': 'words',
-        'replace': lambda x: re.sub('"[ \n]*$', '', re.sub('^"[ \n]*', '', x.replace('\n"', '\n'))),
+        'replace': lambda x: re.sub('(^.\s*|\s*.$)', '', re.sub(' *(\n+)'+x[0]+' *', r'\1', x))
     },
     'free_quoted': {
         'type': TYPE_QUOTE,
@@ -426,13 +429,17 @@ def parse_definition(tokens, i, parent):
 
     if i == j:
         grammar = parsimonious.Grammar("""
-rule = whitespaces ( article_def / alinea_def ) whitespaces
+rule = whitespaces ( article_def / alinea_def / alineas_def ) whitespaces
 
 # [DuraLex] create node of type "article-definition"
 article_def = ( ~"un +"i / ~"l['’] *"i ) ~"article"i ( ( _ article_id ) / ( ~" +additionnel"i ) )? (_ so_that_written)? ( ( before_quote quoted ) / ( before_free_quote free_quoted ) )
 
 # [DuraLex] create node of type "alinea-definition"
-alinea_def = ( ( ~"les +"i? cardinal_adjective_number _) / ~"l['’] *|les +"i ) ~"alin[ée]as?"i (_ so_that_written)? ( ( before_quote quoted ) / ( before_free_quote free_quoted ) )
+alinea_def = ~"(l['’] *|un +)"i ~"alin[ée]a"i (_ so_that_written)? ( ( before_quote quoted ) / ( before_free_quote free_quoted ) )
+
+# [DuraLex] create node of type "alinea-definition"
+alineas_def = ~"(les +|des +)?"i ( cardinal_adjective_number _ ) ? ~"alin[ée]as"i (_ so_that_written)? ( ( before_quote quoted ) / ( before_free_quote free_quoted ) )+
+
 
 so_that_written = ~"ainsi +rédigée?s?|suivante?s?"i
 
@@ -448,13 +455,13 @@ article_type = ~"\*?\*?((L\.O|LO|L|R|D|A)\*?\*?\.? *)?"
 # Specific article names
 named_article = ~"annexe|ex[ée]cution|unique|(pr[ée])?liminaire|pr[ée]ambule"i
 
-before_quote = ~"[^\\\"\\n]*\\n*"
+before_quote = ~'[^"«\\n]*\\n*'
 before_free_quote = ~" *:?\\n"
 
 # [DuraLex] create node of type "quote"
 quoted = singleline_quoted / multiline_quoted
-singleline_quoted = ~'"[^"\\n]*"[ \\n]*'
-multiline_quoted = ~'"[^"]*("(?= *([^\\n]|\\n"))[^"]*)*"[ \\n]*'
+singleline_quoted = ~'("[^"\\n]*"|«[^»\\n]*»)'
+multiline_quoted = ~'("[^"]*("(?= *([^\\n]|\\n"))[^"]*)*"|«[^«»]*(«(?= *([^\\n]|\\n«))[^«»]*)*»)'
 
 # [DuraLex] create node of type "quote"
 free_quoted = ~"[^\\n]+"
@@ -1574,11 +1581,11 @@ def parse_quote(tokens, i, parent):
 rule = ( ( before_quote quoted ) / ( before_free_quote free_quoted ) ) whitespaces
 
 quoted = singleline_quoted / multiline_quoted
-singleline_quoted = ~'"[^"\\n]*"[ \\n]*'
-multiline_quoted = ~'"[^"]*("(?= *([^\\n]|\\n"))[^"]*)*"[ \\n]*'
+singleline_quoted = ~'("[^"\\n]*"|«[^»\\n]*»)'
+multiline_quoted = ~'("[^"]*("(?= *([^\\n]|\\n"))[^"]*)*"|«[^«»]*(«(?= *([^\\n]|\\n«))[^«»]*)*»)'
 free_quoted = ~"[^\\n]+"
 
-before_quote = ~"[^\\\"\\n]*\\n*"
+before_quote = ~'[^"«\\n]*\\n*'
 before_free_quote = ~" *:? *\\n"
 
 whitespaces = ~"\s*"

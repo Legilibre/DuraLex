@@ -19,6 +19,7 @@ from duralex.DeleteUUIDVisitor import DeleteUUIDVisitor
 from duralex.AddParentVisitor import AddParentVisitor
 from duralex.ResolveLookbackReferencesVisitor import ResolveLookbackReferencesVisitor
 
+from unittest import main
 from colorama import init, Fore
 
 init()
@@ -89,3 +90,5 @@ class DuralexTestCase(unittest.TestCase):
         diff = difflib.unified_diff(a.splitlines(), b.splitlines(), fromfile='computed', tofile='expected')
         diff_lines = list(diff)
         self.assertEqual(len(diff_lines), 0, '\n' + a + self.pretty_diff_output(diff_lines))
+
+# vim: set ts=4 sw=4 sts=4 et:
