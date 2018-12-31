@@ -103,14 +103,15 @@ tableToSemanticTree = {
     'alineas_def': {
         'type': TYPE_ALINEA_DEFINITION,
     },
-    'quoted': {
+    'quoted_quote': {
         'type': TYPE_QUOTE,
         'property': 'words',
-        'replace': lambda x: re.sub('(^.\s*|\s*.$)', '', re.sub(' *(\n+)'+x[0]+' *', r'\1', x))
+        'replace': lambda x: re.sub('(^["«] *| *["»]$)', '', re.sub(' *(\n+)["«] *', r'\1', x)),
     },
-    'free_quoted': {
+    'free_quote': {
         'type': TYPE_QUOTE,
         'property': 'words',
+        'replace': lambda x: x.strip(),
     },
     # DuraLex properties
     'article_id': {
@@ -304,8 +305,7 @@ whitespaces = ~"\s*"
         capture.visit(tree)
         if 'number' in capture.captures:
             node['order'] = parse_int(capture.captures['number'])
-        i = alinea_lexer.skip_to_quote_start(tokens, i)
-        i = parse_for_each(parse_quote, tokens, i, node)
+        i = parse_quote(tokens, i, node)
     except parsimonious.exceptions.ParseError:
         remove_node(parent, node)
         LOGGER.debug('parse_subparagraph_definition none %s', str(tokens[i:i+10]))
@@ -442,19 +442,19 @@ def parse_definition(tokens, i, parent):
 rule = whitespaces ( article_def / sentence_def / sentences_def / alinea_def / alineas_def ) whitespaces
 
 # [DuraLex] create node of type "article-definition"
-article_def = ( ~"un +|l['’] *"i ) ~"article"i ( ( _ article_id ) / ( ~" +additionnel"i ) )? (_ so_that_written)? ( ( before_quote quoted ) / ( before_free_quote free_quoted ) )?
+article_def = ( ~"un +|l['’] *"i ) ~"article"i ( ( _ article_id ) / ( ~" +additionnel"i ) )? (_ so_that_written)? one_quote
 
 # [DuraLex] create node of type "sentence-definition"
-sentence_def = ~"(une +|la +)?" ~"phrase"i ( _ so_that_written )? ( ( before_quote quoted ) / ( before_free_quote free_quoted ) )?
+sentence_def = ~"(une +|la +)?" ~"phrase"i ( _ so_that_written )? one_quote
 
 # [DuraLex] create node of type "sentence-definition"
-sentences_def = ~"(les +)?" ( cardinal_adjective_number _ )? ~"phrases"i ( _ so_that_written )? ( ( before_quote quoted ) / ( before_free_quote free_quoted ) )*
+sentences_def = ~"(les +)?" ( cardinal_adjective_number _ )? ~"phrases"i ( _ so_that_written )? many_quotes
 
 # [DuraLex] create node of type "alinea-definition"
-alinea_def = ~"(l['’] *|un +)"i ~"alin[ée]a"i (_ so_that_written)? ( ( before_quote quoted ) / ( before_free_quote free_quoted ) )
+alinea_def = ~"(l['’] *|un +)"i ~"alin[ée]a"i (_ so_that_written)? one_quote
 
 # [DuraLex] create node of type "alinea-definition"
-alineas_def = ~"(les +|des +)?"i ( cardinal_adjective_number _ ) ? ~"alin[ée]as"i (_ so_that_written)? ( ( before_quote quoted ) / ( before_free_quote free_quoted ) )*
+alineas_def = ~"(les +|des +)?"i ( cardinal_adjective_number _ ) ? ~"alin[ée]as"i (_ so_that_written)? many_quotes
 
 
 so_that_written = ~"ainsi +rédigée?s?|suivante?s?"i
@@ -471,16 +471,19 @@ article_type = ~"\*?\*?((L\.O|LO|L|R|D|A)\*?\*?\.? *)?"
 # Specific article names
 named_article = ~"annexe|ex[ée]cution|unique|(pr[ée])?liminaire|pr[ée]ambule"i
 
-before_quote = ~'[^"«\\n]*\\n*'
+one_quote = ( ( before_quoted_quote quoted_quote ~"\s*[;.]?\s*" ) / ( before_free_quote free_quote ) ) ?
+many_quotes = ( ( before_quoted_quote quoted_quote ~"\s*[;.]?\s*" ) * ) / ( ( before_free_quote free_quote ) ? )
+
+before_quoted_quote = ~'[^"«\\n]*\\n*'
 before_free_quote = ~" *:?\\n"
 
 # [DuraLex] create node of type "quote"
-quoted = singleline_quoted / multiline_quoted
-singleline_quoted = ~'("[^"\\n]*"|«[^»\\n]*»)'
-multiline_quoted = ~'("[^"]*("(?= *([^\\n]|\\n"))[^"]*)*"|«[^«»]*(«(?= *([^\\n]|\\n«))[^«»]*)*»)'
+quoted_quote = singleline_quoted_quote / multiline_quoted_quote
+singleline_quoted_quote = ~'("[^"\\n]*"|«[^»\\n]*»)'
+multiline_quoted_quote = ~'(("[^"\\n]*("[^"\\n]*")*\\n)*"[^"\\n]*("[^"\\n]*")*"|(«[^«»\\n]*(«[^«»\\n]*»)*\\n)*«[^«»\\n]*(«[^«»\\n]*")*»)'
 
 # [DuraLex] create node of type "quote"
-free_quoted = ~"[^\\n]+"
+free_quote = ~"[^\\n]+"
 
 # [DuraLex] define property "count"
 cardinal_adjective_number = ~"(vingt|trente|quarante|cinquante|soixante|septante|quatre-vingt|huitante|octante|nonante)(-et-un|-deux|-trois|-quatre|-cinq|-six|-sept|-huit|-neuf)?|(soixante|quatre-vingt)(-et-onze|-douze|-treize|-quatorze|-quinze|-seize|-dix-sept|-dix-huit|-dix-neuf)?|zéro|une?|deux|trois|quatre|cinq|six|sept|huit|neuf|dix|onze|douze|treize|quatorze|quinze|seize|dix-sept|dix-huit|dix-neuf|quatre-vingt-un|quatre-vingt-onze"i
@@ -519,23 +522,21 @@ def parse_word_definition(tokens, i, parent):
     # les mots
     # des mots
     if tokens[i].lower() in [u'le', u'les', u'des'] and tokens[i + 2].startswith(u'mot'):
-        i = parse_for_each(parse_quote, tokens, i+3, node)
+        i+= 3
+        i = parse_quote(tokens, i, node)
         # i = alinea_lexer.skip_spaces(tokens, i)
     # le nombre
     # le chiffre
     # le taux
     elif tokens[i].lower() == u'le' and tokens[i + 2] in [u'nombre', u'chiffre', u'taux']:
-        i = alinea_lexer.skip_to_quote_start(tokens, i)
         i = parse_quote(tokens, i, node)
     # les dispositions suivantes \n "
     elif tokens[i].lower() == u'les' and tokens[i+2] == 'dispositions' and tokens[i+4] == u'suivantes':
-        i = alinea_lexer.skip_to_quote_start(tokens, i)
-        i = parse_for_each(parse_quote, tokens, i, node)
+        i = parse_quote(tokens, i, node)
         i = alinea_lexer.skip_spaces(tokens, i)
     # "
     elif tokens[i] == alinea_lexer.TOKEN_DOUBLE_QUOTE_OPEN:
-        i = parse_for_each(parse_quote, tokens, i, node)
-        i = alinea_lexer.skip_spaces(tokens, i)
+        i = parse_quote(tokens, i, node)
     # la référence
     # les références
     elif tokens[i].lower() in [u'la', u'les'] and tokens[i + 2].startswith(u'référence'):
@@ -564,8 +565,7 @@ def parse_mention_definition(tokens, i, parent):
         return i
     # :
     if tokens[i] == ':':
-        i = alinea_lexer.skip_to_quote_start(tokens, i)
-        i = parse_for_each(parse_quote, tokens, i, node)
+        i = parse_quote(tokens, i, node)
 
     LOGGER.debug('parse_mention_definition end %s', str(tokens[i:i+10]))
 
@@ -585,7 +585,6 @@ def parse_header1_definition(tokens, i, parent):
         i += 4
         i = alinea_lexer.skip_spaces(tokens, i)
         if i + 2 < len(tokens) and tokens[i] == u'ainsi' and tokens[i + 2] == u'rédigé':
-            i = alinea_lexer.skip_to_quote_start(tokens, i)
             i = parse_quote(tokens, i, node)
     # des {start} à {end}
     elif (tokens[i].lower() == u'des' and is_roman_number(tokens[i + 2])
@@ -596,7 +595,6 @@ def parse_header1_definition(tokens, i, parent):
         # ainsi rédigés
         if (i + 2 < len(tokens) and tokens[i + 2].startswith(u'rédigé')
             or (i + 4 < len(tokens) and tokens[i + 4].startswith(u'rédigé'))):
-            i = alinea_lexer.skip_to_quote_start(tokens, i + 4)
             i = parse_for_each(
                 parse_quote,
                 tokens,
@@ -625,7 +623,6 @@ def parse_header2_definition(tokens, i, parent):
         i += 8
         i = alinea_lexer.skip_spaces(tokens, i)
         if tokens[i] == u'ainsi' and tokens[i + 2] == u'rédigé':
-            i = alinea_lexer.skip_to_quote_start(tokens, i + 4)
             i = parse_quote(tokens, i, node)
     # un {order}° ({orderLetter}) ({multiplicativeAdverb}) ({articlePartRef})
     elif tokens[i].lower() == u'un' and re.compile(u'\d+°').match(tokens[i + 2]):
@@ -641,7 +638,6 @@ def parse_header2_definition(tokens, i, parent):
         i = parse_article_part_reference(tokens, i, node)
         i = alinea_lexer.skip_spaces(tokens, i)
         if i < len(tokens) and tokens[i] == u'ainsi' and tokens[i + 2] == u'rédigé':
-            i = alinea_lexer.skip_to_quote_start(tokens, i + 4)
             i = parse_quote(tokens, i, node)
     # des {start}° à {end}°
     elif (tokens[i].lower() == u'des' and re.compile(u'\d+°').match(tokens[i + 2])
@@ -652,7 +648,6 @@ def parse_header2_definition(tokens, i, parent):
         # ainsi rédigés
         if (i + 2 < len(tokens) and tokens[i + 2].startswith(u'rédigé')
             or (i + 4 < len(tokens) and tokens[i + 4].startswith(u'rédigé'))):
-            i = alinea_lexer.skip_to_quote_start(tokens, i + 4)
             i = parse_for_each(
                 parse_quote,
                 tokens,
@@ -680,7 +675,6 @@ def parse_header3_definition(tokens, i, parent):
         i += 4
         i = alinea_lexer.skip_spaces(tokens, i)
         if i < len(tokens) and tokens[i] == u'ainsi' and tokens[i + 2] == u'rédigé':
-            i = alinea_lexer.skip_to_quote_start(tokens, i + 4)
             i = parse_quote(tokens, i, node)
     # des {orderLetter} à {orderLetter}
     elif (tokens[i].lower() == u'des' and re.compile(u'^[a-z]$').match(tokens[i + 2])
@@ -691,7 +685,6 @@ def parse_header3_definition(tokens, i, parent):
         # ainsi rédigés
         if (i + 2 < len(tokens) and tokens[i + 2].startswith(u'rédigé')
             or (i + 4 < len(tokens) and tokens[i + 4].startswith(u'rédigé'))):
-            i = alinea_lexer.skip_to_quote_start(tokens, i + 4)
             i = parse_for_each(
                 parse_quote,
                 tokens,
@@ -814,8 +807,7 @@ whitespaces = ~"\s*"
         capture = CaptureVisitor(['roman_number'])
         capture.visit(tree)
         node['order'] = parse_roman_number(capture.captures['roman_number'])
-        i = alinea_lexer.skip_to_quote_start(tokens, i)
-        i = parse_for_each(parse_quote, tokens, i, node)
+        i = parse_quote(tokens, i, node)
     except parsimonious.exceptions.ParseError:
         LOGGER.debug('parse_title_definition none %s', str(tokens[i:i+10]))
         remove_node(parent, node)
@@ -1557,29 +1549,29 @@ def parse_quote(tokens, i, parent):
     LOGGER.debug('parse_quote %s', str(tokens[i:i+10]))
 
     grammar = parsimonious.Grammar("""
-# Exceptionally do not add whitespaces at the beginning to be able to recognise free_quoted
-rule = ( ( before_quote quoted ) / ( before_free_quote free_quoted ) ) whitespaces
+# Exceptionally do not add whitespaces at the beginning to be able to recognise free_quote
+rule = quote
 
-quoted = singleline_quoted / multiline_quoted
-singleline_quoted = ~'("[^"\\n]*"|«[^»\\n]*»)'
-multiline_quoted = ~'("[^"]*("(?= *([^\\n]|\\n"))[^"]*)*"|«[^«»]*(«(?= *([^\\n]|\\n«))[^«»]*)*»)'
-free_quoted = ~"[^\\n]+"
+quote = ( before_quoted_quote quoted_quote  ~"\s*[;.]?\s*" ) / ( before_free_quote free_quote )
 
-before_quote = ~'[^"«\\n]*\\n*'
+quoted_quote = singleline_quoted_quote / multiline_quoted_quote
+singleline_quoted_quote = ~'("[^"\\n]*"|«[^»\\n]*»)'
+multiline_quoted_quote = ~'(("[^"\\n]*("[^"\\n]*")*\\n)*"[^"\\n]*("[^"\\n]*")*"|(«[^«»\\n]*(«[^«»\\n]*»)*\\n)*«[^«»\\n]*(«[^«»\\n]*")*»)'
+free_quote = ~"[^\\n]+"
+
+before_quoted_quote = ~'[^"«\\n]*\\n*'
 before_free_quote = ~" *:? *\\n"
-
-whitespaces = ~"\s*"
     """)
 
     try:
         tree = grammar.match(''.join(tokens[i:]))
         i += len(alinea_lexer.tokenize(tree.text))
-        capture = CaptureVisitor(['quoted', 'free_quoted'])
+        capture = CaptureVisitor(['quoted_quote', 'free_quote'])
         capture.visit(tree)
-        if 'quoted' in capture.captures:
-            node['words'] = re.sub('"[ \n]*$', '', re.sub('^"[ \n]*', '', capture.captures['quoted'].replace('\n"', '\n')))
+        if 'quoted_quote' in capture.captures:
+            node['words'] = re.sub('(^["«] *| *["»]$)', '', re.sub(' *(\n+)["«] *', r'\1', capture.captures['quoted_quote']))
         else:
-            node['words'] = capture.captures['free_quoted']
+            node['words'] = capture.captures['free_quote'].strip()
     except parsimonious.exceptions.ParseError as e:
         remove_node(parent, node)
         return i
@@ -1842,7 +1834,6 @@ def parse_definition_list(tokens, i, parent):
         i += 6
         def_nodes = filter_nodes(parent, is_definition)
         for def_node in def_nodes:
-            i = alinea_lexer.skip_to_quote_start(tokens, i)
             i = parse_quote(tokens, i, def_node)
 
     return i
