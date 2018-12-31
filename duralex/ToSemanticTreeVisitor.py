@@ -60,7 +60,11 @@ class ToSemanticTreeVisitor(parsimonious.NodeVisitor):
         dtree, properties = self.visit(ptree)
         dparent.update(properties)
         if dtree:
-            push_node(dparent, dtree)
+            if 'type' in dtree and dtree['type'] == 'parsimonious-list-container':
+                for dnode in list(dtree['children']):
+                    push_node(dparent, dnode)
+            else:
+                push_node(dparent, dtree)
         return dtree
 
     def generic_visit(self, pnode, children):
@@ -101,12 +105,16 @@ class ToSemanticTreeVisitor(parsimonious.NodeVisitor):
                     else:
                         if hierarchical:
                             raise Exception('base item after a hierarchical item: unknown behaviour')
-                        push_node(dnode, dchild)
+                        if 'type' in dchild and dchild['type'] == 'parsimonious-list-container':
+                            for dsubchild in list(dchild['children']):
+                                push_node(dnode, dsubchild)
+                        else:
+                            push_node(dnode, dchild)
                         first = False
                 dproperties = {}
 
         elif len(dchildren) > 1:
-            dnode = create_node(None, {})
+            dnode = create_node(None, {'type': 'parsimonious-list-container'})
             first = True
             hierarchical = False
             for dchild in dchildren:
@@ -119,7 +127,11 @@ class ToSemanticTreeVisitor(parsimonious.NodeVisitor):
                 else:
                     if hierarchical:
                         raise Exception('base item after a hierarchical item: unknown behaviour')
-                    push_node(dnode, dchild)
+                    if 'type' in dchild and dchild['type'] == 'parsimonious-list-container':
+                        for dsubchild in list(dchild['children']):
+                            push_node(dnode, dsubchild)
+                    else:
+                        push_node(dnode, dchild)
                     first = False
 
         elif len(dchildren) == 1:

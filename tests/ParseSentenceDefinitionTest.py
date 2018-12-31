@@ -40,21 +40,11 @@ class ParseSentenceDefinitionTest(DuralexTestCase):
                         {
                             'type': 'quote',
                             'words': 'phrase 1'
-                        }
-                    ],
-                    'type': 'sentence-definition'
-                },
-                {
-                    'children': [
+                        },
                         {
                             'type': 'quote',
                             'words': 'phrase 2'
-                        }
-                    ],
-                    'type': 'sentence-definition'
-                },
-                {
-                    'children': [
+                        },
                         {
                             'type': 'quote',
                             'words': 'phrase 3'

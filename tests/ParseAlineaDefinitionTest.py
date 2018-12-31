@@ -106,30 +106,15 @@ class ParseAlineaDefinitionTest(DuralexTestCase):
                         {
                             'type': 'quote',
                             'words': 'alinéa 1'
-                        }
-                    ],
-                },
-                {
-                    'type': 'alinea-definition',
-                    'children': [
+                        },
                         {
                             'type': 'quote',
                             'words': 'alinéa 2'
-                        }
-                    ],
-                },
-                {
-                    'type': 'alinea-definition',
-                    'children': [
+                        },
                         {
                             'type': 'quote',
                             'words': 'alinéa 3'
-                        }
-                    ],
-                },
-                {
-                    'type': 'alinea-definition',
-                    'children': [
+                        },
                         {
                             'type': 'quote',
                             'words': 'alinéa 4'
