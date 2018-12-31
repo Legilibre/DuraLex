@@ -1936,9 +1936,14 @@ def parse_header1(tokens, i, parent):
     j = i
     i = parse_edit(tokens, i, node)
     if i == j:
-        # In some amendments in Sénat, there is a header "Alinéa 3, première phrase" without verb then header2
-        i = parse_reference_list(tokens, i, node)
-        i = parse_edit(tokens, i, node)
+        # In some amendments in Sénat, there is a header "Alinéa 3, première phrase" without verb then header2: add this header with fictional edit verb
+        noderef = create_node(node, {
+            'type': TYPE_EDIT,
+            'editType': 'edit',
+        })
+        i = parse_reference_list(tokens, i, noderef)
+        if i == j:
+            remove_node(node, noderef)
     i = parse_for_each(parse_header2, tokens, i, node)
     if len(node['children']) == 0:
         i = parse_raw_article_content(tokens, i, node)
@@ -1978,8 +1983,14 @@ def parse_header2(tokens, i, parent):
     j = i
     i = parse_edit(tokens, i, node)
     if i == j:
-        i = parse_reference_list(tokens, i, node)
-        i = parse_edit(tokens, i, node)
+        # In some amendments in Sénat, there is a header "Alinéa 3, première phrase" without verb then header2: add this header with fictional edit verb
+        noderef = create_node(node, {
+            'type': TYPE_EDIT,
+            'editType': 'edit',
+        })
+        i = parse_reference_list(tokens, i, noderef)
+        if i == j:
+            remove_node(node, noderef)
     i = parse_for_each(parse_header3, tokens, i, node)
     if len(node['children']) == 0 and 'order' in node:
         i = parse_raw_article_content(tokens, i, node)
@@ -2025,8 +2036,14 @@ def parse_header3(tokens, i, parent):
     j = i
     i = parse_edit(tokens, i, node)
     if i == j:
-        i = parse_reference_list(tokens, i, node)
-        i = parse_edit(tokens, i, node)
+        # In some amendments in Sénat, there is a header "Alinéa 3, première phrase" without verb then header2: add this header with fictional edit verb
+        noderef = create_node(node, {
+            'type': TYPE_EDIT,
+            'editType': 'edit',
+        })
+        i = parse_reference_list(tokens, i, noderef)
+        if i == j:
+            remove_node(node, noderef)
     if len(node['children']) == 0 and 'order' in node:
         i = parse_raw_article_content(tokens, i, node)
 
