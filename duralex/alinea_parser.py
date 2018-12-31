@@ -472,7 +472,7 @@ article_type = ~"\*?\*?((L\.O|LO|L|R|D|A)\*?\*?\.? *)?"
 named_article = ~"annexe|ex[ée]cution|unique|(pr[ée])?liminaire|pr[ée]ambule"i
 
 one_quote = ( ( before_quoted_quote quoted_quote ~"\s*[;.]?\s*" ) / ( before_free_quote free_quote ) ) ?
-many_quotes = ( ( before_quoted_quote quoted_quote ~"\s*[;.]?\s*" ) * ) / ( ( before_free_quote free_quote ) ? )
+many_quotes = ( ( ( before_quoted_quote quoted_quote ~"\s*[;.]?\s*" ) + ) / ( before_free_quote free_quote ) ) ?
 
 before_quoted_quote = ~'[^"«\\n]*\\n*'
 before_free_quote = ~" *:?\\n"
