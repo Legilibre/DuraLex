@@ -1596,6 +1596,8 @@ def parse_edit(tokens, i, parent):
 
     LOGGER.debug('parse_edit %s', str(tokens[i:i+10]))
 
+    i = alinea_lexer.skip_tokens(tokens, i, lambda t: re.compile('(\s|[;,])+').match(t))
+
     if tokens[i].lower() not in [u'est', u'sont', u'devient', u'remplacer', u'substituer', u'insérer', u'ajouter', u'compléter', 'supprimer']:
         remove_node(parent, node)
         LOGGER.debug('parse_edit eof %s', str(tokens[i:i+10]))
