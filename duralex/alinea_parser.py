@@ -480,7 +480,7 @@ before_free_quote = ~" *:? *\\n"
 # [DuraLex] create node of type "quote"
 quoted_quote = singleline_quoted_quote / multiline_quoted_quote
 singleline_quoted_quote = ~'("[^"\\n]*"|«[^»\\n]*»)'
-multiline_quoted_quote = ~'(("[^"\\n]*("[^"\\n]*")*\\n)*"[^"\\n]*("[^"\\n]*")*"|(«[^«»\\n]*(«[^«»\\n]*»)*\\n)*«[^«»\\n]*(«[^«»\\n]*")*»)'
+multiline_quoted_quote = ~'(("[^"\\n]*("[^"\\n]*")*\\n)*"[^"\\n]*("[^"\\n]*")*"|(«[^«»\\n]*(«[^«»\\n]*(«[^«»\\n]*(«[^«»\\n]*»|»)*|»)*)*\\n)*«[^«»\\n]*(«[^«»\\n]*(«[^«»\\n]*(«[^«»\\n]*»|»)*|»)*)*»)'
 
 # [DuraLex] create node of type "quote"
 free_quote = ~"[^\\n]+"
@@ -1556,7 +1556,7 @@ quote = ( before_quoted_quote quoted_quote  ~"\s*[;.]?\s*" ) / ( before_free_quo
 
 quoted_quote = singleline_quoted_quote / multiline_quoted_quote
 singleline_quoted_quote = ~'("[^"\\n]*"|«[^»\\n]*»)'
-multiline_quoted_quote = ~'(("[^"\\n]*("[^"\\n]*")*\\n)*"[^"\\n]*("[^"\\n]*")*"|(«[^«»\\n]*(«[^«»\\n]*»)*\\n)*«[^«»\\n]*(«[^«»\\n]*")*»)'
+multiline_quoted_quote = ~'(("[^"\\n]*("[^"\\n]*")*\\n)*"[^"\\n]*("[^"\\n]*")*"|(«[^«»\\n]*(«[^«»\\n]*(«[^«»\\n]*(«[^«»\\n]*»|»)*|»)*)*\\n)*«[^«»\\n]*(«[^«»\\n]*(«[^«»\\n]*(«[^«»\\n]*»|»)*|»)*)*»)'
 free_quote = ~"[^\\n]+"
 
 before_quoted_quote = ~'[^"«\\n]*\\n*'
