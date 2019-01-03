@@ -20,6 +20,7 @@ from duralex.DeleteEmptyChildrenVisitor import DeleteEmptyChildrenVisitor
 from duralex.DeleteParentVisitor import DeleteParentVisitor
 from duralex.DeleteUUIDVisitor import DeleteUUIDVisitor
 from duralex.ForkReferenceVisitor import ForkReferenceVisitor
+from duralex.ForkEditVisitor import ForkEditVisitor
 from duralex.SortReferencesVisitor import SortReferencesVisitor
 from duralex.ResolveFullyQualifiedReferencesVisitor import ResolveFullyQualifiedReferencesVisitor
 from duralex.ResolveFullyQualifiedDefinitionsVisitor import ResolveFullyQualifiedDefinitionsVisitor
@@ -84,6 +85,7 @@ def handle_data(data, args):
 
     ResolveLookbackReferencesVisitor().visit(tree)
     ForkReferenceVisitor().visit(tree)
+    ForkEditVisitor().visit(tree)
     ResolveFullyQualifiedDefinitionsVisitor().visit(tree)
     ResolveFullyQualifiedReferencesVisitor().visit(tree)
     FixMissingCodeOrLawReferenceVisitor().visit(tree)
