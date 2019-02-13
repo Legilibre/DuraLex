@@ -62,7 +62,7 @@ def parse_hunk(hunk, parent, ref):
 
     for line in hunk:
         if line.line_type != line_type:
-            if edit:
+            if edit and "editType" in edit:
                 duralex.tree.push_node(parent, edit)
             edit = duralex.tree.create_node(None, {
                 'type': duralex.tree.TYPE_EDIT,
@@ -82,5 +82,5 @@ def parse_hunk(hunk, parent, ref):
             'words': line.value,
         })
 
-    if edit:
+    if edit and "editType" in edit:
         duralex.tree.push_node(parent, edit)
